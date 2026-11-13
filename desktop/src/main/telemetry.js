@@ -1,3 +1,5 @@
+import { matchedVehicleKey } from '../shared/vehicle-matches.js';
+
 // The game's shared memory exists only on Windows; elsewhere the app runs without a game
 // and does not load the native module at all.
 const koffi = process.platform === 'win32' ? (await import('koffi')).default : null;
@@ -91,7 +93,8 @@ export function parsePose(view) {
   const brand = readString(view, OFF_TRUCK_BRAND);
   const id = readString(view, OFF_TRUCK_ID);
   const name = readString(view, OFF_TRUCK_NAME);
-  const key = truckKey({ brandId, id, name });
+  const game = GAMES[view.getUint32(OFF_GAME, true)] ?? null;
+  const key = matchedVehicleKey(game, id, brand || brandId, name) ?? truckKey({ brandId, id, name });
   return {
     sdkActive: view.getUint8(OFF_SDK_ACTIVE) !== 0,
     paused: view.getUint8(OFF_PAUSED) !== 0,
@@ -115,7 +118,7 @@ export function parsePose(view) {
       plate: readString(view, OFF_PLATE).trim() || null,
       quickJob: readString(view, OFF_JOB_MARKET, MARKET_SIZE) === 'quick_job',
       name: `${brand} ${name}`.trim() || key,
-      game: GAMES[view.getUint32(OFF_GAME, true)] ?? null, // the brand and game scopes of presets
+      game,
       brand: brandId || null,
       brandName: brand || null,
       centerX: truckCenterX(view),

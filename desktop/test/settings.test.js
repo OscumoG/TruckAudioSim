@@ -12,14 +12,15 @@ test('normalizeSettings: defaults', () => {
   });
 });
 
-test('normalizeSettings keeps the main volume up to 500%, with 100% by default', () => {
+test('normalizeSettings keeps the main volume up to 1000%, with 100% by default', () => {
   assert.equal(normalizeSettings({ volume: 0.456 }).volume, 0.46);
   assert.equal(normalizeSettings({ volume: 0 }).volume, 0);
   assert.equal(normalizeSettings({ volume: 1.7 }).volume, 1.7);
   assert.equal(normalizeSettings({ volume: 2.5 }).volume, 2.5);
   assert.equal(normalizeSettings({ volume: 4 }).volume, 4);
   assert.equal(normalizeSettings({ volume: 5 }).volume, 5);
-  assert.equal(normalizeSettings({ volume: 6 }).volume, 5);
+  assert.equal(normalizeSettings({ volume: 10 }).volume, 10);
+  assert.equal(normalizeSettings({ volume: 11 }).volume, 10);
   assert.equal(normalizeSettings({ volume: -0.2 }).volume, 0);
   assert.equal(normalizeSettings({ volume: 'loud' }).volume, 1);
 });
@@ -90,9 +91,9 @@ test('normalizeSettings: Auto follows the vehicle unless turned off', () => {
   assert.deepEqual([undefined, true, false, 'no', 0].map((v) => normalizeSettings({ autoFollow: v }).autoFollow), [true, true, false, true, true]);
 });
 
-test('stepVolume moves in 5 percentage-point steps up to 500%', () => {
-  assert.deepEqual([0.83, 0.85, 1, 1.98, 2, 3.98, 4, 4.98, 5].map((v) => stepVolume(v, 1)), [0.85, 0.9, 1.05, 2, 2.05, 4, 4.05, 5, 5]);
-  assert.deepEqual([0.83, 0.85, 1, 0.03, 0].map((v) => stepVolume(v, -1)), [0.8, 0.8, 0.95, 0, 0]);
+test('stepVolume moves in 10 percentage-point steps up to 1000%', () => {
+  assert.deepEqual([0.83, 0.9, 1, 1.98, 2, 3.98, 4, 9.98, 10].map((v) => stepVolume(v, 1)), [0.9, 1, 1.1, 2, 2.1, 4, 4.1, 10, 10]);
+  assert.deepEqual([0.83, 0.85, 1, 0.03, 0].map((v) => stepVolume(v, -1)), [0.8, 0.8, 0.9, 0, 0]);
 });
 
 test('normalizeSettings: extra layers by preset key, their own audio and volume bindings', () => {

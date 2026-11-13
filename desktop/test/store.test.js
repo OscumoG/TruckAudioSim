@@ -51,10 +51,10 @@ test('saveLayouts then loadData returns the same store', () => {
   assert.deepEqual(loadData(dir).store, store);
 });
 
-test('saveSettings then loadData retains 500% volume', () => {
+test('saveSettings then loadData retains 1000% volume', () => {
   const dir = tempDir();
-  assert.equal(saveSettings(dir, { volume: 5 }), null);
-  assert.equal(loadData(dir).settings.volume, 5);
+  assert.equal(saveSettings(dir, { volume: 10 }), null);
+  assert.equal(loadData(dir).settings.volume, 10);
 });
 
 test('loadData keeps a copy of an older layouts file once, before it is saved in the new format', () => {

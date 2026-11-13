@@ -1,0 +1,132 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Ford Bronco 2024 · 7.1",
+  "vehicle": "vehicle.ford.bronco_24",
+  "vehicleName": "Ford Bronco 2024",
+  "game": "ats",
+  "brand": "ford",
+  "brandName": "Ford",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.83,
+        -0.92,
+        -0.81
+      ],
+      "max": [
+        0.83,
+        0.95,
+        1.43
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.44,
+          -0.6,
+          -0.54
+        ],
+        "channel": "FL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.44,
+          -0.6,
+          -0.54
+        ],
+        "channel": "FR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.14,
+          -0.66
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.81,
+          1.03
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.42,
+          -0.22,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.42,
+          -0.22,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      },
+      {
+        "id": "BL",
+        "name": "Trasero izquierdo",
+        "position": [
+          -0.47,
+          0.14,
+          1.15
+        ],
+        "channel": "BL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BR"
+      },
+      {
+        "id": "BR",
+        "name": "Trasero derecho",
+        "position": [
+          0.47,
+          0.14,
+          1.15
+        ],
+        "channel": "BR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BL"
+      }
+    ],
+    "label": "7.1",
+    "cabAudio": "7.1"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "ets2": [
+    { "id": "vehicle.scania.touring", "names": ["scania touring", "scania tour", "scan touring"] },
+    { "id": "vehicle.volvo.9700_dd", "names": ["volvo 9700", "9700 dd", "9700 double decker"] },
+    { "id": "vehicle.man.lions_coach", "names": ["man lions coach", "lions coach", "lion coach", "man coach"] },
+    { "id": "vehicle.skoda.superb", "names": ["skoda superb", "scout superb", "scout extra d", "scout car", "skoda", "superb"] }
+  ],
+  "ats": [
+    { "id": "vehicle.ford.mustang_67", "names": ["ford mustang", "mustang 1967", "mustang 67"] },
+    { "id": "vehicle.ford.f150_23", "names": ["ford f150", "ford f 150", "f150 23", "f 150 23"] },
+    { "id": "vehicle.ford.bronco_24", "names": ["ford bronco", "bronco 24", "bronco 23"] },
+    { "id": "vehicle.ford.victoria_06", "names": ["ford crown victoria", "crown victoria", "ford victoria 06"] },
+    { "id": "vehicle.skoda.scout_ats", "names": ["skoda superb", "scout superb", "scout extra d", "scout car", "skoda", "superb"] }
+  ]
+}

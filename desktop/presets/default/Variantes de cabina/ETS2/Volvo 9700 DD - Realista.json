@@ -1,0 +1,80 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Volvo 9700 DD · Realista",
+  "vehicleName": "Volvo 9700 DD",
+  "vehicle": "vehicle.volvo.9700_dd",
+  "game": "ets2",
+  "brand": "volvo",
+  "brandName": "Volvo",
+  "layout": {
+    "bounds": {
+      "min": [
+        -1.1,
+        -0.8,
+        -0.99
+      ],
+      "max": [
+        1.1,
+        0.85,
+        1.52
+      ]
+    },
+    "speakers": [
+      {
+        "id": "PuertaL",
+        "name": "Puerta L",
+        "position": [
+          -0.96,
+          -0.46,
+          -0.64
+        ],
+        "channel": "L",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "PuertaR"
+      },
+      {
+        "id": "TraseroL",
+        "name": "Trasero L",
+        "position": [
+          -0.94,
+          0.58,
+          1.22
+        ],
+        "channel": "L",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "TraseroR"
+      },
+      {
+        "id": "PuertaR",
+        "name": "Puerta R",
+        "position": [
+          0.96,
+          -0.46,
+          -0.64
+        ],
+        "channel": "R",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "PuertaL"
+      },
+      {
+        "id": "TraseroR",
+        "name": "Trasero R",
+        "position": [
+          0.94,
+          0.58,
+          1.22
+        ],
+        "channel": "R",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "TraseroL"
+      }
+    ],
+    "label": "Realista",
+    "cabAudio": "realistic",
+    "width": 1
+  }
+}

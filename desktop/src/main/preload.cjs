@@ -32,6 +32,7 @@ contextBridge.exposeInMainWorld('aux', {
   cancelCapture: () => ipcRenderer.invoke('controls:cancel'),
   controlNames: () => ipcRenderer.invoke('controls:names'),
   onControl: (listener) => ipcRenderer.on('controls:action', (_event, action) => listener(action)),
+  volumeFeedback: (percent, muted) => ipcRenderer.send('controls:volume-feedback', { percent, muted }),
   onControlWarning: (listener) => ipcRenderer.on('controls:warning', (_event, message) => listener(message)),
   spatialDevices: () => ipcRenderer.invoke('spatial:devices'),
   startSpatial: (options) => ipcRenderer.invoke('spatial:start', options),

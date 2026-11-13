@@ -81,9 +81,9 @@ const finite = (value) => typeof value === 'number' && Number.isFinite(value);
 export const VOICE_MODES = ['off', 'system', 'aux'];
 
 // Main volume is a linear multiplier of the spatial mix's reference level.
-export const MAX_VOLUME = 5;
-// Volume Up / Down (controls.js): the slider's next 5 percentage-point step.
-const VOLUME_STEP = 0.05;
+export const MAX_VOLUME = 10;
+// Volume Up / Down (controls.js): the slider's next 10 percentage-point step.
+const VOLUME_STEP = 0.1;
 export function stepVolume(volume, direction) {
   const steps = volume / VOLUME_STEP;
   const next = direction > 0 ? Math.floor(steps + 1e-6) + 1 : Math.ceil(steps - 1e-6) - 1;

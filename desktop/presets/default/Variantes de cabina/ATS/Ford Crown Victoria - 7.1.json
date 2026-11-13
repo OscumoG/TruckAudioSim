@@ -1,0 +1,132 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Ford Crown Victoria 2006 · 7.1",
+  "vehicle": "vehicle.ford.victoria_06",
+  "vehicleName": "Ford Crown Victoria 2006",
+  "game": "ats",
+  "brand": "ford",
+  "brandName": "Ford",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.64,
+        -0.51,
+        -0.81
+      ],
+      "max": [
+        0.64,
+        0.5,
+        1
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.52,
+          -0.26,
+          -0.47
+        ],
+        "channel": "FL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.52,
+          -0.26,
+          -0.47
+        ],
+        "channel": "FR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.26,
+          -0.47
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.45,
+          0.72
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.49,
+          -0.02,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.49,
+          -0.02,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      },
+      {
+        "id": "BL",
+        "name": "Trasero izquierdo",
+        "position": [
+          -0.22,
+          -0.05,
+          0.56
+        ],
+        "channel": "BL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BR"
+      },
+      {
+        "id": "BR",
+        "name": "Trasero derecho",
+        "position": [
+          0.22,
+          -0.05,
+          0.56
+        ],
+        "channel": "BR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BL"
+      }
+    ],
+    "label": "7.1",
+    "cabAudio": "7.1"
+  }
+}

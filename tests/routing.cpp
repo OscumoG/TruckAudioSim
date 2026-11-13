@@ -47,7 +47,14 @@ int main(){
   eq(sourceForSpeaker(side,back51,6,kFivePointOneBack),0.5f,"5.1 back mask");
   side.cabAudio=CabAudio::Surround71;
   eq(sourceForSpeaker(side,surround,8,kSevenPointOne),0.7f,"7.1 side stays discrete");
-  eq(sourceForSpeaker(side,back51,6,kFivePointOneBack),0.0f,"5.1 back mask does not play through side speakers");
+  eq(sourceForSpeaker(side,back51,6,kFivePointOneBack),0.5f*0.70710678f,"5.1 back mask also plays through side speakers in 7.1");
+  eq(sourceForSpeaker(side,stereo,2,kStereo),0.175f,"7.1 side plays stereo at reduced gain");
+  auto right=at("SR");right.cabAudio=CabAudio::Surround51;
+  eq(sourceForSpeaker(right,stereo,2,kStereo),-0.125f,"5.1 right surround plays its stereo side");
+  eq(sourceForSpeaker(right,pcm21,3,kTwoPointOne),0.1f,"2.1 keeps the right surround audible");
+  auto rear=at("BL");rear.cabAudio=CabAudio::Surround71;
+  eq(sourceForSpeaker(rear,side51,6,kFivePointOneSide),0.5f*0.70710678f,"5.1 side mask also plays through rear speakers in 7.1");
+  eq(sourceForSpeaker(rear,surround,8,kSevenPointOne),0.5f,"7.1 rear stays discrete");
   auto center=at("FC",0,"mid");
   center.cabAudio=CabAudio::Surround71;
   eq(sourceForSpeaker(center,stereo,2,kStereo),0.0625f,"stereo center supports the main fronts at reduced level");

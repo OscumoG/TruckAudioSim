@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Škoda Superb / Scout · 5.1",
+  "vehicleName": "Škoda Superb / Scout",
+  "vehicle": "vehicle.skoda.scout_ats",
+  "game": "ats",
+  "brand": "skoda",
+  "brandName": "Škoda",
+  "layout": {
+    "bounds": {
+      "min": [
+        -0.81,
+        -0.8,
+        -0.6699999999999999
+      ],
+      "max": [
+        0.81,
+        0.85,
+        1.0
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.67,
+          -0.41,
+          -0.32
+        ],
+        "channel": "FL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.67,
+          -0.41,
+          -0.32
+        ],
+        "channel": "FR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.41,
+          -0.32
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.7,
+          0.72
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.65,
+          -0.32,
+          0.7
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.65,
+          -0.32,
+          0.7
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "label": "5.1",
+    "cabAudio": "5.1",
+    "width": 1
+  }
+}

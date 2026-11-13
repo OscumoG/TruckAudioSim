@@ -1,9 +1,12 @@
 # Perfiles de cabina
 
 Abre TruckAudioSim y busca el modelo en **Layout → Preset** o en el árbol del
-camión. Cada uno de los 41 modelos incluidos tiene tres perfiles de fábrica.
-Son 26 modelos de ETS2 y 15 de ATS, con 123 perfiles en total. Cada modelo
-utiliza una referencia de cabina representativa para todos sus chasis.
+camión. Hay 50 combinaciones de juego y modelo con tres perfiles cada una, para
+un total de 150 perfiles. Cada camión utiliza una cabina representativa.
+Se incluyen Scania Touring, Volvo 9700 DD y MAN Lion’s Coach de ETS2,
+los cuatro Ford de Road Trip y el Škoda Superb / Scout en ambos juegos.
+Los autobuses y el Škoda usan posiciones estimadas y se identifican por
+el nombre o un alias de telemetría.
 
 | Variante | Posición y reproducción |
 | --- | --- |
@@ -18,9 +21,11 @@ En 5.1 y 7.1, el central Midrange reproduce de 500 a 2500 Hz y el
 subwoofer usa un paso bajo a 120 Hz. Los frontales son de rango completo
 para conservar graves incluso cuando el LFE de la fuente está vacío.
 Con música estéreo, el centro y el subwoofer reciben una mezcla L/R
-a nivel reducido. Con PCM multicanal, el perfil 5.1 reparte los
-canales laterales y traseros de una pista 7.1 en su par envolvente.
-El perfil 7.1 conserva sus ocho canales cuando la fuente los entrega.
+a nivel reducido. Las bocinas envolventes también reciben una señal
+atenuada de su lado con fuentes estéreo y 2.1. Con PCM multicanal, el
+perfil 5.1 combina los laterales y traseros de una pista 7.1 en su par
+envolvente. El perfil 7.1 reproduce una pista 5.1 en ambos pares
+envolventes y mantiene ocho canales discretos cuando la fuente los entrega.
 
 Realista usa las posiciones de referencia del modelo. El motor mezcla
 el centro y los envolventes hacia las bocinas laterales de la cabina

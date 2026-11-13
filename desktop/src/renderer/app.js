@@ -309,8 +309,12 @@ window.aux.onSpatialStatus((status) => {
 // pick in the list does; Auto goes back to what fitted the cab when you got in (nothing is
 // remembered while trying). Getting out keeps the one tried for the cab (see onPose).
 function controlAction(action) {
-  if (action === 'volumeUp' || action === 'volumeDown') return actions.nudgeVolume(action === 'volumeUp' ? 1 : -1);
-  if (action === 'mute') return actions.toggleMusicMute();
+  if (action === 'volumeUp' || action === 'volumeDown' || action === 'mute') {
+    if (action === 'mute') actions.toggleMusicMute();
+    else actions.nudgeVolume(action === 'volumeUp' ? 1 : -1);
+    window.aux.volumeFeedback(Math.round(state.settings.volume * 100), state.mutedByHand);
+    return;
+  }
   if (action === 'auto') {
     actions.setAutoFollow(true);
     return;
@@ -533,7 +537,7 @@ const actions = {
     if (save) saveSettings();
     render();
   },
-  // Volume Up / Down (the bindings): the slider's next 5 % step that way (stepVolume), saved once
+  // Volume Up / Down (the bindings): the slider's next 10 % step that way (stepVolume), saved once
   // the presses stop.
   nudgeVolume(direction) {
     actions.setVolume(stepVolume(state.settings.volume, direction), false);

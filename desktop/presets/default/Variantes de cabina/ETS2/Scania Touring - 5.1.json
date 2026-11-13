@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Scania Touring · 5.1",
+  "vehicleName": "Scania Touring",
+  "vehicle": "vehicle.scania.touring",
+  "game": "ets2",
+  "brand": "scania",
+  "brandName": "Scania",
+  "layout": {
+    "bounds": {
+      "min": [
+        -1.12,
+        -0.8,
+        -1.0499999999999998
+      ],
+      "max": [
+        1.12,
+        0.85,
+        1.3800000000000001
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.98,
+          -0.42,
+          -0.7
+        ],
+        "channel": "FL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.98,
+          -0.42,
+          -0.7
+        ],
+        "channel": "FR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.42,
+          -0.7
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.7,
+          0.99
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.99,
+          0.52,
+          1.08
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.99,
+          0.52,
+          1.08
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "label": "5.1",
+    "cabAudio": "5.1",
+    "width": 1
+  }
+}

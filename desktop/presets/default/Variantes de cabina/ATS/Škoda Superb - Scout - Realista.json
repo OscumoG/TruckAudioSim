@@ -1,0 +1,80 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Škoda Superb / Scout · Realista",
+  "vehicleName": "Škoda Superb / Scout",
+  "vehicle": "vehicle.skoda.scout_ats",
+  "game": "ats",
+  "brand": "skoda",
+  "brandName": "Škoda",
+  "layout": {
+    "bounds": {
+      "min": [
+        -0.81,
+        -0.8,
+        -0.6699999999999999
+      ],
+      "max": [
+        0.81,
+        0.85,
+        1.0
+      ]
+    },
+    "speakers": [
+      {
+        "id": "PuertaL",
+        "name": "Puerta L",
+        "position": [
+          -0.67,
+          -0.41,
+          -0.32
+        ],
+        "channel": "L",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "PuertaR"
+      },
+      {
+        "id": "TraseroL",
+        "name": "Trasero L",
+        "position": [
+          -0.65,
+          -0.32,
+          0.7
+        ],
+        "channel": "L",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "TraseroR"
+      },
+      {
+        "id": "PuertaR",
+        "name": "Puerta R",
+        "position": [
+          0.67,
+          -0.41,
+          -0.32
+        ],
+        "channel": "R",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "PuertaL"
+      },
+      {
+        "id": "TraseroR",
+        "name": "Trasero R",
+        "position": [
+          0.65,
+          -0.32,
+          0.7
+        ],
+        "channel": "R",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "TraseroL"
+      }
+    ],
+    "label": "Realista",
+    "cabAudio": "realistic",
+    "width": 1
+  }
+}

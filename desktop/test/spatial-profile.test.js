@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { parsePresetFile, presetFile } from '../src/shared/collection.js';
+import { matchedVehicleKey } from '../src/shared/vehicle-matches.js';
 import { mediaTelemetry, parsePlaybackDevices, spatialPose, spatialProfile } from '../src/shared/spatial-profile.js';
 
 test('every factory truck model has one realistic, 5.1 and 7.1 profile at 0 dB', () => {
@@ -19,8 +20,29 @@ test('every factory truck model has one realistic, 5.1 and 7.1 profile at 0 dB',
       assert.ok(raw.layout.speakers.every((speaker) => speaker.gainDb === 0));
     }
   }
-  assert.equal(models.size, 41);
+  assert.equal(models.size, 50);
   for (const [model, modes] of models) assert.deepEqual(modes.sort(), ['5.1', '7.1', 'realistic'], model);
+});
+
+test('coach, Ford and Scout telemetry can resolve to the three factory profiles', () => {
+  const models = [
+    ['ets2', 'vehicle.scn.touring', 'Scania', 'Touring', 'vehicle.scania.touring'],
+    ['ets2', '', 'Volvo', '9700 Double Decker', 'vehicle.volvo.9700_dd'],
+    ['ets2', '', 'MAN', 'Lion’s Coach', 'vehicle.man.lions_coach'],
+    ['ets2', 'vehicle.scout.extra_d', 'Scout', 'Superb', 'vehicle.skoda.superb'],
+    ['ats', '', 'Škoda', 'Superb', 'vehicle.skoda.scout_ats'],
+    ['ats', 'vehicle.ford.f150_23', 'Ford', 'F-150', 'vehicle.ford.f150_23'],
+    ['ats', '', 'Ford', 'Mustang Fastback', 'vehicle.ford.mustang_67'],
+    ['ats', 'vehicle.ford.bronco_23', 'Ford', 'Bronco', 'vehicle.ford.bronco_24'],
+    ['ats', '', 'Ford', 'Crown Victoria', 'vehicle.ford.victoria_06'],
+  ];
+  for (const [game, id, brand, name, expected] of models) {
+    assert.equal(matchedVehicleKey(game, id, brand, name), expected);
+    const folder = new URL(`../presets/default/Variantes%20de%20cabina/${game.toUpperCase()}/`, import.meta.url);
+    const files = fs.readdirSync(folder).map((file) => JSON.parse(fs.readFileSync(new URL(encodeURIComponent(file), folder))));
+    assert.equal(files.filter((entry) => entry.vehicle === expected).length, 3);
+  }
+  assert.equal(matchedVehicleKey('ets2', 'vehicle.scania.s_2016', 'Scania', 'S'), undefined);
 });
 
 test('the Scania profile keeps eight discrete channels through import, export and live edits', () => {
@@ -46,7 +68,7 @@ test('the native pose follows SCS axes, volume and muting', () => {
   });
   assert.equal(spatialPose(null, -0.4, false, 4).volume, 4);
   assert.equal(spatialPose(null, -0.4, false, 5).volume, 5);
-  assert.equal(spatialPose(null, -0.4, false, 6).volume, 5);
+  assert.equal(spatialPose(null, -0.4, false, 11).volume, 10);
 });
 
 test('outside distance controls attenuation without changing the electrical state', () => {

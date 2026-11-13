@@ -1,3 +1,9 @@
+# v0.23.6 — volumen, vehículos y envolventes
+
+- Volumen principal hasta 1000%, pasos de 10 puntos y aviso visual para los atajos.
+- Perfiles para los tres autobuses de Coaches, los cuatro Ford de Road Trip y Škoda Superb / Scout.
+- Señal envolvente en 5.1 y 7.1 con entradas estéreo, 2.1 y 5.1.
+
 # v0.23.5 — perfiles de cabina
 
 - Tres perfiles de fábrica por modelo, con referencias de cabina representativas.

@@ -26,17 +26,11 @@ uint32_t sourceChannelBit(const Speaker& s,uint16_t channels,uint32_t mask){
   return channels==2 && s.cabAudio!=CabAudio::Legacy && s.type=="sub"?FC:0;
  }
  if(channels==2){
-  if((s.cabAudio==CabAudio::Surround51 || s.cabAudio==CabAudio::Surround71) &&
-     (s.channel=="SL"||s.channel=="SR"||s.channel=="BL"||s.channel=="BR"))return 0;
   if(isLeft(s.channel))return FL;
   if(isRight(s.channel))return FR;
   return FC; // special: phantom center from L+R
  }
- uint32_t direct=directBit(s.channel);
- if(s.cabAudio==CabAudio::Surround51 && channels==6 && !(mask&(SL|SR))){
-  if(direct==SL)direct=BL;
-  if(direct==SR)direct=BR;
- }
+ const uint32_t direct=directBit(s.channel);
  if(direct)return (mask&direct)?direct:0;
  if(s.channel=="M")return (mask&FC)?FC:0;
  if(s.channel=="L"||s.channel=="R"){
@@ -65,6 +59,25 @@ SpeakerRoute speakerRoute(const Speaker& s,uint16_t channels,uint32_t mask){
   if(index>=channels)throw std::runtime_error("Invalid source channel index");
   route[index]+=weight;
  };
+ const auto direct=directBit(s.channel);
+ const bool surround=s.cabAudio==CabAudio::Surround51||s.cabAudio==CabAudio::Surround71;
+ if(surround && (direct==SL||direct==SR||direct==BL||direct==BR)){
+  const bool left=direct==SL||direct==BL;
+  const bool side=direct==SL||direct==SR;
+  const auto sideBit=left?SL:SR;
+  const auto rearBit=left?BL:BR;
+  if(channels<6){
+   add(left?FL:FR, side?(s.cabAudio==CabAudio::Surround51?0.5f:0.35f):0.22f);
+  }else if(channels==6){
+   add(mask&sideBit?sideBit:rearBit,s.cabAudio==CabAudio::Surround51?1.0f:0.70710678f);
+  }else if(s.cabAudio==CabAudio::Surround51 && side){
+   add(sideBit,0.70710678f);
+   add(rearBit,0.70710678f);
+  }else{
+   add(direct,1);
+  }
+  return route;
+ }
  const auto bit=sourceChannelBit(s,channels,mask);
  if(channels==2 && bit==FC){
   const bool auxiliary=s.cabAudio!=CabAudio::Legacy && (s.channel=="FC"||s.type=="sub");
@@ -80,11 +93,6 @@ SpeakerRoute speakerRoute(const Speaker& s,uint16_t channels,uint32_t mask){
   add(FC,0.70710678f);
   add(left?SL:SR,0.70710678f);
   add(left?BL:BR,0.70710678f);
-  return route;
- }
- if(s.cabAudio==CabAudio::Surround51 && channels==8 && (bit==SL||bit==SR)){
-  add(bit,0.70710678f);
-  add(bit==SL?BL:BR,0.70710678f);
   return route;
  }
  add(bit,1);

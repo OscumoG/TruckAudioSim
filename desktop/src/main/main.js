@@ -1,4 +1,4 @@
-import { app, BrowserWindow, crashReporter, dialog, ipcMain, Menu, session, shell, Tray } from 'electron';
+import { app, BrowserWindow, crashReporter, dialog, ipcMain, Menu, screen, session, shell, Tray } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +12,7 @@ import { IMPORT_KINDS, exportData, findData, importData, importable, timeStamp }
 import { findGame, installPlugins, pluginPlan } from './game-plugins.js';
 import { presetsDirFor, readCollection, watchCollection, writePresetSet } from './collection.js';
 import { parsePresetFile, presetFileName } from '../shared/collection.js';
+import { MAX_VOLUME } from '../shared/settings.js';
 import { normalizeBindings } from '../shared/controls.js';
 import { clearLegacyDefault, dropImportedDefaults, foldChassis, seedAll } from '../shared/presets.js';
 
@@ -299,6 +300,40 @@ const toWindow = (channel, value) => {
   if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(channel, value);
 };
 const controls = createControls({ onAction: (action) => toWindow('controls:action', action), onError: (message) => toWindow('controls:warning', message) });
+let volumeOverlay;
+let overlayTimer;
+let overlayMessage;
+ipcMain.on('controls:volume-feedback', (event, { muted, percent } = {}) => {
+  if (event.sender !== mainWindow?.webContents || stoppingAudio
+      || typeof muted !== 'boolean' || !Number.isInteger(percent) || percent < 0 || percent > MAX_VOLUME * 100) return;
+  overlayMessage = muted ? 'Silenciado' : `Volumen ${percent}%`;
+  if (!volumeOverlay) {
+    volumeOverlay = new BrowserWindow({
+      width: 240, height: 64, show: false, frame: false, transparent: true,
+      alwaysOnTop: true, focusable: false, skipTaskbar: true, resizable: false,
+      webPreferences: { preload: path.join(here, 'volume-overlay.cjs'), sandbox: true },
+    });
+    volumeOverlay.setIgnoreMouseEvents(true);
+    const win = volumeOverlay;
+    win.loadFile(path.join(here, '../renderer/volume-overlay.html')).then(displayVolumeOverlay).catch((error) => {
+      crashLog(error.message);
+      if (!win.isDestroyed()) win.destroy();
+    });
+    volumeOverlay.on('closed', () => { volumeOverlay = null; });
+    return;
+  }
+  if (!volumeOverlay.webContents.isLoadingMainFrame()) displayVolumeOverlay();
+});
+
+function displayVolumeOverlay() {
+  if (!volumeOverlay || stoppingAudio) return;
+  const { x, y, width } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+  volumeOverlay.setPosition(x + width - 264, y + 24);
+  volumeOverlay.webContents.send('volume:label', overlayMessage);
+  volumeOverlay.showInactive();
+  clearTimeout(overlayTimer);
+  overlayTimer = setTimeout(() => volumeOverlay?.hide(), 1500);
+}
 const engineDir = app.isPackaged ? path.join(process.resourcesPath, 'engine') : path.resolve(here, '../../../bin-x64');
 const demoDir = app.isPackaged ? engineDir : path.resolve(here, '../../../validacion-x64');
 const audio = createSpatialAudio(engineDir, demoDir, (status) => toWindow('spatial:status', status));
@@ -324,6 +359,7 @@ app.on('before-quit', (event) => {
   });
 });
 app.on('will-quit', () => {
+  clearTimeout(overlayTimer);
   controls.stop();
   tray?.destroy();
   tray = null;

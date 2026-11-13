@@ -18,9 +18,34 @@ PREFERRED_REFERENCE = {
     "vehicle.westernstar.57x": "ATS, Western Star, Western Star 57X",
 }
 
+# Estimated driver-area positions in meters from the vehicle center line.
+# Rear positions in coaches cover the area just behind the driver.
+EXTRA_CABS = (
+    ("ets2", "scania", "Scania", "Scania Touring", "vehicle.scania.touring", (0.98, -0.42, -0.70), (0.99, 0.52, 1.08)),
+    ("ets2", "volvo", "Volvo", "Volvo 9700 DD", "vehicle.volvo.9700_dd", (0.96, -0.46, -0.64), (0.94, 0.58, 1.22)),
+    ("ets2", "man", "MAN", "MAN Lion's Coach", "vehicle.man.lions_coach", (1.02, -0.40, -0.72), (0.95, 0.48, 1.02)),
+    ("ets2", "skoda", "Škoda", "Škoda Superb / Scout", "vehicle.skoda.superb", (0.67, -0.41, -0.32), (0.65, -0.32, 0.70)),
+    ("ats", "skoda", "Škoda", "Škoda Superb / Scout", "vehicle.skoda.scout_ats", (0.67, -0.41, -0.32), (0.65, -0.32, 0.70)),
+)
+
 def speaker(channel, name, position, kind="full", pair=None):
     return dict(id=channel, name=name, position=position, channel=channel,
                 type=kind, gainDb=0, pair=pair)
+
+def extra_cabs():
+    for game, brand, brand_name, name, model, front, rear in EXTRA_CABS:
+        drivers = []
+        for suffix, channel, sign, other in (("L", "L", -1, "R"), ("R", "R", 1, "L")):
+            for label, point in (("Puerta", front), ("Trasero", rear)):
+                x, y, z = point
+                driver = speaker(channel, f"{label} {suffix}", [sign * x, y, z], pair=f"{label}{other}")
+                driver["id"] = f"{label}{suffix}"
+                drivers.append(driver)
+        bounds = {"min": [-front[0] - .14, -.8, front[2] - .35],
+                  "max": [front[0] + .14, .85, rear[2] + .3]}
+        yield Path(name.replace(" / ", " - ")), dict(
+            truckerAuxPreset=1, name=name, vehicleName=name, vehicle=model,
+            game=game, brand=brand, brandName=brand_name, layout=dict(bounds=bounds, speakers=drivers))
 
 def surround(layout, mode):
     original = layout["speakers"]
@@ -110,10 +135,10 @@ def fit_bounds(layout):
 def main():
     models = defaultdict(list)
     counts = {"ets2": 0, "ats": 0}
-    for source in sorted(REFERENCES.glob("*.json")):
-        profile = json.loads(source.read_text(encoding="utf-8"))
+    references = ((p, json.loads(p.read_text(encoding="utf-8"))) for p in sorted(REFERENCES.glob("*.json")))
+    for source, profile in (*references, *extra_cabs()):
         vehicle, game = profile.get("vehicle", ""), profile.get("game")
-        if game not in counts or not vehicle.startswith("vehicle.") or vehicle.startswith("vehicle.ford."):
+        if game not in counts or not vehicle.startswith("vehicle."):
             continue
         models[game, vehicle.split("@")[0]].append((source, profile))
     written = set()

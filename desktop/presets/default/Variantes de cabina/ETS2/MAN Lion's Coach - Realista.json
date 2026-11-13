@@ -1,0 +1,80 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › MAN Lion's Coach · Realista",
+  "vehicleName": "MAN Lion's Coach",
+  "vehicle": "vehicle.man.lions_coach",
+  "game": "ets2",
+  "brand": "man",
+  "brandName": "MAN",
+  "layout": {
+    "bounds": {
+      "min": [
+        -1.1600000000000001,
+        -0.8,
+        -1.0699999999999998
+      ],
+      "max": [
+        1.1600000000000001,
+        0.85,
+        1.32
+      ]
+    },
+    "speakers": [
+      {
+        "id": "PuertaL",
+        "name": "Puerta L",
+        "position": [
+          -1.02,
+          -0.4,
+          -0.72
+        ],
+        "channel": "L",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "PuertaR"
+      },
+      {
+        "id": "TraseroL",
+        "name": "Trasero L",
+        "position": [
+          -0.95,
+          0.48,
+          1.02
+        ],
+        "channel": "L",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "TraseroR"
+      },
+      {
+        "id": "PuertaR",
+        "name": "Puerta R",
+        "position": [
+          1.02,
+          -0.4,
+          -0.72
+        ],
+        "channel": "R",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "PuertaL"
+      },
+      {
+        "id": "TraseroR",
+        "name": "Trasero R",
+        "position": [
+          0.95,
+          0.48,
+          1.02
+        ],
+        "channel": "R",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "TraseroL"
+      }
+    ],
+    "label": "Realista",
+    "cabAudio": "realistic",
+    "width": 1
+  }
+}

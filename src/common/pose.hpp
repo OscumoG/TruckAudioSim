@@ -3,7 +3,7 @@
 #include "profile.hpp"
 #include <string>
 namespace tas {
-inline constexpr float kMaxVolume=5.0f;
+inline constexpr float kMaxVolume=10.0f;
 struct Pose {
  Vec3 head{-0.40f,0.0f,0.0f};
  float yawDegrees=0;

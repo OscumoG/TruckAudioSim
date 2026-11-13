@@ -64,7 +64,7 @@ int main() {
  Speaker front{"FL","Front left","FL","full",{},0,true,CabAudio::Surround51};
  assert(amplitude(front,60)>0.49f && amplitude(front,8000)>0.43f);
  Speaker rear{"SL","Side left","SL","full",{},0,true,CabAudio::Surround51};
- assert(amplitude(rear,1000)==0);
+ assert(amplitude(rear,1000)>0.24f && amplitude(rear,1000)<0.26f);
  // Reject invalid dimensions before dereferencing the PCM buffer.
  bool thrown = false;
  try { mixSpatialObject(left, stereo, 3, 5, 2, kStereo, 1.0f, true, mono); }

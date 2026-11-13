@@ -266,7 +266,7 @@ export function createPanel(root, actions, boundsRoot) {
     ...rowsOf(VOLUME_ACTIONS),
     el('p', {
       className: 'hint',
-      textContent: 'They work while the game has the focus. Volume Up and Down move Audio › Volume by 5 % (held, on and on); Mute silences the music until pressed again or the volume changes. The game sees these keys and buttons too: pick ones it does not use.',
+      textContent: 'They work while the game has the focus. Volume Up and Down move Audio › Volume in steps of 10 percentage points (hold to repeat); Mute silences the music until pressed again or the volume changes. The game sees these keys and buttons too: pick ones it does not use.',
     }),
   ]);
 

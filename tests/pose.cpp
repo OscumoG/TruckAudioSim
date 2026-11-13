@@ -23,13 +23,13 @@ int main(){
   bool rejected=false;
   try{(void)parsePoseText(R"({"yawDeg":200000})");}catch(const std::exception&){rejected=true;}
   if(!rejected)throw std::runtime_error("out of range accepted");
-  const auto boosted=parsePoseText(R"({"volume":5,"exteriorGain":0.25})");
+  const auto boosted=parsePoseText(R"({"volume":10,"exteriorGain":0.25})");
   const auto transition=smoothPose(Pose{},boosted,0.5f);
-  if(boosted.volume!=5 || transition.volume!=3 || transition.exteriorGain!=0.625f)
+  if(boosted.volume!=10 || transition.volume!=5.5f || transition.exteriorGain!=0.625f)
    throw std::runtime_error("boosted volume was lost");
   rejected=false;
-  try{(void)parsePoseText(R"({"volume":5.01})");}catch(const std::exception&){rejected=true;}
-  if(!rejected)throw std::runtime_error("volume above 500% accepted");
+  try{(void)parsePoseText(R"({"volume":10.01})");}catch(const std::exception&){rejected=true;}
+  if(!rejected)throw std::runtime_error("volume above 1000% accepted");
   std::cout<<"PASS: pose parse, bounds, electronics state, shortest yaw smoothing\n";
   return 0;
  }catch(const std::exception&e){std::cerr<<"FAIL: "<<e.what()<<"\n";return 1;}
