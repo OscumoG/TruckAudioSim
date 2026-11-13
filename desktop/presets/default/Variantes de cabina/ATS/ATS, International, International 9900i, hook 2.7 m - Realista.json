@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › International 9900i, hook 2.7 m · Realista",
-  "vehicle": "vehicle.intnational.9900i@2.7",
+  "name": "ATS › International 9900i · Realista",
+  "vehicle": "vehicle.intnational.9900i",
   "vehicleName": "International 9900i",
   "game": "ats",
   "brand": "intnational",
@@ -58,7 +58,7 @@
         ],
         "channel": "L",
         "gainDb": 0,
-        "type": "mid",
+        "type": "midbass",
         "pair": "s4"
       },
       {
@@ -71,7 +71,7 @@
         ],
         "channel": "R",
         "gainDb": 0,
-        "type": "mid",
+        "type": "midbass",
         "pair": "s3"
       },
       {

@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Scania R 2009 · 5.1",
-  "vehicle": "vehicle.scania.r@1.0",
+  "vehicle": "vehicle.scania.r",
   "vehicleName": "Scania R 2009",
   "game": "ets2",
   "brand": "scania",
@@ -30,7 +30,7 @@
           0.05
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           0.05
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › DAF XF Electric · 5.1",
-  "vehicle": "vehicle.daf.xf_electric@1.4",
+  "vehicle": "vehicle.daf.xf_electric",
   "vehicleName": "DAF XF Electric",
   "game": "ets2",
   "brand": "daf",
@@ -25,12 +25,12 @@
         "id": "FL",
         "name": "Frontal izquierdo",
         "position": [
-          -0.79,
-          -0.44,
-          -0.13
+          -0.9,
+          0.26,
+          -0.62
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -38,12 +38,12 @@
         "id": "FR",
         "name": "Frontal derecho",
         "position": [
-          0.79,
-          -0.44,
-          -0.13
+          0.9,
+          0.26,
+          -0.62
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },
@@ -77,8 +77,8 @@
         "id": "SL",
         "name": "Envolvente izquierdo",
         "position": [
-          -0.75,
-          -0.2,
+          -0.85,
+          0.5,
           0.12
         ],
         "channel": "SL",
@@ -90,8 +90,8 @@
         "id": "SR",
         "name": "Envolvente derecho",
         "position": [
-          0.75,
-          -0.2,
+          0.85,
+          0.5,
           0.12
         ],
         "channel": "SR",

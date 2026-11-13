@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › Mack Pinnacle, hook 2.6 m · 5.1",
-  "vehicle": "vehicle.mack.pinnacle@2.6",
+  "name": "ATS › Mack Pinnacle · 5.1",
+  "vehicle": "vehicle.mack.pinnacle",
   "vehicleName": "Mack Pinnacle",
   "game": "ats",
   "brand": "mack",
@@ -31,7 +31,7 @@
           -0.61
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -44,7 +44,7 @@
           -0.61
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

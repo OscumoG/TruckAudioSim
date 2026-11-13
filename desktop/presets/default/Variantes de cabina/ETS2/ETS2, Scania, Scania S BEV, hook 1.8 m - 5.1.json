@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Scania S BEV, hook 1.8 m · 5.1",
-  "vehicle": "vehicle.scania.s_2024e@1.8",
+  "name": "ETS2 › Scania S BEV · 5.1",
+  "vehicle": "vehicle.scania.s_2024e",
   "vehicleName": "Scania S BEV",
   "game": "ets2",
   "brand": "scania",
@@ -30,7 +30,7 @@
           -0.46
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.46
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

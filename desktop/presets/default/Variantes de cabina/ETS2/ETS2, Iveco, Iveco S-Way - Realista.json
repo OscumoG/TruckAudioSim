@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Iveco S-Way · Realista",
-  "vehicle": "vehicle.iveco.sway@1.5",
+  "vehicle": "vehicle.iveco.sway",
   "vehicleName": "Iveco S-Way",
   "game": "ets2",
   "brand": "iveco",

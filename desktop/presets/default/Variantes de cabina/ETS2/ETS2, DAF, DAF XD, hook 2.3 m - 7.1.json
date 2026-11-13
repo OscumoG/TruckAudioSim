@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › DAF XD, hook 2.3 m · 7.1",
-  "vehicle": "vehicle.daf.xd@2.3",
+  "name": "ETS2 › DAF XD · 7.1",
+  "vehicle": "vehicle.daf.xd",
   "vehicleName": "DAF XD",
   "game": "ets2",
   "brand": "daf",
@@ -30,7 +30,7 @@
           -0.64
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.64
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Iveco S-Way · 5.1",
-  "vehicle": "vehicle.iveco.sway@1.5",
+  "vehicle": "vehicle.iveco.sway",
   "vehicleName": "Iveco S-Way",
   "game": "ets2",
   "brand": "iveco",
@@ -30,7 +30,7 @@
           -0.8
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.8
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

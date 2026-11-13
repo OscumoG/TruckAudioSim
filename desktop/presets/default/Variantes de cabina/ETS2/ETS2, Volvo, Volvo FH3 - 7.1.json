@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Volvo FH3 · 7.1",
-  "vehicle": "vehicle.volvo.fh16@1.3",
+  "vehicle": "vehicle.volvo.fh16",
   "vehicleName": "Volvo FH3",
   "game": "ets2",
   "brand": "volvo",
@@ -30,7 +30,7 @@
           -0.23
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.23
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

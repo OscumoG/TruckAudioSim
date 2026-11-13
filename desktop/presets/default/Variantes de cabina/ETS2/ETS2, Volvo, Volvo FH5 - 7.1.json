@@ -1,11 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Volvo FH5 · 7.1",
-  "vehicle": "vehicle.volvo.fh_2021@1.6",
-  "hooks": [
-    "1.6",
-    "1.9"
-  ],
+  "vehicle": "vehicle.volvo.fh_2021",
   "vehicleName": "Volvo FH5",
   "game": "ets2",
   "brand": "volvo",
@@ -35,7 +31,7 @@
           -0.74
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -48,7 +44,7 @@
           -0.74
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

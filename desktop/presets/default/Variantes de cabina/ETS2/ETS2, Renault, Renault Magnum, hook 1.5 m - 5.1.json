@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Renault Magnum, hook 1.5 m · 5.1",
-  "vehicle": "vehicle.renault.magnum@1.5",
+  "name": "ETS2 › Renault Magnum · 5.1",
+  "vehicle": "vehicle.renault.magnum",
   "vehicleName": "Renault Magnum",
   "game": "ets2",
   "brand": "renault",
@@ -30,7 +30,7 @@
           -0.65
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.65
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

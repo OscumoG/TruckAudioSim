@@ -11,8 +11,7 @@ std::vector<float> neutralVoiceGains(const std::vector<Speaker>& speakers,
                                      uint16_t channels,uint32_t mask,float peakCeiling,float sampleRate){
  if(!(peakCeiling>0&&peakCeiling<=1) || !std::isfinite(peakCeiling))throw std::invalid_argument("Invalid peak ceiling");
  struct Route {
-  size_t index;
-  bool phantomCenter;
+  SpeakerRoute weights;
   SpeakerFilter filter;
  };
  std::vector<float> gains;gains.reserve(speakers.size());
@@ -23,11 +22,8 @@ std::vector<float> neutralVoiceGains(const std::vector<Speaker>& speakers,
   const float gain=s.enabled?dbToAmplitude(s.gainDb):0.0f;
   if(!std::isfinite(gain))throw std::invalid_argument("Nonfinite speaker gain");
   gains.push_back(gain);
-  const uint32_t bit=sourceChannelBit(s,channels,mask);
-  const bool phantomCenter=channels==2&&bit==0x4u;
-  size_t idx=0;for(uint32_t b=1;b<bit;b<<=1)if(mask&b)++idx;
-  auto& route=routes.emplace_back(Route{phantomCenter||((mask&bit)&&idx<channels)?idx:size_t(channels),phantomCenter,{}});
-  if(sampleRate>0 && bit && gain>0 && s.cabAudio!=CabAudio::Legacy){
+  auto& route=routes.emplace_back(Route{speakerRoute(s,channels,mask),{}});
+  if(sampleRate>0 && gain>0 && s.cabAudio!=CabAudio::Legacy){
    route.filter.configure(s,sampleRate);
    filtered=true;
   }
@@ -39,9 +35,7 @@ std::vector<float> neutralVoiceGains(const std::vector<Speaker>& speakers,
   for(size_t i=0;i<routes.size();++i){
    const auto& route=routes[i];
    const float gain=gains[i]*route.filter.magnitude(cosine);
-   if(route.phantomCenter){
-    budgets[0]+=gain*0.5f;budgets[1]+=gain*0.5f;
-   }else if(route.index<budgets.size())budgets[route.index]+=gain;
+   for(size_t channel=0;channel<budgets.size();++channel)budgets[channel]+=gain*route.weights[channel];
   }
   return budgets.empty()?0.0f:*std::max_element(budgets.begin(),budgets.end());
  };

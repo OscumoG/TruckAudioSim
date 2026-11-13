@@ -82,9 +82,9 @@ SpatialMixStats mixSpatialObject(const Speaker& speaker,
   std::fill_n(mono, outputFrames, 0.0f);
   return stats;
  }
+ const auto route = speakerRoute(speaker, channels, channelMask);
  for (size_t f = 0; f < validFrames; ++f) {
-  const float dry = sourceForSpeaker(speaker, interleaved.data() + f * channels,
-                                      channels, channelMask);
+  const float dry = sampleForRoute(route, interleaved.data() + f * channels, channels);
   const float raw = (filter?filter->process(dry):dry) * gain;
   // Catch nonfinite input before it can reach the Windows spatial renderer.
   const float safe = std::isfinite(raw) ? raw : 0.0f;

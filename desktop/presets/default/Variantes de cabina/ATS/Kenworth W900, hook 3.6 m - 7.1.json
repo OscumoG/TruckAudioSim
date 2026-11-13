@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › Kenworth W900, hook 3.6 m · 7.1",
-  "vehicle": "vehicle.kenworth.w900@3.6",
+  "name": "ATS › Kenworth W900 · 7.1",
+  "vehicle": "vehicle.kenworth.w900",
   "vehicleName": "Kenworth W900",
   "game": "ats",
   "brand": "kenworth",
@@ -31,7 +31,7 @@
           -0.5
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -44,7 +44,7 @@
           -0.5
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

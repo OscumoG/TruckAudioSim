@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › Volvo VNR Electric, hook 2.3 m · 5.1",
-  "vehicle": "vehicle.volvo.vnr_e@2.3",
+  "name": "ATS › Volvo VNR Electric · 5.1",
+  "vehicle": "vehicle.volvo.vnr_e",
   "vehicleName": "Volvo VNR Electric",
   "game": "ats",
   "brand": "volvo",
@@ -12,7 +12,7 @@
     "bounds": {
       "min": [
         -0.84,
-        -0.92,
+        -0.99,
         -0.95
       ],
       "max": [
@@ -31,7 +31,7 @@
           -0.7
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -44,7 +44,7 @@
           -0.7
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

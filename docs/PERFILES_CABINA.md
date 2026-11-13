@@ -1,10 +1,9 @@
 # Perfiles de cabina
 
 Abre TruckAudioSim y busca el modelo en **Layout → Preset** o en el árbol del
-camión. Cada configuración de cabina incluida en el catálogo de referencia
-tiene tres variantes. Son 27 configuraciones de ETS2 y 35 de ATS, para un
-total de 186 perfiles de 41 modelos. Se distinguen las cabinas y distancias
-de quinta rueda cuando el perfil original las identifica.
+camión. Cada uno de los 41 modelos incluidos tiene tres perfiles de fábrica.
+Son 26 modelos de ETS2 y 15 de ATS, con 123 perfiles en total. Cada modelo
+utiliza una referencia de cabina representativa para todos sus chasis.
 
 | Variante | Posición y reproducción |
 | --- | --- |
@@ -12,19 +11,21 @@ de quinta rueda cuando el perfil original las identifica.
 | 5.1 | Dos frontales siguiendo los puntos del diseño de cabina, central en el tablero, subwoofer en posición baja y un par envolvente. Aprovecha las ubicaciones traseras existentes cuando están disponibles. |
 | 7.1 | El mismo frente y subwoofer, con pares laterales y traseros separados. Aprovecha las ubicaciones existentes en el perfil de referencia y estima los puntos adicionales a partir de las dimensiones de la cabina. |
 
-Todas las bocinas quedan a **0 dB** en el editor. El motor aplica su reserva de
-nivel global y los filtros por tipo. En 5.1 y 7.1, la central Midrange usa la
-banda 500–2500 Hz y el subwoofer usa un paso bajo de 120 Hz. Las frontales
-de rango pequeño usan un paso alto de 120 Hz. Con una fuente estéreo, el
-central recibe la mezcla L/R filtrada y el subwoofer los graves de esa
-misma mezcla. Las pistas 5.1 y 7.1 conservan su canal central y LFE
-discretos. El par envolvente del perfil 5.1 admite las máscaras lateral
-y trasera de Windows.
+Todas las bocinas quedan a **0 dB** en el editor. El motor conserva
+los filtros según el tipo de bocina y calcula el margen de la mezcla.
 
-Steam Streaming Speakers puede seguir entregando una mezcla estéreo. En ese
-caso se oyen los frontales, el centro y el subwoofer de los perfiles
-envolventes. Para oír todos los canales discretos, la fuente y la salida
-de captura deben entregar PCM multicanal.
+En 5.1 y 7.1, el central Midrange reproduce de 500 a 2500 Hz y el
+subwoofer usa un paso bajo a 120 Hz. Los frontales son de rango completo
+para conservar graves incluso cuando el LFE de la fuente está vacío.
+Con música estéreo, el centro y el subwoofer reciben una mezcla L/R
+a nivel reducido. Con PCM multicanal, el perfil 5.1 reparte los
+canales laterales y traseros de una pista 7.1 en su par envolvente.
+El perfil 7.1 conserva sus ocho canales cuando la fuente los entrega.
+
+Realista usa las posiciones de referencia del modelo. El motor mezcla
+el centro y los envolventes hacia las bocinas laterales de la cabina
+cuando la fuente es multicanal. En algunos modelos se ajusta el tipo
+del altavoz frontal para cubrir más frecuencias sin moverlo.
 
 ## Referencias de posición
 

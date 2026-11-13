@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Renault Premium, hook 1.6 m · 5.1",
-  "vehicle": "vehicle.renault.premium@1.6",
+  "name": "ETS2 › Renault Premium · 5.1",
+  "vehicle": "vehicle.renault.premium",
   "vehicleName": "Renault Premium",
   "game": "ets2",
   "brand": "renault",
@@ -30,7 +30,7 @@
           -0.09
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.09
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › DAF XF · Realista",
-  "vehicle": "vehicle.daf.xf_euro6@1.5",
+  "vehicle": "vehicle.daf.xf_euro6",
   "vehicleName": "DAF XF",
   "game": "ets2",
   "brand": "daf",
@@ -12,7 +12,7 @@
     "bounds": {
       "min": [
         -1.13,
-        -0.92,
+        -0.96,
         -0.7
       ],
       "max": [

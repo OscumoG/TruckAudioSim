@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Renault E-Tech T, hook 1.5 m · Realista",
-  "vehicle": "vehicle.renault.etech_t@1.5",
+  "name": "ETS2 › Renault E-Tech T · Realista",
+  "vehicle": "vehicle.renault.etech_t",
   "vehicleName": "Renault E-Tech T",
   "game": "ets2",
   "brand": "renault",
@@ -10,12 +10,12 @@
     "width": 1,
     "bounds": {
       "min": [
-        -0.97,
+        -0.99,
         -0.92,
         -0.81
       ],
       "max": [
-        0.97,
+        0.99,
         0.95,
         0.92
       ]

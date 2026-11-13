@@ -1,11 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ATS › Western Star 57X · Realista",
-  "vehicle": "vehicle.westernstar.57x@1.5",
-  "hooks": [
-    "1.5",
-    "2.7"
-  ],
+  "vehicle": "vehicle.westernstar.57x",
   "vehicleName": "Western Star 57X",
   "game": "ats",
   "brand": "westernstar",

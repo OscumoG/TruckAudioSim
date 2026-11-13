@@ -1,11 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Scania Streamline · Realista",
-  "vehicle": "vehicle.scania.streamline@1.0",
-  "hooks": [
-    "1.0",
-    "1.1"
-  ],
+  "vehicle": "vehicle.scania.streamline",
   "vehicleName": "Scania Streamline",
   "game": "ets2",
   "brand": "scania",

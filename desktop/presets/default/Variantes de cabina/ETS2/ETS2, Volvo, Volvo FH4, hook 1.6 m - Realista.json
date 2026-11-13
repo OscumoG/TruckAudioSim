@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Volvo FH4, hook 1.6 m · Realista",
-  "vehicle": "vehicle.volvo.fh16_2012@1.6",
+  "name": "ETS2 › Volvo FH4 · Realista",
+  "vehicle": "vehicle.volvo.fh16_2012",
   "vehicleName": "Volvo FH4",
   "game": "ets2",
   "brand": "volvo",

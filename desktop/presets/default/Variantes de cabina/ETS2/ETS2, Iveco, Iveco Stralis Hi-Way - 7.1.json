@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Iveco Stralis Hi-Way · 7.1",
-  "vehicle": "vehicle.iveco.hiway@1.6",
+  "name": "ETS2 › Iveco Stralis · 7.1",
+  "vehicle": "vehicle.iveco.hiway",
   "vehicleName": "Iveco Stralis",
   "game": "ets2",
   "brand": "iveco",
@@ -31,7 +31,7 @@
           -0.5
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -44,7 +44,7 @@
           -0.5
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

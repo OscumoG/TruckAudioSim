@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Scania S BEV, hook 1.8 m · Realista",
-  "vehicle": "vehicle.scania.s_2024e@1.8",
+  "name": "ETS2 › Scania S BEV · Realista",
+  "vehicle": "vehicle.scania.s_2024e",
   "vehicleName": "Scania S BEV",
   "game": "ets2",
   "brand": "scania",

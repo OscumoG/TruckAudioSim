@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ATS › Volvo VNL 2014 · Realista",
-  "vehicle": "vehicle.volvo.vnl@2.6",
+  "vehicle": "vehicle.volvo.vnl",
   "vehicleName": "Volvo VNL 2014",
   "game": "ats",
   "brand": "volvo",

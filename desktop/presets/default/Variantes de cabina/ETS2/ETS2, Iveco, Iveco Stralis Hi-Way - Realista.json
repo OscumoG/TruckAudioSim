@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Iveco Stralis Hi-Way · Realista",
-  "vehicle": "vehicle.iveco.hiway@1.6",
+  "name": "ETS2 › Iveco Stralis · Realista",
+  "vehicle": "vehicle.iveco.hiway",
   "vehicleName": "Iveco Stralis",
   "game": "ets2",
   "brand": "iveco",

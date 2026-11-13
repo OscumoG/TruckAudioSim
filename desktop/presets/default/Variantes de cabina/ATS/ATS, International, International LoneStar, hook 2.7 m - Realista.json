@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › International LoneStar, hook 2.7 m · Realista",
-  "vehicle": "vehicle.intnational.lonestar@2.7",
+  "name": "ATS › International LoneStar · Realista",
+  "vehicle": "vehicle.intnational.lonestar",
   "vehicleName": "International LoneStar",
   "game": "ats",
   "brand": "intnational",
@@ -11,12 +11,12 @@
     "width": 1,
     "bounds": {
       "min": [
-        -0.83,
+        -0.88,
         -0.92,
         -0.81
       ],
       "max": [
-        0.83,
+        0.88,
         0.95,
         0.6
       ]

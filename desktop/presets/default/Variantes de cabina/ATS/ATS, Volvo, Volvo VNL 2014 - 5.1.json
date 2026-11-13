@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ATS › Volvo VNL 2014 · 5.1",
-  "vehicle": "vehicle.volvo.vnl@2.6",
+  "vehicle": "vehicle.volvo.vnl",
   "vehicleName": "Volvo VNL 2014",
   "game": "ats",
   "brand": "volvo",
@@ -32,7 +32,7 @@
           -0.75
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -45,7 +45,7 @@
           -0.75
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › International 9900i, hook 2.7 m · 7.1",
-  "vehicle": "vehicle.intnational.9900i@2.7",
+  "name": "ATS › International 9900i · 7.1",
+  "vehicle": "vehicle.intnational.9900i",
   "vehicleName": "International 9900i",
   "game": "ats",
   "brand": "intnational",
@@ -31,7 +31,7 @@
           0.02
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -44,7 +44,7 @@
           0.02
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

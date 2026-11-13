@@ -37,6 +37,21 @@ int main(){
   eq(sourceForSpeaker(at("BL"),back51,6,kFivePointOneBack),0.5f,"back 5.1");
   const float pcm21[]={0.1f,0.2f,0.3f};
   eq(sourceForSpeaker(at("M",0,"sub"),pcm21,3,kTwoPointOne),0.3f,"2.1 LFE");
+  auto cabLeft=at("L",0.5f);
+  cabLeft.cabAudio=CabAudio::Realistic;
+  eq(sourceForSpeaker(cabLeft,surround,8,kSevenPointOne),
+     0.1f+0.70710678f*(0.3f+0.5f+0.7f),"realistic folds center and left surrounds into left cab speakers");
+  auto side=at("SL");
+  side.cabAudio=CabAudio::Surround51;
+  eq(sourceForSpeaker(side,surround,8,kSevenPointOne),0.70710678f*(0.7f+0.5f),"7.1 back channel reaches 5.1 surround");
+  eq(sourceForSpeaker(side,back51,6,kFivePointOneBack),0.5f,"5.1 back mask");
+  side.cabAudio=CabAudio::Surround71;
+  eq(sourceForSpeaker(side,surround,8,kSevenPointOne),0.7f,"7.1 side stays discrete");
+  eq(sourceForSpeaker(side,back51,6,kFivePointOneBack),0.0f,"5.1 back mask does not play through side speakers");
+  auto center=at("FC",0,"mid");
+  center.cabAudio=CabAudio::Surround71;
+  eq(sourceForSpeaker(center,stereo,2,kStereo),0.0625f,"stereo center supports the main fronts at reduced level");
+  eq(sourceForSpeaker(center,surround,8,kSevenPointOne),0.3f,"discrete center keeps its level");
   std::cout<<"PASS: channel masks 2.0/2.1/5.1/7.1, stereo neutrality, discrete LFE, legacy routing\n";
   return 0;
  }catch(const std::exception&e){std::cerr<<"FAIL: "<<e.what()<<"\n";return 1;}

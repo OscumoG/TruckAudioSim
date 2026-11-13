@@ -1,11 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Scania Streamline · 7.1",
-  "vehicle": "vehicle.scania.streamline@1.0",
-  "hooks": [
-    "1.0",
-    "1.1"
-  ],
+  "vehicle": "vehicle.scania.streamline",
   "vehicleName": "Scania Streamline",
   "game": "ets2",
   "brand": "scania",
@@ -34,7 +30,7 @@
           0.03
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -47,7 +43,7 @@
           0.03
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

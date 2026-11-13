@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › DAF NGD, hook 1.7 m · 5.1",
-  "vehicle": "vehicle.daf.2021@1.7",
+  "name": "ETS2 › DAF NGD · 5.1",
+  "vehicle": "vehicle.daf.2021",
   "vehicleName": "DAF NGD",
   "game": "ets2",
   "brand": "daf",
@@ -30,7 +30,7 @@
           -0.92
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.92
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

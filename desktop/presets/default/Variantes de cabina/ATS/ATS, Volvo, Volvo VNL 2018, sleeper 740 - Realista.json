@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ATS › Volvo VNL 2018, sleeper 740 · Realista",
-  "vehicle": "vehicle.volvo.vnl2018@2.8",
+  "name": "ATS › Volvo VNL 2018 · Realista",
+  "vehicle": "vehicle.volvo.vnl2018",
   "vehicleName": "Volvo VNL 2018",
   "game": "ats",
   "brand": "volvo",

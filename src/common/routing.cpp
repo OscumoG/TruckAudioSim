@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "routing.hpp"
+#include <bit>
 #include <cmath>
 #include <stdexcept>
 namespace tas {
@@ -18,7 +19,7 @@ uint32_t directBit(const std::string& channel){
  if(channel=="SR")return SR;
  return 0;
 }
-}
+
 uint32_t sourceChannelBit(const Speaker& s,uint16_t channels,uint32_t mask){
  if(s.type=="sub"||s.channel=="LFE"){
   if(mask&LFE)return LFE;
@@ -53,20 +54,53 @@ uint32_t sourceChannelBit(const Speaker& s,uint16_t channels,uint32_t mask){
  }
  return 0;
 }
+}
+
+SpeakerRoute speakerRoute(const Speaker& s,uint16_t channels,uint32_t mask){
+ SpeakerRoute route{};
+ if(channels>route.size())throw std::runtime_error("Invalid source channel count");
+ const auto add=[&](uint32_t bit,float weight){
+  if(!(mask&bit))return;
+  const auto index=std::popcount(mask&(bit-1));
+  if(index>=channels)throw std::runtime_error("Invalid source channel index");
+  route[index]+=weight;
+ };
+ const auto bit=sourceChannelBit(s,channels,mask);
+ if(channels==2 && bit==FC){
+  const bool auxiliary=s.cabAudio!=CabAudio::Legacy && (s.channel=="FC"||s.type=="sub");
+  const float weight=auxiliary?0.25f:0.5f;
+  add(FL,weight);
+  add(FR,weight);
+  return route;
+ }
+ if(s.cabAudio==CabAudio::Realistic && channels>2 && s.type!="sub"
+    && (s.channel=="L"||s.channel=="R")){
+  const bool left=s.channel=="L";
+  add(left?FL:FR,1);
+  add(FC,0.70710678f);
+  add(left?SL:SR,0.70710678f);
+  add(left?BL:BR,0.70710678f);
+  return route;
+ }
+ if(s.cabAudio==CabAudio::Surround51 && channels==8 && (bit==SL||bit==SR)){
+  add(bit,0.70710678f);
+  add(bit==SL?BL:BR,0.70710678f);
+  return route;
+ }
+ add(bit,1);
+ return route;
+}
+
+float sampleForRoute(const SpeakerRoute& route,const float* frame,uint16_t channels){
+ float sample=0;
+ for(uint16_t i=0;i<channels;++i){
+  if(route[i] && std::isfinite(frame[i]))sample+=route[i]*frame[i];
+ }
+ return sample;
+}
+
 float sourceForSpeaker(const Speaker& s,const float* frame,uint16_t channels,uint32_t mask){
  if(!frame)throw std::runtime_error("Null audio frame");
- const uint32_t bit=sourceChannelBit(s,channels,mask);
- if(bit==0)return 0;
- if(channels==2 && bit==FC){
-  const float left=std::isfinite(frame[0])?frame[0]:0;
-  const float right=std::isfinite(frame[1])?frame[1]:0;
-  return 0.5f*(left+right);
- }
- if(!(mask&bit))return 0;
- // WAVEFORMATEXTENSIBLE channels are ordered by ascending speaker-mask bit.
- unsigned index=0;
- for(uint32_t b=1;b<bit;b<<=1)if(mask&b)++index;
- if(index>=channels)throw std::runtime_error("Invalid source channel index");
- const float sample=frame[index];return std::isfinite(sample)?sample:0.0f;
+ return sampleForRoute(speakerRoute(s,channels,mask),frame,channels);
 }
 }

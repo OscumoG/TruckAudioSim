@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › MAN TGX · 5.1",
-  "vehicle": "vehicle.man.tgx_2020@1.5",
+  "vehicle": "vehicle.man.tgx_2020",
   "vehicleName": "MAN TGX",
   "game": "ets2",
   "brand": "man",
@@ -30,7 +30,7 @@
           -0.61
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.61
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

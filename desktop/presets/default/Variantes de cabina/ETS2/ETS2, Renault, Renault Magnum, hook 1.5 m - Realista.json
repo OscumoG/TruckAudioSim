@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Renault Magnum, hook 1.5 m · Realista",
-  "vehicle": "vehicle.renault.magnum@1.5",
+  "name": "ETS2 › Renault Magnum · Realista",
+  "vehicle": "vehicle.renault.magnum",
   "vehicleName": "Renault Magnum",
   "game": "ets2",
   "brand": "renault",

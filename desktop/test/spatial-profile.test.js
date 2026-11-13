@@ -4,6 +4,25 @@ import test from 'node:test';
 import { parsePresetFile, presetFile } from '../src/shared/collection.js';
 import { mediaTelemetry, parsePlaybackDevices, spatialPose, spatialProfile } from '../src/shared/spatial-profile.js';
 
+test('every factory truck model has one realistic, 5.1 and 7.1 profile at 0 dB', () => {
+  const root = new URL('../presets/default/Variantes%20de%20cabina/', import.meta.url);
+  const models = new Map();
+  for (const game of ['ETS2', 'ATS']) {
+    const folder = new URL(`${game}/`, root);
+    for (const file of fs.readdirSync(folder)) {
+      const raw = JSON.parse(fs.readFileSync(new URL(encodeURIComponent(file), folder)));
+      assert.match(raw.vehicle, /^vehicle\.[^@#]+$/);
+      const key = `${game}/${raw.vehicle}`;
+      const modes = models.get(key) ?? [];
+      modes.push(raw.layout.cabAudio);
+      models.set(key, modes);
+      assert.ok(raw.layout.speakers.every((speaker) => speaker.gainDb === 0));
+    }
+  }
+  assert.equal(models.size, 41);
+  for (const [model, modes] of models) assert.deepEqual(modes.sort(), ['5.1', '7.1', 'realistic'], model);
+});
+
 test('the Scania profile keeps eight discrete channels through import, export and live edits', () => {
   const filename = 'Variantes de cabina/ETS2/ETS2, Scania, Scania S - 7.1.json';
   const raw = JSON.parse(fs.readFileSync(new URL(`../presets/default/${filename}`, import.meta.url)));

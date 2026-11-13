@@ -1,12 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Scania S · 5.1",
-  "vehicle": "vehicle.scania.s_2016@1.4",
-  "hooks": [
-    "1.4",
-    "1.7",
-    "2.0"
-  ],
+  "vehicle": "vehicle.scania.s_2016",
   "vehicleName": "Scania S",
   "game": "ets2",
   "brand": "scania",
@@ -35,7 +30,7 @@
           -0.56
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -48,7 +43,7 @@
           -0.56
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

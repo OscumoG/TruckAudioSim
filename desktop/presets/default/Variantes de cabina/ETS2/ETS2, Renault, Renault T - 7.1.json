@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Renault T · 7.1",
-  "vehicle": "vehicle.renault.t@1.4",
+  "vehicle": "vehicle.renault.t",
   "vehicleName": "Renault T",
   "game": "ets2",
   "brand": "renault",
@@ -30,7 +30,7 @@
           -0.6
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.6
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

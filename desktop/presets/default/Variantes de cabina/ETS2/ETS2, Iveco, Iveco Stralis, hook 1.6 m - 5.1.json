@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Iveco Stralis, hook 1.6 m · 5.1",
-  "vehicle": "vehicle.iveco.stralis@1.6",
+  "name": "ETS2 › Iveco Stralis · 5.1",
+  "vehicle": "vehicle.iveco.stralis",
   "vehicleName": "Iveco Stralis",
   "game": "ets2",
   "brand": "iveco",
@@ -30,7 +30,7 @@
           -0.75
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.75
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Iveco Stralis, hook 1.6 m · Realista",
-  "vehicle": "vehicle.iveco.stralis@1.6",
+  "name": "ETS2 › Iveco Stralis · Realista",
+  "vehicle": "vehicle.iveco.stralis",
   "vehicleName": "Iveco Stralis",
   "game": "ets2",
   "brand": "iveco",

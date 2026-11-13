@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › DAF XF Electric · Realista",
-  "vehicle": "vehicle.daf.xf_electric@1.4",
+  "vehicle": "vehicle.daf.xf_electric",
   "vehicleName": "DAF XF Electric",
   "game": "ets2",
   "brand": "daf",

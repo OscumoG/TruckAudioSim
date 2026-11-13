@@ -1,12 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Mercedes-Benz New Actros, hook 1.5 m · 5.1",
-  "vehicle": "vehicle.mercedes.actros2014@1.5",
-  "hooks": [
-    "1.5",
-    "2.4",
-    "2.7"
-  ],
+  "name": "ETS2 › Mercedes-Benz New Actros · 5.1",
+  "vehicle": "vehicle.mercedes.actros2014",
   "vehicleName": "Mercedes-Benz New Actros",
   "game": "ets2",
   "brand": "mercedes",
@@ -35,7 +30,7 @@
           -0.59
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -48,7 +43,7 @@
           -0.59
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

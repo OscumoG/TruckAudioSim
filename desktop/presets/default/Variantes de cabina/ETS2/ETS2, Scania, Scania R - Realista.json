@@ -1,11 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Scania R · Realista",
-  "vehicle": "vehicle.scania.r_2016@1.4",
-  "hooks": [
-    "1.4",
-    "2.0"
-  ],
+  "vehicle": "vehicle.scania.r_2016",
   "vehicleName": "Scania R",
   "game": "ets2",
   "brand": "scania",

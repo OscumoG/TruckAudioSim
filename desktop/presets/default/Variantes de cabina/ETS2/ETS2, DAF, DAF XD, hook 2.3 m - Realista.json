@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › DAF XD, hook 2.3 m · Realista",
-  "vehicle": "vehicle.daf.xd@2.3",
+  "name": "ETS2 › DAF XD · Realista",
+  "vehicle": "vehicle.daf.xd",
   "vehicleName": "DAF XD",
   "game": "ets2",
   "brand": "daf",

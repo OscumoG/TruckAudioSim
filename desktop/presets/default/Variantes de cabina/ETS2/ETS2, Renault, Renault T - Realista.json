@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Renault T · Realista",
-  "vehicle": "vehicle.renault.t@1.4",
+  "vehicle": "vehicle.renault.t",
   "vehicleName": "Renault T",
   "game": "ets2",
   "brand": "renault",
@@ -10,12 +10,12 @@
     "width": 1,
     "bounds": {
       "min": [
-        -0.97,
+        -0.99,
         -0.92,
         -0.81
       ],
       "max": [
-        0.97,
+        0.99,
         0.95,
         0.84
       ]

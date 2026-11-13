@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
-  "name": "ETS2 › Volvo FH4, hook 1.6 m · 5.1",
-  "vehicle": "vehicle.volvo.fh16_2012@1.6",
+  "name": "ETS2 › Volvo FH4 · 5.1",
+  "vehicle": "vehicle.volvo.fh16_2012",
   "vehicleName": "Volvo FH4",
   "game": "ets2",
   "brand": "volvo",
@@ -30,7 +30,7 @@
           -0.8
         ],
         "channel": "FL",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FR"
       },
@@ -43,7 +43,7 @@
           -0.8
         ],
         "channel": "FR",
-        "type": "small",
+        "type": "full",
         "gainDb": 0,
         "pair": "FL"
       },

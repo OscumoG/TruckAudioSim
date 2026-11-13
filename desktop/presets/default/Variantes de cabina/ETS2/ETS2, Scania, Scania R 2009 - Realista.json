@@ -1,7 +1,7 @@
 {
   "truckerAuxPreset": 1,
   "name": "ETS2 › Scania R 2009 · Realista",
-  "vehicle": "vehicle.scania.r@1.0",
+  "vehicle": "vehicle.scania.r",
   "vehicleName": "Scania R 2009",
   "game": "ets2",
   "brand": "scania",
@@ -57,7 +57,7 @@
         ],
         "channel": "L",
         "gainDb": 0,
-        "type": "mid",
+        "type": "midbass",
         "pair": "s2"
       },
       {
@@ -70,7 +70,7 @@
         ],
         "channel": "R",
         "gainDb": 0,
-        "type": "mid",
+        "type": "midbass",
         "pair": "s1"
       }
     ],

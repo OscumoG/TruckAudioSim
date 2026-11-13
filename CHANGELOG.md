@@ -1,3 +1,8 @@
+# v0.23.5 — perfiles de cabina
+
+- Tres perfiles de fábrica por modelo, con referencias de cabina representativas.
+- Mejora la respuesta de los frontales y el reparto de canales al usar perfiles Realista y 5.1 con fuentes multicanal.
+
 # v0.23.4 — captura con otras frecuencias de muestreo
 
 - La captura en vivo solicita a WASAPI la conversión a 48 kHz cuando la salida de origen tiene otra frecuencia. Se conserva el mapa de canales.
