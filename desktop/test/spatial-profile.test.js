@@ -1,0 +1,60 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import test from 'node:test';
+import { parsePresetFile, presetFile } from '../src/shared/collection.js';
+import { mediaTelemetry, parsePlaybackDevices, spatialPose, spatialProfile } from '../src/shared/spatial-profile.js';
+
+test('the Scania profile keeps eight discrete channels through import, export and live edits', () => {
+  const filename = 'Variantes de cabina/ETS2/ETS2, Scania, Scania S - 7.1.json';
+  const raw = JSON.parse(fs.readFileSync(new URL(`../presets/default/${filename}`, import.meta.url)));
+  const { entry } = parsePresetFile(raw, filename);
+  const first = entry.layout.speakers[0];
+  first.position[0] = -0.5;
+  const expected = ['FL', 'FR', 'FC', 'LFE', 'SL', 'SR', 'BL', 'BR'];
+  const exported = presetFile(entry);
+  assert.deepEqual(exported.layout.speakers.map((speaker) => speaker.channel), expected);
+  const live = spatialProfile(entry.layout, first.id);
+  assert.deepEqual(live.layout.speakers.map((speaker) => speaker.channel), expected);
+  assert.equal(live.layout.speakers[0].position[0], -0.5);
+  assert.equal(live.layout.speakers.filter((speaker) => speaker.enabled).length, 1);
+  assert.equal(spatialProfile(entry.layout, null, [first.id]).layout.speakers[0].enabled, false);
+});
+
+test('the native pose follows SCS axes, volume and muting', () => {
+  const pose = { sdkActive: true, head: { x: 0.2, y: 0.1, z: -0.4, heading: 0.25, pitch: 0.125, roll: -0.125 } };
+  assert.deepEqual(spatialPose(pose, -0.4, true, 0.7), {
+    head: [-0.2, 0.1, -0.4], yawDeg: -90, pitchDeg: 45, rollDeg: -45, electronicsOn: false, volume: 0.7, exteriorGain: 1,
+  });
+  assert.equal(spatialPose(null, -0.4, false, 4).volume, 4);
+  assert.equal(spatialPose(null, -0.4, false, 5).volume, 5);
+  assert.equal(spatialPose(null, -0.4, false, 6).volume, 5);
+});
+
+test('outside distance controls attenuation without changing the electrical state', () => {
+  const pose = { sdkActive: true, head: { x: 30, y: 0, z: 40 } };
+  const state = spatialPose(pose, 0, false, 1, 50);
+  assert.deepEqual(state.head, [24, 0, 32]);
+  assert.equal(state.exteriorGain, 0);
+  assert.equal(state.electronicsOn, true);
+  assert.equal(spatialPose(pose, 0, false, 0.8, 1).volume, 0.8);
+  assert.equal(spatialPose(pose, 0, false, 5, 1).exteriorGain, 0.25);
+});
+
+test('media control receives raw electrics only from a live compatible vehicle', () => {
+  const pose = { sdkActive: true, pluginRevision: 12, electricOn: false, truck: { key: 'Scania', game: 'ets2', plate: 'A', variant: '1.4' } };
+  const state = mediaTelemetry(pose, true, 'spotify');
+  assert.equal(state.electricOn, false);
+  assert.notEqual(state.vehicle, mediaTelemetry({ ...pose, truck: { ...pose.truck, plate: 'B' } }, true, 'spotify').vehicle);
+  assert.equal(mediaTelemetry({ ...pose, electricOn: true }, true, 'vlc').electricOn, true);
+  assert.equal(mediaTelemetry({ ...pose, pluginRevision: 99 }, true, 'spotify').electricOn, null);
+  assert.equal(mediaTelemetry(pose, false, 'spotify').electricOn, null);
+  assert.equal(mediaTelemetry(pose, true, 'off').electricOn, null);
+});
+
+test('playback device names and stable endpoint IDs are parsed from Windows output', () => {
+  const listing = 'Active Windows playback endpoints (index is temporary):\r\n  [0] Altavoces (Realtek)\r\n      ID: {0.0.0.00000000}.{123}\r\n  [1] Steam Streaming Speakers\r\n      ID: {0.0.0.00000000}.{456}\r\n';
+  assert.deepEqual(parsePlaybackDevices(listing), [
+    { label: 'Altavoces (Realtek)', deviceId: '{0.0.0.00000000}.{123}' },
+    { label: 'Steam Streaming Speakers', deviceId: '{0.0.0.00000000}.{456}' },
+  ]);
+});

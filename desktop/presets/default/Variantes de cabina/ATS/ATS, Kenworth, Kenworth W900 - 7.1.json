@@ -1,0 +1,132 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Kenworth W900 · 7.1",
+  "vehicle": "vehicle.kenworth.w900@1.8",
+  "vehicleName": "Kenworth W900",
+  "game": "ats",
+  "brand": "kenworth",
+  "brandName": "Kenworth",
+  "layout": {
+    "label": "7.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.04,
+        -1.15,
+        -0.73
+      ],
+      "max": [
+        1.04,
+        0.95,
+        0.47
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.76,
+          -0.38,
+          -0.1
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.76,
+          -0.38,
+          -0.1
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.69
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -1.01,
+          0.34
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.72,
+          -0.14,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.72,
+          -0.14,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      },
+      {
+        "id": "BL",
+        "name": "Trasero izquierdo",
+        "position": [
+          -0.62,
+          -0.14,
+          0.41
+        ],
+        "channel": "BL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BR"
+      },
+      {
+        "id": "BR",
+        "name": "Trasero derecho",
+        "position": [
+          0.62,
+          -0.14,
+          0.41
+        ],
+        "channel": "BR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BL"
+      }
+    ],
+    "cabAudio": "7.1"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Iveco Stralis Hi-Way · 7.1",
+  "vehicle": "vehicle.iveco.hiway@1.6",
+  "vehicleName": "Iveco Stralis",
+  "game": "ets2",
+  "brand": "iveco",
+  "brandName": "Iveco",
+  "layout": {
+    "label": "7.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.22,
+        -1.03,
+        -1.21
+      ],
+      "max": [
+        1.22,
+        1.02,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.97,
+          0.51,
+          -0.5
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.97,
+          0.51,
+          -0.5
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.28,
+          -1.08
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.91,
+          0.43
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.92,
+          0.75,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.92,
+          0.75,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      },
+      {
+        "id": "BL",
+        "name": "Trasero izquierdo",
+        "position": [
+          -0.79,
+          0.75,
+          0.53
+        ],
+        "channel": "BL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BR"
+      },
+      {
+        "id": "BR",
+        "name": "Trasero derecho",
+        "position": [
+          0.79,
+          0.75,
+          0.53
+        ],
+        "channel": "BR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BL"
+      }
+    ],
+    "cabAudio": "7.1"
+  }
+}

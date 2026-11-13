@@ -1,0 +1,80 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Scania R 2009 · Realista",
+  "vehicle": "vehicle.scania.r@1.0",
+  "vehicleName": "Scania R 2009",
+  "game": "ets2",
+  "brand": "scania",
+  "brandName": "Scania",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.08,
+        -0.92,
+        -0.81
+      ],
+      "max": [
+        1.08,
+        0.95,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s5",
+        "name": "Tweeter L",
+        "position": [
+          -1,
+          -0.13,
+          -0.61
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s6"
+      },
+      {
+        "id": "s6",
+        "name": "Tweeter R",
+        "position": [
+          1,
+          -0.13,
+          -0.61
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s5"
+      },
+      {
+        "id": "s1",
+        "name": "Midrange L",
+        "position": [
+          -1.08,
+          -0.59,
+          0.05
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "mid",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Midrange R",
+        "position": [
+          1.08,
+          -0.59,
+          0.05
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "mid",
+        "pair": "s1"
+      }
+    ],
+    "label": "Realista",
+    "cabAudio": "realistic"
+  }
+}

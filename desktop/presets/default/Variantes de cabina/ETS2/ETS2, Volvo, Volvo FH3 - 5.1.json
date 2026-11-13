@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Volvo FH3 · 5.1",
+  "vehicle": "vehicle.volvo.fh16@1.3",
+  "vehicleName": "Volvo FH3",
+  "game": "ets2",
+  "brand": "volvo",
+  "brandName": "Volvo",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.02,
+        -0.92,
+        -1.07
+      ],
+      "max": [
+        1.02,
+        0.95,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.95,
+          -0.69,
+          -0.23
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.95,
+          -0.69,
+          -0.23
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.22,
+          -0.94
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.81,
+          0.43
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.9,
+          -0.22,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.9,
+          -0.22,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "label": "5.1",
+    "cabAudio": "5.1"
+  }
+}

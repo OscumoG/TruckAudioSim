@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Kenworth T680 2014, hook 1.3 m · 5.1",
+  "vehicle": "vehicle.kenworth.t680@1.3",
+  "vehicleName": "Kenworth T680 2014",
+  "game": "ats",
+  "brand": "kenworth",
+  "brandName": "Kenworth",
+  "layout": {
+    "label": "5.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.83,
+        -1.15,
+        -0.62
+      ],
+      "max": [
+        0.83,
+        0.95,
+        0.06
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.75,
+          -0.75,
+          -0.01
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.75,
+          -0.75,
+          -0.01
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.58
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -1.01,
+          0.04
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.71,
+          -0.22,
+          0.17
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.71,
+          -0.22,
+          0.17
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "cabAudio": "5.1"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Western Star 49X, hook 2.5 m · 5.1",
+  "vehicle": "vehicle.westernstar.49x@2.5",
+  "vehicleName": "Western Star 49X",
+  "game": "ats",
+  "brand": "westernstar",
+  "brandName": "Western Star",
+  "layout": {
+    "label": "5.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.88,
+        -1.15,
+        -0.63
+      ],
+      "max": [
+        0.88,
+        0.95,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.83,
+          -0.36,
+          -0.32
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.83,
+          -0.36,
+          -0.32
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.46
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          -0.29,
+          -0.55,
+          0.26
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.66,
+          -0.15,
+          0.38
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.66,
+          -0.15,
+          0.38
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "cabAudio": "5.1"
+  }
+}

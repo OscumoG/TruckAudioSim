@@ -1,0 +1,35 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 Live | estereo fiel en dos objetos espaciales",
+  "vehicle": "ets2-all",
+  "game": "ets2",
+  "layout": {
+    "label": "ESTEREO 2.0 -> dos objetos reales; NO 7.1 discreto",
+    "speakers": [
+      {
+        "id": "ets2_FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.8,
+          0.0,
+          -1.2
+        ],
+        "channel": "FL",
+        "gainDb": -3.0,
+        "type": "full"
+      },
+      {
+        "id": "ets2_FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.8,
+          0.0,
+          -1.2
+        ],
+        "channel": "FR",
+        "gainDb": -3.0,
+        "type": "full"
+      }
+    ]
+  }
+}

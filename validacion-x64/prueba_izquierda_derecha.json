@@ -1,0 +1,32 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "Prueba izquierda y derecha",
+  "layout": {
+    "speakers": [
+      {
+        "id": "left",
+        "name": "Izquierda",
+        "channel": "FL",
+        "type": "speaker",
+        "position": [
+          -1,
+          0,
+          -1
+        ],
+        "gainDb": 0
+      },
+      {
+        "id": "right",
+        "name": "Derecha",
+        "channel": "FR",
+        "type": "speaker",
+        "position": [
+          1,
+          0,
+          -1
+        ],
+        "gainDb": 0
+      }
+    ]
+  }
+}

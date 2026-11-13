@@ -1,0 +1,111 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Mercedes-Benz New Actros, hook 1.5 m · 5.1",
+  "vehicle": "vehicle.mercedes.actros2014@1.5",
+  "hooks": [
+    "1.5",
+    "2.4",
+    "2.7"
+  ],
+  "vehicleName": "Mercedes-Benz New Actros",
+  "game": "ets2",
+  "brand": "mercedes",
+  "brandName": "Mercedes-Benz",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.12,
+        -0.92,
+        -0.81
+      ],
+      "max": [
+        1.12,
+        0.95,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -1.06,
+          -0.63,
+          -0.59
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          1.06,
+          -0.63,
+          -0.59
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.79
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.81,
+          0.43
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -1.01,
+          -0.22,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          1.01,
+          -0.22,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "label": "5.1",
+    "cabAudio": "5.1"
+  }
+}

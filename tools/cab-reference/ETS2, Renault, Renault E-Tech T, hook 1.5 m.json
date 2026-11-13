@@ -1,0 +1,104 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Renault › Renault E-Tech T",
+  "vehicle": "vehicle.renault.etech_t@1.5",
+  "vehicleName": "Renault E-Tech T",
+  "game": "ets2",
+  "brand": "renault",
+  "brandName": "Renault",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.97,
+        -0.92,
+        -0.81
+      ],
+      "max": [
+        0.97,
+        0.95,
+        0.92
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s1",
+        "name": "Midbass L",
+        "position": [
+          -0.92,
+          -0.83,
+          -0.6
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Midbass R",
+        "position": [
+          0.92,
+          -0.83,
+          -0.6
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s1"
+      },
+      {
+        "id": "s3",
+        "name": "Tweeter L",
+        "position": [
+          -0.99,
+          0.17,
+          -0.7
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s4"
+      },
+      {
+        "id": "s4",
+        "name": "Tweeter R",
+        "position": [
+          0.99,
+          0.17,
+          -0.7
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s3"
+      },
+      {
+        "id": "s5",
+        "name": "Full range L",
+        "position": [
+          -0.44,
+          0.09,
+          0.77
+        ],
+        "channel": "L",
+        "gainDb": -3,
+        "type": "full",
+        "pair": "s6"
+      },
+      {
+        "id": "s6",
+        "name": "Full range R",
+        "position": [
+          0.44,
+          0.09,
+          0.77
+        ],
+        "channel": "R",
+        "gainDb": -3,
+        "type": "full",
+        "pair": "s5"
+      }
+    ]
+  }
+}

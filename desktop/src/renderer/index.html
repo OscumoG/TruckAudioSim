@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>TruckAudioSim — Trucker AUX Editor</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../node_modules/three/build/three.module.js",
+        "three/addons/": "../../node_modules/three/examples/jsm/"
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside id="tree"></aside>
+  <aside id="panel"></aside>
+  <section id="editor">
+    <header>
+      <h2>Editor View</h2>
+      <button id="close-editor" title="Close the Editor View; View › Editor View, or Open Editor View in Layout and Speakers, opens it again">×</button>
+    </header>
+    <main id="views"></main>
+    <div id="side">
+      <section id="overview"><p class="placeholder">3D view</p></section>
+      <aside id="bounds"></aside>
+    </div>
+  </section>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

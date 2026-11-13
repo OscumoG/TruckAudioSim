@@ -1,0 +1,35 @@
+TruckAudioSim v0.23.3 — beta Windows x64
+Editor original de Trucker AUX 0.4.0 por SergeyDoes (MIT).
+
+Bandeja de Windows
+- La X oculta la ventana y el audio sigue funcionando.
+- Haz clic en el icono de TruckAudioSim junto al reloj o en la flecha de
+  iconos ocultos para volver a la ventana. Clic derecho > Salir cierra la app.
+- Para actualizar o desinstalar, elige Salir antes de abrir el instalador.
+- El programa se desinstala desde Configuración > Aplicaciones instaladas.
+  Los ajustes y perfiles personales se guardan en %APPDATA%\TruckAudioSim.
+  Para traer los de la edición ZIP usa File > Import > Data from older version.
+
+Plugins de ETS2 y ATS
+1. Cierra el juego y abre TruckAudioSim.
+2. En Camera, pulsa Install ETS2 / ATS plugins… y selecciona la carpeta
+   del juego. Si Windows no permite copiar a Steam, instala los dos DLL de
+   plugin\ manualmente en bin\win_x64\plugins\ con permisos de administrador.
+3. Abre el juego, acepta el aviso del SDK si aparece y deja Camera > Mode
+   en Raw Camera. El DLL de cámara incluido reintenta las lecturas fallidas.
+   Adjusted Telemetry permite seguir el giro de la cabeza si falla el plugin.
+4. Para retirar los DLL, cierra el juego, elimina solo los dos que copiaste
+   y restaura los respaldos anteriores si los hay.
+
+Audio y perfiles
+- Activa Dolby Atmos, Windows Sonic o DTS en la salida física de Windows.
+  En Audio elige esa salida y captura desde tu dispositivo de audio virtual.
+  Dirige Spotify o VLC a esa entrada desde el mezclador de Windows y pulsa Start.
+- Pause player on electrics off controla la pausa de Spotify o VLC.
+  La cámara exterior atenúa la música hasta silenciarla a los 40 m.
+- Audio > Volume llega al 500%. Los perfiles de cabina Realista, 5.1 y 7.1
+  se eligen en Layout > Preset. Consulta presets\PERFILES_CABINA.md.
+- El 100% ahora tiene una referencia más alta. Si guardaste un valor alto
+  para compensar el nivel de la versión anterior, vuelve a 100% al probar
+  esta versión. Al subir el control, el material con picos fuertes puede
+  saturar. El volumen final depende de la fuente y de la salida espacial.

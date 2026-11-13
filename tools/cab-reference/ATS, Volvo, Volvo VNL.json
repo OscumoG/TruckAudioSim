@@ -1,0 +1,105 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Volvo › Volvo VNL",
+  "vehicle": "vehicle.volvo.vnl2025@1.7",
+  "vehicleName": "Volvo VNL",
+  "game": "ats",
+  "brand": "volvo",
+  "brandName": "Volvo",
+  "layout": {
+    "label": "sleeper",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.83,
+        -0.92,
+        -1.02
+      ],
+      "max": [
+        0.83,
+        0.95,
+        0.98
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s1",
+        "name": "Midbass L",
+        "position": [
+          -0.72,
+          -0.28,
+          -0.26
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Midbass R",
+        "position": [
+          0.72,
+          -0.28,
+          -0.26
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s1"
+      },
+      {
+        "id": "s3",
+        "name": "Tweeter L",
+        "position": [
+          -0.71,
+          -0.2,
+          -0.97
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s4"
+      },
+      {
+        "id": "s4",
+        "name": "Tweeter R",
+        "position": [
+          0.71,
+          -0.2,
+          -0.97
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s3"
+      },
+      {
+        "id": "s5",
+        "name": "Full range L",
+        "position": [
+          -0.41,
+          0,
+          0.95
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "full",
+        "pair": "s6"
+      },
+      {
+        "id": "s6",
+        "name": "Full range R",
+        "position": [
+          0.41,
+          0,
+          0.95
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "full",
+        "pair": "s5"
+      }
+    ]
+  }
+}

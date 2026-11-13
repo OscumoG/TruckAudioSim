@@ -1,0 +1,138 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "Scania S | 7.1 espacial - fidelidad natural",
+  "vehicle": "vehicle.scania.s_2016@1.4",
+  "hooks": [
+    "1.4",
+    "1.7",
+    "2.0"
+  ],
+  "vehicleName": "Scania S",
+  "game": "ets2",
+  "brand": "scania",
+  "brandName": "Scania",
+  "layout": {
+    "width": 1.0,
+    "bounds": {
+      "min": [
+        -1.13,
+        -0.92,
+        -0.99
+      ],
+      "max": [
+        1.13,
+        0.73,
+        0.47
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s1",
+        "name": "Frontal izquierdo - principal",
+        "position": [
+          -0.99,
+          -0.66,
+          -0.56
+        ],
+        "channel": "L",
+        "gainDb": -3.0,
+        "type": "full",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Frontal derecho - principal",
+        "position": [
+          0.99,
+          -0.66,
+          -0.56
+        ],
+        "channel": "R",
+        "gainDb": -3.0,
+        "type": "full",
+        "pair": "s1"
+      },
+      {
+        "id": "s3",
+        "name": "Centro del tablero - sutil",
+        "position": [
+          0.0,
+          -0.3,
+          -0.87
+        ],
+        "channel": "M",
+        "gainDb": -18.0,
+        "type": "full",
+        "pair": null
+      },
+      {
+        "id": "s4",
+        "name": "Surround lateral izquierdo - ambiente",
+        "position": [
+          -1.05,
+          -0.2,
+          -0.02
+        ],
+        "channel": "L",
+        "gainDb": -24.0,
+        "type": "full",
+        "pair": "s5"
+      },
+      {
+        "id": "s5",
+        "name": "Surround lateral derecho - ambiente",
+        "position": [
+          1.05,
+          -0.2,
+          -0.02
+        ],
+        "channel": "R",
+        "gainDb": -24.0,
+        "type": "full",
+        "pair": "s4"
+      },
+      {
+        "id": "s6",
+        "name": "Surround trasero izquierdo - ambiente",
+        "position": [
+          -0.83,
+          -0.34,
+          0.41
+        ],
+        "channel": "L",
+        "gainDb": -30.0,
+        "type": "full",
+        "pair": "s7"
+      },
+      {
+        "id": "s7",
+        "name": "Surround trasero derecho - ambiente",
+        "position": [
+          0.83,
+          -0.34,
+          0.41
+        ],
+        "channel": "R",
+        "gainDb": -30.0,
+        "type": "full",
+        "pair": "s6"
+      },
+      {
+        "id": "s8",
+        "name": "Subwoofer virtual - casi silenciado",
+        "position": [
+          0.0,
+          -0.83,
+          0.33
+        ],
+        "channel": "M",
+        "gainDb": -55.0,
+        "type": "sub",
+        "pair": null
+      }
+    ],
+    "label": "7.1 espacial / sonido natural",
+    "labelColor": "green"
+  },
+  "author": "Preset personalizado independiente"
+}

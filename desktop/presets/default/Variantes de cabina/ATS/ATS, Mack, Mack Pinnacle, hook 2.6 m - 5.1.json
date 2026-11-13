@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Mack Pinnacle, hook 2.6 m · 5.1",
+  "vehicle": "vehicle.mack.pinnacle@2.6",
+  "vehicleName": "Mack Pinnacle",
+  "game": "ats",
+  "brand": "mack",
+  "brandName": "Mack",
+  "layout": {
+    "label": "5.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.86,
+        -1.15,
+        -0.91
+      ],
+      "max": [
+        0.86,
+        0.47,
+        1.68
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.8,
+          -0.59,
+          -0.61
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.8,
+          -0.59,
+          -0.61
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.59,
+          -0.61
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -1.01,
+          1.21
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.37,
+          0.18,
+          1.6
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.37,
+          0.18,
+          1.6
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "cabAudio": "5.1"
+  }
+}

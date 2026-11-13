@@ -1,0 +1,106 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Kenworth W900, hook 3.6 m copy · 5.1",
+  "vehicle": "vehicle.kenworth.w900",
+  "vehicleName": "Kenworth W900",
+  "game": "ats",
+  "brand": "kenworth",
+  "brandName": "Kenworth",
+  "layout": {
+    "label": "5.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.87,
+        -1.15,
+        -0.73
+      ],
+      "max": [
+        0.87,
+        0.95,
+        1.18
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.79,
+          -0.33,
+          0
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.79,
+          -0.33,
+          0
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.61
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.69,
+          0.61
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.75,
+          -0.09,
+          0.18
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.75,
+          -0.09,
+          0.18
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      }
+    ],
+    "cabAudio": "5.1"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Western Star 49X · 7.1",
+  "vehicle": "vehicle.westernstar.49x",
+  "vehicleName": "Western Star 49X",
+  "game": "ats",
+  "brand": "westernstar",
+  "brandName": "Western Star",
+  "layout": {
+    "label": "7.1",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.88,
+        -1.15,
+        -0.63
+      ],
+      "max": [
+        0.88,
+        0.95,
+        1.49
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.84,
+          -0.36,
+          -0.4
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.84,
+          -0.36,
+          -0.4
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.54
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -1.01,
+          1.07
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.8,
+          -0.12,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.8,
+          -0.12,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      },
+      {
+        "id": "BL",
+        "name": "Trasero izquierdo",
+        "position": [
+          -0.55,
+          0.51,
+          1.23
+        ],
+        "channel": "BL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BR"
+      },
+      {
+        "id": "BR",
+        "name": "Trasero derecho",
+        "position": [
+          0.55,
+          0.51,
+          1.23
+        ],
+        "channel": "BR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BL"
+      }
+    ],
+    "cabAudio": "7.1"
+  }
+}

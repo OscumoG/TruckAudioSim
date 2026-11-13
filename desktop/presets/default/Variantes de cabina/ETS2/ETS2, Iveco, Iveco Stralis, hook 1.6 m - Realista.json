@@ -1,0 +1,80 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › Iveco Stralis, hook 1.6 m · Realista",
+  "vehicle": "vehicle.iveco.stralis@1.6",
+  "vehicleName": "Iveco Stralis",
+  "game": "ets2",
+  "brand": "iveco",
+  "brandName": "Iveco",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.22,
+        -1.03,
+        -1.21
+      ],
+      "max": [
+        1.22,
+        0.66,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s1",
+        "name": "Midbass L",
+        "position": [
+          -1.14,
+          -0.82,
+          -0.75
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Midbass R",
+        "position": [
+          1.14,
+          -0.82,
+          -0.75
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s1"
+      },
+      {
+        "id": "s3",
+        "name": "Tweeter L",
+        "position": [
+          -1.15,
+          -0.28,
+          -1.08
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s4"
+      },
+      {
+        "id": "s4",
+        "name": "Tweeter R",
+        "position": [
+          1.15,
+          -0.28,
+          -1.08
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s3"
+      }
+    ],
+    "label": "Realista",
+    "cabAudio": "realistic"
+  }
+}

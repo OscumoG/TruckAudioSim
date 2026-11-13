@@ -1,0 +1,78 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › DAF › DAF XF Electric",
+  "vehicle": "vehicle.daf.xf_electric@1.4",
+  "vehicleName": "DAF XF Electric",
+  "game": "ets2",
+  "brand": "daf",
+  "brandName": "DAF",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.95,
+        -0.92,
+        -0.81
+      ],
+      "max": [
+        0.95,
+        0.95,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s1",
+        "name": "Midrange L",
+        "position": [
+          -0.79,
+          -0.44,
+          -0.13
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "mid",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Midrange R",
+        "position": [
+          0.79,
+          -0.44,
+          -0.13
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "mid",
+        "pair": "s1"
+      },
+      {
+        "id": "s3",
+        "name": "Small full range L",
+        "position": [
+          -0.9,
+          0.26,
+          -0.62
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "small",
+        "pair": "s4"
+      },
+      {
+        "id": "s4",
+        "name": "Small full range R",
+        "position": [
+          0.9,
+          0.26,
+          -0.62
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "small",
+        "pair": "s3"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+/build*/
+/bin-x64/
+/desktop/data/
+/desktop/node_modules/
+/desktop/out/
+/desktop/presets/*.json
+/native/camera-plugin/out/
+__pycache__/
+*.pyc
+*.log
+/validacion-x64/*.wav

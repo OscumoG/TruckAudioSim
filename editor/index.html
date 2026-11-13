@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TruckAudioSim — Editor de altavoces</title>
+<style>
+:root{font-family:Inter,Segoe UI,system-ui,sans-serif;color-scheme:dark;background:#0b1020;color:#eaf0fb}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:radial-gradient(circle at 80% -10%,#222b51,#0b1020 46%);min-height:100vh}
+.container{max-width:1200px;margin:auto}h1{font-size:24px;margin:0}small,.muted{color:#99aac5}h2{font-size:15px;margin:0 0 12px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}.pill{font-size:12px;border:1px solid #415576;border-radius:30px;padding:5px 10px;color:#a7c2ec}
+button,.file-label{border:1px solid #526686;background:#162a47;color:#eff6ff;border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer;font-size:13px}
+button:hover,.file-label:hover{background:#25406a}.primary{background:#3478dc;border-color:#5396ff}input[type=file]{display:none}
+.grid{display:grid;grid-template-columns:minmax(340px,1.3fr) minmax(320px,.9fr);gap:16px}
+.panel{background:rgba(20,29,49,.88);border:1px solid #31415e;border-radius:16px;padding:19px;box-shadow:0 15px 40px rgba(0,0,0,.15)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.titlebar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+canvas{width:100%;display:block;border:1px solid #354868;border-radius:14px;background:linear-gradient(180deg,#17243a,#111a2b);cursor:crosshair;touch-action:none}
+button.active{background:#206caf;border-color:#61b3ff}
+label.field{display:block;font-size:12px;color:#acc1df;margin-top:12px}input[type=number],input[type=text],select{display:block;width:100%;background:#0d182b;color:#eaf2ff;border:1px solid #3a4c6b;padding:9px;border-radius:8px;margin-top:6px}
+input[type=range]{width:100%;accent-color:#69a6ff}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.three{grid-template-columns:repeat(3,1fr)}
+#speaker-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.chip{padding:8px 11px;border:1px solid #3b4d6c;border-radius:12px;background:#122037;font-size:12px}
+.status{color:#b2d7ff;font-size:12px;min-height:18px}.badge{font-size:12px;border-radius:8px;padding:5px 8px;background:#153b39;color:#95e9ca}
+.hint{font-size:12px;line-height:1.6;color:#a6b8d4}footer{margin-top:20px;font-size:12px;color:#8398b3}
+@media(max-width:850px){.grid{grid-template-columns:1fr}body{padding:12px}}
+</style>
+</head>
+<body><div class="container">
+<header><div><h1>🚛 TruckAudioSim</h1><small>Editor de altavoces 3D · Prototipo 0.3 · Formato Trucker AUX</small></div><span class="pill">MIT · Local · Sin instalaciones</span></header>
+<section class="panel" style="margin-bottom:16px"><div class="titlebar"><div><b id="profile-title">Scania S — 7.1 Fidelidad</b><div id="vehicle-name" class="muted" style="font-size:12px;margin-top:5px"></div></div><div class="controls"><label for="import" class="file-label">Importar JSON</label><input id="import" type="file" accept=".json,application/json"/><button class="primary" id="export">Exportar JSON</button></div></div><div class="status" id="status">Abre un preset de Trucker AUX, ajusta posiciones y exporta el mismo formato.</div></section>
+<div class="grid">
+<section class="panel"><div class="titlebar"><h2>Cabina · Vista superior</h2><span class="badge">Objetos espaciales</span></div><canvas id="stage" width="720" height="600" aria-label="Vista superior de cabina con altavoces arrastrables"></canvas><div class="hint" style="margin-top:10px">Haz clic en un altavoz para seleccionarlo. Arrastra para moverlo en el plano X/Z. El punto verde representa al conductor. El giro de cámara simula la orientación del oyente, no mueve los altavoces.</div><div style="margin-top:16px;display:flex;justify-content:space-between"><b>Giro de cámara</b><span id="angle-value">0°</span></div><input id="angle" type="range" min="-90" max="90" step="5" value="0"/><div id="speaker-list"></div></section>
+<section class="panel"><h2>Altavoz seleccionado</h2><label class="field">Nombre<input id="name" type="text" maxlength="80"/></label><div class="row"><label class="field">Canal de origen<select id="channel"><option>L</option><option>R</option><option>M</option><option>FL</option><option>FR</option><option>FC</option><option>LFE</option><option>SL</option><option>SR</option><option>BL</option><option>BR</option></select></label><label class="field">Tipo<select id="type"><option value="full">Full Range</option><option value="small">Small</option><option value="midbass">Midbass</option><option value="tweeter">Tweeter</option><option value="sub">Subwoofer</option></select></label></div>
+<label class="field">Ganancia <b id="gain-label" style="float:right;color:#fff">0.0 dB</b><input id="gain" type="range" min="-60" max="6" step="0.5"/></label>
+<div class="row three"><label class="field">X (m)<input id="x" type="number" step="0.01" min="-5" max="5"/></label><label class="field">Y (m)<input id="y" type="number" step="0.01" min="-5" max="5"/></label><label class="field">Z (m)<input id="z" type="number" step="0.01" min="-5" max="5"/></label></div>
+<div style="margin-top:17px" class="controls"><button id="zero-eq">Neutralizar ganancias</button><button id="restore">Restaurar perfil</button></div>
+<hr style="border:0;border-top:1px solid #34465d;margin:20px 0"/>
+<h2>Fidelidad de audio</h2><p class="hint">Este editor solo cambia el JSON. En el prototipo nativo de Windows la fuente estéreo se distribuye a objetos 3D sin compresor, reverberación ni ecualizador. Los altavoces de tipo «sub» se silencian para música estéreo, porque no hay un canal LFE discreto.</p>
+<p class="hint">Los tipos «Midbass», «Tweeter» y «Small» se conservan en el JSON por compatibilidad; el motor inicial no aplica sus filtros. La interfaz no reproduce audio por sí misma.</p>
+<div class="status" id="validation"></div></section>
+</div><footer>TruckAudioSim v0.3.0 · Independiente de SCS, Dolby, DTS y Trucker AUX · Los perfiles originales conservan sus créditos y campos adicionales.</footer>
+</div><script src="default-preset.js"></script><script src="editor.js"></script></body></html>

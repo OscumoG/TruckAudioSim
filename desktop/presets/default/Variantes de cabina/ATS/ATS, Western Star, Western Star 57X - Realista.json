@@ -1,0 +1,124 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ATS › Western Star 57X · Realista",
+  "vehicle": "vehicle.westernstar.57x@1.5",
+  "hooks": [
+    "1.5",
+    "2.7"
+  ],
+  "vehicleName": "Western Star 57X",
+  "game": "ats",
+  "brand": "westernstar",
+  "brandName": "Western Star",
+  "layout": {
+    "label": "Realista",
+    "labelColor": "orange",
+    "width": 1,
+    "bounds": {
+      "min": [
+        -0.88,
+        -1.15,
+        -0.7
+      ],
+      "max": [
+        0.88,
+        1.39,
+        1.64
+      ]
+    },
+    "speakers": [
+      {
+        "id": "s1",
+        "name": "Tweeter L",
+        "position": [
+          -0.72,
+          -0.1,
+          -0.54
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s2"
+      },
+      {
+        "id": "s2",
+        "name": "Tweeter R",
+        "position": [
+          0.72,
+          -0.1,
+          -0.54
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "tweeter",
+        "pair": "s1"
+      },
+      {
+        "id": "s5",
+        "name": "Midbass L",
+        "position": [
+          -0.85,
+          -0.5,
+          -0.62
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s6"
+      },
+      {
+        "id": "s6",
+        "name": "Midbass R",
+        "position": [
+          0.85,
+          -0.5,
+          -0.62
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "midbass",
+        "pair": "s5"
+      },
+      {
+        "id": "s3",
+        "name": "Full range L",
+        "position": [
+          -0.67,
+          1.33,
+          1.6
+        ],
+        "channel": "L",
+        "gainDb": 0,
+        "type": "full",
+        "pair": "s4"
+      },
+      {
+        "id": "s4",
+        "name": "Full range R",
+        "position": [
+          0.67,
+          1.33,
+          1.6
+        ],
+        "channel": "R",
+        "gainDb": 0,
+        "type": "full",
+        "pair": "s3"
+      },
+      {
+        "id": "s7",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.55,
+          1.38
+        ],
+        "channel": "M",
+        "gainDb": 0,
+        "type": "sub",
+        "pair": null
+      }
+    ],
+    "cabAudio": "realistic"
+  }
+}

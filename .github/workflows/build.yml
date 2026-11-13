@@ -1,0 +1,51 @@
+name: Build and test
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Configure
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DTAS_REQUIRE_PYTHON_TESTS=ON
+      - name: Build
+        run: cmake --build build --config Release
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure --no-tests=error --output-junit build/windows-x64-ctest.xml
+      - name: Save native test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TruckAudioSim-win-x64-test-log
+          path: |
+            build/windows-x64-ctest.xml
+            build/Testing/Temporary/LastTest.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TruckAudioSim-win-x64-prototype
+          path: |
+            build/Release/tas_spatial.exe
+            build/Release/tas_stream_sender.exe
+            build/Release/tas_capture_process.exe
+            build/Release/tas_endpoint_capture.exe
+            build/Release/tas_endpoint_probe.exe
+            build/Release/tas_endpoint_verify.exe
+            build/Release/tas_media_control.exe
+            build/Release/tas_shm_sender.exe
+            build/Release/tas_shm_bridge.exe
+            build/Release/tas_shm_capture.exe
+            build/Release/tas_mock_wavert.exe
+            build/Release/tas_dma_tap_demo.exe
+            build/Release/tas_driver_client.exe
+  linux-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build
+      - run: cmake --build build
+      - run: ctest --test-dir build --output-on-failure

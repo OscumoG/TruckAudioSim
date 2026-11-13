@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AFB58D4E-952F-477D-9DF6-96E7D5ED22EB}</ProjectGuid>
+    <RootNamespace>TruckAudioSimVirtualAudio</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetVersion>Windows10</TargetVersion>
+    <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <DriverType>WDM</DriverType>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <ConfigurationType>Driver</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)..\..\build-wdk\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)obj\</IntDir>
+    <TargetName>TruckAudioSimVirtualAudio</TargetName>
+    <SignMode Condition="'$(SignMode)'==''">Off</SignMode>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)EndpointsCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_USE_WAVERT_;_NEW_DELETE_OPERATORS_;PC_IMPLEMENTATION;UNICODE;_UNICODE;NTSTRSAFE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Zc:alignedNew- %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>Level4</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(DDK_LIB_PATH)portcls.lib;$(DDK_LIB_PATH)stdunk.lib;$(DDK_LIB_PATH)ksguid.lib;$(DDK_LIB_PATH)libcntpr.lib;$(DDK_LIB_PATH)ntstrsafe.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="adapter.cpp" />
+    <ClCompile Include="basetopo.cpp" />
+    <ClCompile Include="common.cpp" />
+    <ClCompile Include="hw.cpp" />
+    <ClCompile Include="kshelper.cpp" />
+    <ClCompile Include="savedata.cpp" />
+    <ClCompile Include="ToneGenerator.cpp" />
+    <ClCompile Include="EndpointsCommon\AudioModuleHelper.cpp" />
+    <ClCompile Include="EndpointsCommon\MiniportAudioEngineNode.cpp" />
+    <ClCompile Include="EndpointsCommon\MiniportStreamAudioEngineNode.cpp" />
+    <ClCompile Include="EndpointsCommon\mintopo.cpp" />
+    <ClCompile Include="EndpointsCommon\minwavert.cpp" />
+    <ClCompile Include="EndpointsCommon\minwavertstream.cpp" />
+    <ClCompile Include="EndpointsCommon\NewDelete.cpp" />
+    <ClCompile Include="EndpointsCommon\speakertopo.cpp" />
+    <Inf Include="TruckAudioSimVirtualAudio.inx" />
+    <FilesToPackage Include="$(TargetPath)" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

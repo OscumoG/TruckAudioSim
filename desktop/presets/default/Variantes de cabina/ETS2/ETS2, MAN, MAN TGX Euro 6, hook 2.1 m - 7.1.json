@@ -1,0 +1,132 @@
+{
+  "truckerAuxPreset": 1,
+  "name": "ETS2 › MAN TGX Euro 6, hook 2.1 m · 7.1",
+  "vehicle": "vehicle.man.tgx_euro6@2.1",
+  "vehicleName": "MAN TGX Euro 6",
+  "game": "ets2",
+  "brand": "man",
+  "brandName": "MAN",
+  "layout": {
+    "width": 1,
+    "bounds": {
+      "min": [
+        -1.04,
+        -0.92,
+        -0.9
+      ],
+      "max": [
+        1.04,
+        0.95,
+        0.6
+      ]
+    },
+    "speakers": [
+      {
+        "id": "FL",
+        "name": "Frontal izquierdo",
+        "position": [
+          -0.92,
+          -0.68,
+          -0.61
+        ],
+        "channel": "FL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FR"
+      },
+      {
+        "id": "FR",
+        "name": "Frontal derecho",
+        "position": [
+          0.92,
+          -0.68,
+          -0.61
+        ],
+        "channel": "FR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "FL"
+      },
+      {
+        "id": "FC",
+        "name": "Central del tablero",
+        "position": [
+          0,
+          -0.12,
+          -0.83
+        ],
+        "channel": "FC",
+        "type": "mid",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "LFE",
+        "name": "Subwoofer",
+        "position": [
+          0,
+          -0.81,
+          0.43
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "SL",
+        "name": "Envolvente izquierdo",
+        "position": [
+          -0.87,
+          -0.22,
+          0.12
+        ],
+        "channel": "SL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SR"
+      },
+      {
+        "id": "SR",
+        "name": "Envolvente derecho",
+        "position": [
+          0.87,
+          -0.22,
+          0.12
+        ],
+        "channel": "SR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "SL"
+      },
+      {
+        "id": "BL",
+        "name": "Trasero izquierdo",
+        "position": [
+          -0.75,
+          -0.22,
+          0.53
+        ],
+        "channel": "BL",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BR"
+      },
+      {
+        "id": "BR",
+        "name": "Trasero derecho",
+        "position": [
+          0.75,
+          -0.22,
+          0.53
+        ],
+        "channel": "BR",
+        "type": "full",
+        "gainDb": 0,
+        "pair": "BL"
+      }
+    ],
+    "label": "7.1",
+    "cabAudio": "7.1"
+  }
+}
