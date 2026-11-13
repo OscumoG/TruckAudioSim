@@ -58,8 +58,11 @@ int main() {
   for(size_t f=frames/2;f<frames;++f)peak=std::max(peak,std::fabs(output[f]));
   return peak;
  };
- assert(amplitude(center,1000)>0.4f && amplitude(center,60)<0.02f && amplitude(center,8000)<0.02f);
- assert(amplitude(sub,60)>0.4f && amplitude(sub,1000)<0.02f);
+ assert(amplitude(center,1000)>0.20f && amplitude(center,1000)<0.26f
+        && amplitude(center,60)<0.02f && amplitude(center,8000)<0.02f);
+ assert(amplitude(sub,60)>0.20f && amplitude(sub,60)<0.26f && amplitude(sub,1000)<0.02f);
+ Speaker front{"FL","Front left","FL","full",{},0,true,CabAudio::Surround51};
+ assert(amplitude(front,60)>0.49f && amplitude(front,8000)>0.43f);
  Speaker rear{"SL","Side left","SL","full",{},0,true,CabAudio::Surround51};
  assert(amplitude(rear,1000)==0);
  // Reject invalid dimensions before dereferencing the PCM buffer.
