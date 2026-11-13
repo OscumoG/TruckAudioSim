@@ -11,11 +11,11 @@ Escucha Spotify, VLC u otra fuente de audio como si las bocinas estuvieran en la
 ## Configurar el audio
 
 1. Activa **Dolby Atmos para auriculares**, **Windows Sonic** o **DTS Headphone:X** en la salida física de Windows. La aplicación usa el proveedor espacial que tengas activo.
-2. En el mezclador de Windows, dirige el reproductor a un dispositivo virtual de reproducción a 48 kHz, por ejemplo **Steam Streaming Speakers** si está disponible. Deja el audio del juego en tu salida física.
-3. En **Audio → Capture from**, selecciona el dispositivo virtual. En **Headphones / output**, selecciona la salida física. Pulsa **Start**.
+2. En el mezclador de Windows, dirige el reproductor a un dispositivo de reproducción disponible a 48 kHz. Puedes usar una salida virtual, como **Steam Streaming Speakers**, o una salida física que tengas libre, como **Realtek Digital Output (S/PDIF)**, si Windows la muestra activa y admite captura WASAPI loopback. Deja el audio del juego en tu salida habitual.
+3. En **Audio → Capture from**, selecciona el mismo dispositivo al que enviaste el reproductor. En **Headphones / output**, elige tus auriculares u otra salida física distinta del dispositivo de captura. Pulsa **Start**.
 4. En **Layout → Preset**, elige el perfil de tu camión. **Volume** llega al 500%. Empieza al 100% si antes usabas un valor alto para compensar el nivel de versiones anteriores. A niveles altos, los picos pueden saturar.
 
-TruckAudioSim utiliza el dispositivo virtual que ya tengas instalado. La edición beta incluye el motor y los plugins del juego. El controlador SysVAD experimental queda en el código fuente. Los perfiles 5.1 y 7.1 admiten canales discretos cuando la fuente y el dispositivo de captura los entregan.
+La edición beta incluye el motor y los plugins del juego. El controlador SysVAD experimental queda en el código fuente. Los perfiles 5.1 y 7.1 admiten canales discretos cuando la fuente y el dispositivo de captura los entregan.
 
 ## Mientras juegas
 
