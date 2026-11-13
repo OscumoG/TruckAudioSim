@@ -4,14 +4,14 @@ Escucha Spotify, VLC u otra fuente de audio como si las bocinas estuvieran en la
 
 ## Instalar en Windows
 
-1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.23.3-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
+1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.23.4-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
 2. Con el juego cerrado, abre **Camera → Install ETS2 / ATS plugins…** y selecciona la carpeta del juego. Si necesitas copiar los DLL manualmente, están en la carpeta `plugin` de TruckAudioSim. Coloca `scs-telemetry.dll` y `trucker_aux_camera.dll` en `bin\win_x64\plugins\` del juego.
 3. Abre el juego y acepta el aviso de funciones avanzadas del SDK. En TruckAudioSim selecciona **Camera → Mode → Raw Camera** para seguir la vista dentro y fuera de la cabina.
 
 ## Configurar el audio
 
 1. Activa **Dolby Atmos para auriculares**, **Windows Sonic** o **DTS Headphone:X** en la salida física de Windows. La aplicación usa el proveedor espacial que tengas activo.
-2. En el mezclador de Windows, dirige el reproductor a un dispositivo de reproducción disponible a 48 kHz. Puedes usar una salida virtual, como **Steam Streaming Speakers**, o una salida física que tengas libre, como **Realtek Digital Output (S/PDIF)**, si Windows la muestra activa y admite captura WASAPI loopback. Deja el audio del juego en tu salida habitual.
+2. En el mezclador de Windows, dirige el reproductor a un dispositivo de reproducción disponible. Desde v0.23.4, WASAPI convierte automáticamente la frecuencia de captura a 48 kHz para el motor espacial. Esto permite usar dispositivos configurados a 96 o 192 kHz si su controlador admite la conversión en modo compartido. Puedes usar una salida virtual, como **Steam Streaming Speakers**, o una salida física que tengas libre, como **Realtek Digital Output (S/PDIF)**, si Windows la muestra activa y admite captura WASAPI loopback. Deja el audio del juego en tu salida habitual.
 3. En **Audio → Capture from**, selecciona el mismo dispositivo al que enviaste el reproductor. En **Headphones / output**, elige tus auriculares u otra salida física distinta del dispositivo de captura. Pulsa **Start**.
 4. En **Layout → Preset**, elige el perfil de tu camión. **Volume** llega al 500%. Empieza al 100% si antes usabas un valor alto para compensar el nivel de versiones anteriores. A niveles altos, los picos pueden saturar.
 

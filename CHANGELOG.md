@@ -1,3 +1,7 @@
+# v0.23.4 — captura con otras frecuencias de muestreo
+
+- La captura en vivo solicita a WASAPI la conversión a 48 kHz cuando la salida de origen tiene otra frecuencia. Se conserva el mapa de canales.
+
 # v0.23.3 — nivel de referencia y volumen máximo
 
 - La mezcla en vivo considera los filtros de las bocinas al calcular el nivel por canal y eleva el nivel de referencia.

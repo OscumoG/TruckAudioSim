@@ -18,8 +18,6 @@ struct EndpointAcceptance {
  StreamFormat stream;
  bool convertPCM16=false;
 };
-// The first WASAPI endpoint-loopback implementation intentionally rejects
-// 44.1/96k, packed 24-bit and unknown channel masks instead of silently
-// resampling/upmixing and changing the source sound.
+// Validates the capture stream delivered to the 48 kHz PCM pipeline.
 EndpointAcceptance acceptEndpointFormat(const EndpointFormat& format);
 }

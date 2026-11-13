@@ -44,10 +44,22 @@ EndpointLoopback::EndpointLoopback(IMMDevice* device) {
  check(audio_->GetMixFormat(&raw), "Loopback GetMixFormat");
  std::unique_ptr<WAVEFORMATEX, decltype(&CoTaskMemFree)> mix(raw, &CoTaskMemFree);
  if (!mix) throw std::runtime_error("The loopback source did not provide a mix format");
+ const DWORD sourceRate = mix->nSamplesPerSec;
+ DWORD flags = AUDCLNT_STREAMFLAGS_LOOPBACK;
+ if (sourceRate != kStreamRate) {
+  // Shared-mode WASAPI converts the capture rate while the original channel
+  // mask and sample representation remain intact.
+  mix->nSamplesPerSec = kStreamRate;
+  mix->nAvgBytesPerSec = mix->nBlockAlign * kStreamRate;
+  flags |= AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
+ }
  format_ = describeEndpointFormat(*mix);
  format_.stream.sourceEndpointToken = audioEndpointToken(renderDeviceId(device));
- check(audio_->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK,
-       0, 0, mix.get(), nullptr), "WASAPI shared loopback initialization");
+ const auto result = audio_->Initialize(AUDCLNT_SHAREMODE_SHARED, flags, 0, 0, mix.get(), nullptr);
+ const auto description = sourceRate == kStreamRate
+  ? std::string("WASAPI shared loopback initialization")
+  : "WASAPI loopback conversion from " + std::to_string(sourceRate) + " Hz to 48000 Hz";
+ check(result, description.c_str());
  check(audio_->GetService(IID_PPV_ARGS(&capture_)), "Loopback IAudioCaptureClient");
  check(audio_->GetBufferSize(&bufferFrames_), "Loopback GetBufferSize");
  if (!bufferFrames_ || bufferFrames_ > 48000)
