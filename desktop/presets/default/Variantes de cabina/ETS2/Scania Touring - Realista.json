@@ -9,20 +9,20 @@
   "layout": {
     "bounds": {
       "min": [
-        -1.12,
-        -0.8,
-        -1.0499999999999998
+        -1.25,
+        -0.85,
+        -1.25
       ],
       "max": [
-        1.12,
-        0.85,
-        1.3800000000000001
+        1.25,
+        1.23,
+        11.65
       ]
     },
     "speakers": [
       {
-        "id": "PuertaL",
-        "name": "Puerta L",
+        "id": "driver-L",
+        "name": "Conductor L",
         "position": [
           -0.98,
           -0.42,
@@ -31,24 +31,11 @@
         "channel": "L",
         "type": "full",
         "gainDb": 0,
-        "pair": "PuertaR"
+        "pair": "driver-R"
       },
       {
-        "id": "TraseroL",
-        "name": "Trasero L",
-        "position": [
-          -0.99,
-          0.52,
-          1.08
-        ],
-        "channel": "L",
-        "type": "full",
-        "gainDb": 0,
-        "pair": "TraseroR"
-      },
-      {
-        "id": "PuertaR",
-        "name": "Puerta R",
+        "id": "driver-R",
+        "name": "Conductor R",
         "position": [
           0.98,
           -0.42,
@@ -57,24 +44,194 @@
         "channel": "R",
         "type": "full",
         "gainDb": 0,
-        "pair": "PuertaL"
+        "pair": "driver-L"
       },
       {
-        "id": "TraseroR",
-        "name": "Trasero R",
+        "id": "deck1-7-L",
+        "name": "Salón · zona 7 L",
         "position": [
-          0.99,
-          0.52,
-          1.08
+          -0.82,
+          0.98,
+          10.85
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-7-R"
+      },
+      {
+        "id": "deck1-7-R",
+        "name": "Salón · zona 7 R",
+        "position": [
+          0.82,
+          0.98,
+          10.85
         ],
         "channel": "R",
-        "type": "full",
+        "type": "small",
         "gainDb": 0,
-        "pair": "TraseroL"
+        "pair": "deck1-7-L"
+      },
+      {
+        "id": "deck1-1-L",
+        "name": "Salón · zona 1 L",
+        "position": [
+          -0.82,
+          0.98,
+          0.65
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-R"
+      },
+      {
+        "id": "deck1-1-R",
+        "name": "Salón · zona 1 R",
+        "position": [
+          0.82,
+          0.98,
+          0.65
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-L"
+      },
+      {
+        "id": "deck1-2-L",
+        "name": "Salón · zona 2 L",
+        "position": [
+          -0.82,
+          0.98,
+          2.35
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-R"
+      },
+      {
+        "id": "deck1-2-R",
+        "name": "Salón · zona 2 R",
+        "position": [
+          0.82,
+          0.98,
+          2.35
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-L"
+      },
+      {
+        "id": "deck1-3-L",
+        "name": "Salón · zona 3 L",
+        "position": [
+          -0.82,
+          0.98,
+          4.05
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-3-R"
+      },
+      {
+        "id": "deck1-3-R",
+        "name": "Salón · zona 3 R",
+        "position": [
+          0.82,
+          0.98,
+          4.05
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-3-L"
+      },
+      {
+        "id": "deck1-4-L",
+        "name": "Salón · zona 4 L",
+        "position": [
+          -0.82,
+          0.98,
+          5.75
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-4-R"
+      },
+      {
+        "id": "deck1-4-R",
+        "name": "Salón · zona 4 R",
+        "position": [
+          0.82,
+          0.98,
+          5.75
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-4-L"
+      },
+      {
+        "id": "deck1-5-L",
+        "name": "Salón · zona 5 L",
+        "position": [
+          -0.82,
+          0.98,
+          7.45
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-5-R"
+      },
+      {
+        "id": "deck1-5-R",
+        "name": "Salón · zona 5 R",
+        "position": [
+          0.82,
+          0.98,
+          7.45
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-5-L"
+      },
+      {
+        "id": "deck1-6-L",
+        "name": "Salón · zona 6 L",
+        "position": [
+          -0.82,
+          0.98,
+          9.15
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-6-R"
+      },
+      {
+        "id": "deck1-6-R",
+        "name": "Salón · zona 6 R",
+        "position": [
+          0.82,
+          0.98,
+          9.15
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-6-L"
       }
     ],
     "label": "Realista",
     "cabAudio": "realistic",
-    "width": 1
+    "width": 1,
+    "vehicleSpace": "coach"
   }
 }

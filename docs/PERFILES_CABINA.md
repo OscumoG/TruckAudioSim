@@ -5,8 +5,7 @@ camión. Hay 50 combinaciones de juego y modelo con tres perfiles cada una, para
 un total de 150 perfiles. Cada camión utiliza una cabina representativa.
 Se incluyen Scania Touring, Volvo 9700 DD y MAN Lion’s Coach de ETS2,
 los cuatro Ford de Road Trip y el Škoda Superb / Scout en ambos juegos.
-Los autobuses y el Škoda usan posiciones estimadas y se identifican por
-el nombre o un alias de telemetría.
+Los autobuses y el Škoda se identifican por el nombre o un alias de telemetría.
 
 | Variante | Posición y reproducción |
 | --- | --- |
@@ -31,6 +30,29 @@ Realista usa las posiciones de referencia del modelo. El motor mezcla
 el centro y los envolventes hacia las bocinas laterales de la cabina
 cuando la fuente es multicanal. En algunos modelos se ajusta el tipo
 del altavoz frontal para cubrir más frecuencias sin moverlo.
+
+## Autobuses de Coaches
+
+| Modelo | Referencia pública | Distribución en Realista |
+| --- | --- | --- |
+| Scania Touring | El catálogo español describe dos altavoces para el conductor y uno por cada cuatro pasajeros. | 16 bocinas. Un par delantero y siete pares por el salón. Se toma el Touring HD de 12,9 m como referencia. |
+| MAN Lion’s Coach | El manual muestra los altavoces en los módulos del techo del salón. | 16 bocinas. Un par delantero y siete pares arriba de los asientos, hasta la última sección. Se toma el 4×2 de 12,1 m como referencia. |
+| Volvo 9700 DD | Volvo especifica equipo Bosch y subwoofer. SCS documenta 14,3 m para el modelo del juego. | 15 bocinas. Un par delantero, tres pares por piso y un subwoofer en la zona baja. |
+
+Las coordenadas y el número de bocinas de cada perfil son estimaciones de
+simulación. Cada modelo comparte un diseño entre sus variantes de chasis.
+En 5.1 y 7.1 hay 16 bocinas por modelo. Ambos usan un central Midrange y un
+subwoofer. En 7.1, las zonas del fondo reproducen los canales traseros.
+Con **Raw Camera**, al recorrer el interior se oyen con más presencia las
+bocinas cercanas. Fuera del autobús se aplica la atenuación a partir de la
+distancia a la carrocería.
+
+- [Scania Touring, catálogo español, equipamiento del conductor y pasajeros](https://www.scania.com/content/dam/www/market/es/cat%C3%A1logos/catalogo_TOURING_ES_may2017.pdf)
+- [Scania Touring, ficha técnica y dimensiones](https://www.scania.com/content/dam/www/market/master/products/buses-and-coaches/pdfs/technical-specification-scania-touring.pdf)
+- [MAN Lion’s Coach, manual de operación, página 107](https://s9c749554ed0cf09e.jimcontent.com/download/version/1530302100/module/11540843728/name/Betriebsanleitung%20MAN%20Lion%27s%20Coach.pdf)
+- [MAN Lion’s Coach, ficha técnica del 4×2](https://www.man.eu/content/dam/man/countries/doc/bw-master/bus/datenblaetter/lions-coach/man-bus-datenblatt-lions-coach-en.pdf/_jcr_content/renditions/original./man-bus-datenblatt-lions-coach-en.pdf)
+- [Volvo 9700 DD, especificaciones de audio y video](https://www.volvobuses.com/wca-en/buses-coaches/all-models/volvo-9700-double-decker/specifications.html)
+- [SCS Software, Volvo 9700 DD en ETS2](https://blog.scssoft.com/2026/02/coaches-volvo-9700-double-decker.html)
 
 ## Referencias de posición
 

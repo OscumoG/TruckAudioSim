@@ -9,20 +9,20 @@
   "layout": {
     "bounds": {
       "min": [
-        -1.1,
-        -0.8,
-        -0.99
+        -1.25,
+        -0.85,
+        -1.25
       ],
       "max": [
-        1.1,
-        0.85,
-        1.52
+        1.25,
+        2.8,
+        13.05
       ]
     },
     "speakers": [
       {
-        "id": "FL",
-        "name": "Frontal izquierdo",
+        "id": "driver-L",
+        "name": "Conductor L",
         "position": [
           -0.96,
           -0.46,
@@ -31,11 +31,11 @@
         "channel": "FL",
         "type": "full",
         "gainDb": 0,
-        "pair": "FR"
+        "pair": "driver-R"
       },
       {
-        "id": "FR",
-        "name": "Frontal derecho",
+        "id": "driver-R",
+        "name": "Conductor R",
         "position": [
           0.96,
           -0.46,
@@ -44,14 +44,14 @@
         "channel": "FR",
         "type": "full",
         "gainDb": 0,
-        "pair": "FL"
+        "pair": "driver-L"
       },
       {
         "id": "FC",
-        "name": "Central del tablero",
+        "name": "Central delantero",
         "position": [
           0,
-          -0.46,
+          0.18,
           -0.64
         ],
         "channel": "FC",
@@ -61,11 +61,11 @@
       },
       {
         "id": "LFE",
-        "name": "Subwoofer",
+        "name": "Subwoofer · zona baja",
         "position": [
           0,
-          -0.7,
-          1.09
+          -0.53,
+          2.2
         ],
         "channel": "LFE",
         "type": "sub",
@@ -73,34 +73,165 @@
         "pair": null
       },
       {
-        "id": "SL",
-        "name": "Envolvente izquierdo",
+        "id": "deck1-3-L",
+        "name": "Piso inferior · zona 3 L",
         "position": [
-          -0.94,
-          0.58,
-          1.22
+          -0.86,
+          0.82,
+          8.1
         ],
         "channel": "SL",
-        "type": "full",
+        "type": "small",
         "gainDb": 0,
-        "pair": "SR"
+        "pair": "deck1-3-R"
       },
       {
-        "id": "SR",
-        "name": "Envolvente derecho",
+        "id": "deck1-3-R",
+        "name": "Piso inferior · zona 3 R",
         "position": [
-          0.94,
-          0.58,
-          1.22
+          0.86,
+          0.82,
+          8.1
         ],
         "channel": "SR",
-        "type": "full",
+        "type": "small",
         "gainDb": 0,
-        "pair": "SL"
+        "pair": "deck1-3-L"
+      },
+      {
+        "id": "deck2-3-L",
+        "name": "Piso superior · zona 3 L",
+        "position": [
+          -0.87,
+          2.55,
+          11.55
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-3-R"
+      },
+      {
+        "id": "deck2-3-R",
+        "name": "Piso superior · zona 3 R",
+        "position": [
+          0.87,
+          2.55,
+          11.55
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-3-L"
+      },
+      {
+        "id": "deck1-1-L",
+        "name": "Piso inferior · zona 1 L",
+        "position": [
+          -0.86,
+          0.82,
+          1.1
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-R"
+      },
+      {
+        "id": "deck1-1-R",
+        "name": "Piso inferior · zona 1 R",
+        "position": [
+          0.86,
+          0.82,
+          1.1
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-L"
+      },
+      {
+        "id": "deck2-1-L",
+        "name": "Piso superior · zona 1 L",
+        "position": [
+          -0.87,
+          2.55,
+          0.15
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-1-R"
+      },
+      {
+        "id": "deck2-1-R",
+        "name": "Piso superior · zona 1 R",
+        "position": [
+          0.87,
+          2.55,
+          0.15
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-1-L"
+      },
+      {
+        "id": "deck1-2-L",
+        "name": "Piso inferior · zona 2 L",
+        "position": [
+          -0.86,
+          0.82,
+          4.65
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-R"
+      },
+      {
+        "id": "deck1-2-R",
+        "name": "Piso inferior · zona 2 R",
+        "position": [
+          0.86,
+          0.82,
+          4.65
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-L"
+      },
+      {
+        "id": "deck2-2-L",
+        "name": "Piso superior · zona 2 L",
+        "position": [
+          -0.87,
+          2.55,
+          5.55
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-2-R"
+      },
+      {
+        "id": "deck2-2-R",
+        "name": "Piso superior · zona 2 R",
+        "position": [
+          0.87,
+          2.55,
+          5.55
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-2-L"
       }
     ],
     "label": "5.1",
     "cabAudio": "5.1",
-    "width": 1
+    "width": 1,
+    "vehicleSpace": "coach"
   }
 }

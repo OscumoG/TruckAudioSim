@@ -21,6 +21,8 @@ Profile parseProfileText(const std::string& raw,bool allowEmpty){
   if(auto x=root.get("vehicle"))p.vehicle=x->str();
   if(auto x=root.get("game"))p.game=x->str();
   auto& layout=root.at("layout");const auto& speakers=layout.at("speakers");
+  const auto* space=layout.get("vehicleSpace");
+  const bool coach=space&&space->kind==Json::Kind::String&&space->str()=="coach";
   CabAudio cabAudio=CabAudio::Legacy;
   if(const auto* mode=layout.get("cabAudio")){
     const auto name=mode->str();
@@ -32,13 +34,13 @@ Profile parseProfileText(const std::string& raw,bool allowEmpty){
     throw std::runtime_error("Invalid number of speakers in preset");
   std::set<std::string> ids;
   for(const auto& x:speakers.array){
-    Speaker s;s.id=x.at("id").str();s.name=x.at("name").str();s.cabAudio=cabAudio;
+    Speaker s;s.id=x.at("id").str();s.name=x.at("name").str();s.cabAudio=cabAudio;s.coach=coach;
     s.channel=x.at("channel").str();s.type=x.at("type").str();
     const auto& a=x.at("position");
     if(a.kind!=Json::Kind::Array || a.array.size()!=3)throw std::runtime_error("Invalid speaker position");
     s.pos={float(a.array[0].num()),float(a.array[1].num()),float(a.array[2].num())};
     if(!std::isfinite(s.pos.x)||!std::isfinite(s.pos.y)||!std::isfinite(s.pos.z)||
-       std::fabs(s.pos.x)>5||std::fabs(s.pos.y)>5||std::fabs(s.pos.z)>5)
+       std::fabs(s.pos.x)>5||std::fabs(s.pos.y)>5||std::fabs(s.pos.z)>(coach?16:5))
       throw std::runtime_error("Speaker position out of bounds: "+s.id);
     s.gainDb=float(x.at("gainDb").num());
     if(s.gainDb < -100 || s.gainDb>12)throw std::runtime_error("Unsafe speaker gain: "+s.id);

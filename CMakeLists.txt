@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(TruckAudioSim VERSION 0.23.6 LANGUAGES C CXX)
+project(TruckAudioSim VERSION 0.23.7 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(tas_dma_tap STATIC src/driver_port/wavert_dma_tap.c src/driver_port/tas_packet_fifo.c src/driver_port/tas_stream_adapter.c src/driver_port/tas_ioctl_dispatch.c src/driver_port/tas_device_session.c src/driver_port/tas_capture_coordinator.c)

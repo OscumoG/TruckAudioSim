@@ -121,6 +121,14 @@ export function outsideCab(view, headX, bounds) {
   return position.some((value, i) => value < bounds.min[i] || value > bounds.max[i]);
 }
 
+export function coachExteriorDistance(view, headX, bounds) {
+  if (view.source !== 'free' && view.source !== 'outside') return null;
+  const position = [headX + view.x, view.y, view.z];
+  const distance = Math.hypot(...position.map((value, axis) =>
+    Math.max(bounds.min[axis] - value, value - bounds.max[axis], 0)));
+  return view.source === 'free' && distance === 0 ? null : distance;
+}
+
 export const EXTERIOR_SILENCE_DISTANCE = 40;
 
 export function exteriorGain(distance) {

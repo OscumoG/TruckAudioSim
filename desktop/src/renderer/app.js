@@ -23,7 +23,7 @@ import { isCable } from '../shared/devices.js';
 import { normalizeSettings, stepVolume } from '../shared/settings.js';
 import { isSilenced } from '../shared/dsp.js';
 import {
-  cameraPoint, cameraView, createCameraWatch, createFallbackWatch, exteriorGain, outsideCab, withCameraView,
+  cameraPoint, cameraView, coachExteriorDistance, createCameraWatch, createFallbackWatch, exteriorGain, outsideCab, withCameraView,
 } from '../shared/camera.js';
 import {
   angleText, createFrameWatch, createPauseHold, createRamp, headRestX, lockAxes, musicSilenced, pluginWarning, turnLook, turnsToDeg,
@@ -128,8 +128,13 @@ function updateSpatial() {
 }
 
 const currentProfile = () => spatialProfile(playing().layout, state.solo, [...state.muted]);
-const exteriorDistance = () => !state.selection.pause && outsideCab(state.view, headRestX(state.truck), playing().layout.bounds)
-  ? state.view.distance : null;
+function exteriorDistance() {
+  if (state.selection.pause) return null;
+  const { bounds, vehicleSpace } = playing().layout;
+  const headX = headRestX(state.truck);
+  if (vehicleSpace === 'coach') return coachExteriorDistance(state.view, headX, bounds);
+  return outsideCab(state.view, headX, bounds) ? state.view.distance : null;
+}
 const currentAudioState = () => ({
   profile: currentProfile(),
   pose: spatialPose(state.selection.pause ? null : state.heard, headRestX(state.truck),

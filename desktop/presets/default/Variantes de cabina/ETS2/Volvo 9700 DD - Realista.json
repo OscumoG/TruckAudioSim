@@ -9,20 +9,20 @@
   "layout": {
     "bounds": {
       "min": [
-        -1.1,
-        -0.8,
-        -0.99
+        -1.25,
+        -0.85,
+        -1.25
       ],
       "max": [
-        1.1,
-        0.85,
-        1.52
+        1.25,
+        2.8,
+        13.05
       ]
     },
     "speakers": [
       {
-        "id": "PuertaL",
-        "name": "Puerta L",
+        "id": "driver-L",
+        "name": "Conductor L",
         "position": [
           -0.96,
           -0.46,
@@ -31,24 +31,11 @@
         "channel": "L",
         "type": "full",
         "gainDb": 0,
-        "pair": "PuertaR"
+        "pair": "driver-R"
       },
       {
-        "id": "TraseroL",
-        "name": "Trasero L",
-        "position": [
-          -0.94,
-          0.58,
-          1.22
-        ],
-        "channel": "L",
-        "type": "full",
-        "gainDb": 0,
-        "pair": "TraseroR"
-      },
-      {
-        "id": "PuertaR",
-        "name": "Puerta R",
+        "id": "driver-R",
+        "name": "Conductor R",
         "position": [
           0.96,
           -0.46,
@@ -57,24 +44,181 @@
         "channel": "R",
         "type": "full",
         "gainDb": 0,
-        "pair": "PuertaL"
+        "pair": "driver-L"
       },
       {
-        "id": "TraseroR",
-        "name": "Trasero R",
+        "id": "LFE",
+        "name": "Subwoofer · zona baja",
         "position": [
-          0.94,
-          0.58,
-          1.22
+          0,
+          -0.53,
+          2.2
+        ],
+        "channel": "LFE",
+        "type": "sub",
+        "gainDb": 0,
+        "pair": null
+      },
+      {
+        "id": "deck1-3-L",
+        "name": "Piso inferior · zona 3 L",
+        "position": [
+          -0.86,
+          0.82,
+          8.1
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-3-R"
+      },
+      {
+        "id": "deck1-3-R",
+        "name": "Piso inferior · zona 3 R",
+        "position": [
+          0.86,
+          0.82,
+          8.1
         ],
         "channel": "R",
-        "type": "full",
+        "type": "small",
         "gainDb": 0,
-        "pair": "TraseroL"
+        "pair": "deck1-3-L"
+      },
+      {
+        "id": "deck2-3-L",
+        "name": "Piso superior · zona 3 L",
+        "position": [
+          -0.87,
+          2.55,
+          11.55
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-3-R"
+      },
+      {
+        "id": "deck2-3-R",
+        "name": "Piso superior · zona 3 R",
+        "position": [
+          0.87,
+          2.55,
+          11.55
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-3-L"
+      },
+      {
+        "id": "deck1-1-L",
+        "name": "Piso inferior · zona 1 L",
+        "position": [
+          -0.86,
+          0.82,
+          1.1
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-R"
+      },
+      {
+        "id": "deck1-1-R",
+        "name": "Piso inferior · zona 1 R",
+        "position": [
+          0.86,
+          0.82,
+          1.1
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-L"
+      },
+      {
+        "id": "deck2-1-L",
+        "name": "Piso superior · zona 1 L",
+        "position": [
+          -0.87,
+          2.55,
+          0.15
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-1-R"
+      },
+      {
+        "id": "deck2-1-R",
+        "name": "Piso superior · zona 1 R",
+        "position": [
+          0.87,
+          2.55,
+          0.15
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-1-L"
+      },
+      {
+        "id": "deck1-2-L",
+        "name": "Piso inferior · zona 2 L",
+        "position": [
+          -0.86,
+          0.82,
+          4.65
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-R"
+      },
+      {
+        "id": "deck1-2-R",
+        "name": "Piso inferior · zona 2 R",
+        "position": [
+          0.86,
+          0.82,
+          4.65
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-L"
+      },
+      {
+        "id": "deck2-2-L",
+        "name": "Piso superior · zona 2 L",
+        "position": [
+          -0.87,
+          2.55,
+          5.55
+        ],
+        "channel": "L",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-2-R"
+      },
+      {
+        "id": "deck2-2-R",
+        "name": "Piso superior · zona 2 R",
+        "position": [
+          0.87,
+          2.55,
+          5.55
+        ],
+        "channel": "R",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck2-2-L"
       }
     ],
     "label": "Realista",
     "cabAudio": "realistic",
-    "width": 1
+    "width": 1,
+    "vehicleSpace": "coach"
   }
 }

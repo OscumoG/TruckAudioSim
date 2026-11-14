@@ -1,3 +1,9 @@
+# v0.23.7 — sonido en todo el autobús
+
+- Nueve perfiles Realista, 5.1 y 7.1 para Scania Touring, MAN Lion’s Coach y Volvo 9700 DD, con bocinas distribuidas hasta el fondo del salón y en ambos pisos del Volvo.
+- La cámara libre sigue escuchando el interior al recorrer el autobús. Fuera, el nivel baja con la distancia a la carrocería.
+- El editor y el motor conservan la profundidad completa de los perfiles de autobús.
+
 # v0.23.6 — volumen, vehículos y envolventes
 
 - Volumen principal hasta 1000%, pasos de 10 puntos y aviso visual para los atajos.

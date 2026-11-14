@@ -4,7 +4,7 @@ Escucha Spotify, VLC u otra fuente de audio como si las bocinas estuvieran en la
 
 ## Instalar en Windows
 
-1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.23.6-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
+1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.23.7-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
 2. Con el juego cerrado, abre **Camera → Install ETS2 / ATS plugins…** y selecciona la carpeta del juego. Si necesitas copiar los DLL manualmente, están en la carpeta `plugin` de TruckAudioSim. Coloca `scs-telemetry.dll` y `trucker_aux_camera.dll` en `bin\win_x64\plugins\` del juego.
 3. Abre el juego y acepta el aviso de funciones avanzadas del SDK. En TruckAudioSim selecciona **Camera → Mode → Raw Camera** para seguir la vista dentro y fuera de la cabina.
 
@@ -21,7 +21,7 @@ La edición beta incluye el motor y los plugins del juego. El controlador SysVAD
 
 - **Atajos de volumen.** Configura Volume Up, Volume Down y Mute en Controls. El volumen cambia en pasos de 10 puntos y un aviso muestra el nivel o «Silenciado» incluso con la aplicación en la bandeja. En el juego, usa modo ventana sin bordes si la pantalla completa exclusiva oculta el aviso.
 
-- **Cámara exterior.** La música pierde nivel con la distancia y queda inaudible a partir de 40 m. Si tu versión del juego deja de entregar la cámara, **Adjusted Telemetry** permite seguir el giro de la cabeza dentro de la cabina.
+- **Cámara exterior.** La música pierde nivel con la distancia y queda inaudible a partir de 40 m. En los autobuses de Coaches, la distancia exterior se mide desde la carrocería y las bocinas se distribuyen a lo largo del salón. Si tu versión del juego deja de entregar la cámara, **Adjusted Telemetry** permite seguir el giro de la cabeza dentro de la cabina.
 - **Electrónica.** En **Pause player on electrics off**, elige Spotify o VLC. La pausa depende de que el reproductor exponga una sesión multimedia compatible en Windows.
 - **Segundo plano.** La X oculta la ventana. Reábrela desde el icono de la bandeja junto al reloj, o usa **clic derecho → Salir** para detener el motor.
 - **Perfiles propios.** Usa **File → Import → Preset files** para importar JSON de Trucker AUX, o **Data from older version** para migrar ajustes y perfiles de la edición ZIP.

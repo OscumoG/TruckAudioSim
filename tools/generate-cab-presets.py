@@ -18,8 +18,7 @@ PREFERRED_REFERENCE = {
     "vehicle.westernstar.57x": "ATS, Western Star, Western Star 57X",
 }
 
-# Estimated driver-area positions in meters from the vehicle center line.
-# Rear positions in coaches cover the area just behind the driver.
+# Estimated vehicle reference positions in meters from the vehicle center line.
 EXTRA_CABS = (
     ("ets2", "scania", "Scania", "Scania Touring", "vehicle.scania.touring", (0.98, -0.42, -0.70), (0.99, 0.52, 1.08)),
     ("ets2", "volvo", "Volvo", "Volvo 9700 DD", "vehicle.volvo.9700_dd", (0.96, -0.46, -0.64), (0.94, 0.58, 1.22)),
@@ -46,6 +45,61 @@ def extra_cabs():
         yield Path(name.replace(" / ", " - ")), dict(
             truckerAuxPreset=1, name=name, vehicleName=name, vehicle=model,
             game=game, brand=brand, brandName=brand_name, layout=dict(bounds=bounds, speakers=drivers))
+
+# Per-model estimates from the documented passenger equipment and vehicle dimensions.
+# Rows are longitudinal positions in metres relative to the driver's eyes.
+COACHES = {
+    "vehicle.scania.touring": (12.9, (("Salón", .82, .98, (.65, 2.35, 4.05, 5.75, 7.45, 9.15, 10.85)),)),
+    "vehicle.man.lions_coach": (12.1, (("Techo", .87, 1.08, (.55, 2.05, 3.65, 5.2, 6.85, 8.4, 9.95)),)),
+    "vehicle.volvo.9700_dd": (14.3, (
+        ("Piso inferior", .86, .82, (1.1, 4.65, 8.1)),
+        ("Piso superior", .87, 2.55, (.15, 5.55, 11.55)),
+    )),
+}
+
+
+def coach_layout(model, driver, mode):
+    length, decks = COACHES[model]
+    drivers = []
+
+    def pair(prefix, label, point, channels, kind="full"):
+        x, y, z = point
+        for side, sign, channel, partner in zip(("L", "R"), (-1, 1), channels, ("R", "L")):
+            item = speaker(channel, f"{label} {side}", [sign * abs(x), y, z], kind, prefix + partner)
+            item["id"] = prefix + side
+            drivers.append(item)
+
+    realistic_mode = mode == "realistic"
+    pair("driver-", "Conductor", driver, ("L", "R") if realistic_mode else ("FL", "FR"))
+    if not realistic_mode:
+        drivers.append(speaker("FC", "Central delantero", [0, .18, driver[2]], "mid"))
+    if not realistic_mode or len(decks) == 2:
+        drivers.append(speaker("LFE", "Subwoofer · zona baja", [0, -.53, 2.2], "sub"))
+
+    # Leave room for the center and subwoofer in the surround profiles.
+    if not realistic_mode:
+        decks = [(label, x, y, rows[:3] + rows[4:] if len(rows) == 7 else rows)
+                 for label, x, y, rows in decks]
+    # Add the back of each deck first so fewer spatial objects can still reach it.
+    for index in range(max(len(deck[3]) for deck in decks)):
+        for deck, (label, x, y, rows) in enumerate(decks, 1):
+            if index >= len(rows):
+                continue
+            row = len(rows) - 1 if index == 0 else index - 1
+            if realistic_mode:
+                channels = ("L", "R")
+            elif mode == "7.1" and row >= len(rows) // 2:
+                channels = ("BL", "BR")
+            else:
+                channels = ("SL", "SR")
+            pair(f"deck{deck}-{row + 1}-", f"{label} · zona {row + 1}", (x, y, rows[row]), channels, "small")
+    return {
+        "vehicleSpace": "coach",
+        "bounds": {"min": [-1.25, -.85, -1.25],
+                   "max": [1.25, round(max(deck[2] for deck in decks) + .25, 2), round(length - 1.25, 2)]},
+        "speakers": drivers,
+    }
+
 
 def surround(layout, mode):
     original = layout["speakers"]
@@ -161,7 +215,11 @@ def main():
             variant["layout"]["label"] = label
             variant["layout"]["cabAudio"] = mode
             variant["layout"]["width"] = 1
-            variant["layout"]["speakers"] = realistic(profile["layout"]) if mode == "realistic" else surround(profile["layout"], mode)
+            if model in COACHES:
+                driver = profile["layout"]["speakers"][0]["position"]
+                variant["layout"].update(coach_layout(model, driver, mode))
+            else:
+                variant["layout"]["speakers"] = realistic(profile["layout"]) if mode == "realistic" else surround(profile["layout"], mode)
             fit_bounds(variant["layout"])
             destination = folder / f"{source.stem} - {label}.json"
             destination.write_text(json.dumps(variant, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

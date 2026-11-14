@@ -25,9 +25,11 @@ const clamp = (value, lo, hi) => Math.min(hi, Math.max(lo, value));
 const isNum = (value) => typeof value === 'number' && Number.isFinite(value);
 const text = (value) => (typeof value === 'string' ? value.trim() : '');
 
-function vec3(value, fallback) {
+const axisLimit = (axis, vehicleSpace) => axis === 2 && vehicleSpace === 'coach' ? 16 : COORD_LIMIT;
+
+function vec3(value, fallback, vehicleSpace) {
   return Array.isArray(value) && value.length === 3
-    ? value.map((c, i) => clamp(isNum(c) ? c : fallback[i], -COORD_LIMIT, COORD_LIMIT))
+    ? value.map((c, i) => clamp(isNum(c) ? c : fallback[i], -axisLimit(i, vehicleSpace), axisLimit(i, vehicleSpace)))
     : [...fallback];
 }
 
@@ -86,12 +88,12 @@ function freeId(used) {
   for (let n = 1; ; n++) if (!used.has(`s${n}`)) return `s${n}`;
 }
 
-function cleanSpeaker(raw, id, fallbackName) {
+function cleanSpeaker(raw, id, fallbackName, vehicleSpace) {
   const src = raw && typeof raw === 'object' ? raw : {};
   return {
     id,
     name: text(src.name) || fallbackName,
-    position: vec3(src.position, [0, 0, -0.5]),
+    position: vec3(src.position, [0, 0, -0.5], vehicleSpace),
     channel: CHANNELS.includes(src.channel) ? src.channel : 'L',
     gainDb: clamp(isNum(src.gainDb) ? src.gainDb : 0, GAIN_MIN, GAIN_MAX),
     type: TYPES.includes(src.type) ? src.type : 'full',
@@ -115,9 +117,10 @@ export function normalizeLayout(raw, fallbackName = 'Default layout') {
   const src = raw && typeof raw === 'object' ? raw : {};
   const base = defaultLayout();
   // Older files call the box "field" or "cabin".
+  const vehicleSpace = src.vehicleSpace === 'coach' ? 'coach' : undefined;
   const boundsSrc = [src.bounds, src.field, src.cabin].find((box) => box && typeof box === 'object') ?? {};
-  const a = vec3(boundsSrc.min, base.bounds.min);
-  const b = vec3(boundsSrc.max, base.bounds.max);
+  const a = vec3(boundsSrc.min, base.bounds.min, vehicleSpace);
+  const b = vec3(boundsSrc.max, base.bounds.max, vehicleSpace);
   const bounds = { min: a.map((v, i) => Math.min(v, b[i])), max: a.map((v, i) => Math.max(v, b[i])) };
   const list = Array.isArray(src.speakers) ? src.speakers.slice(0, MAX_SPEAKERS) : base.speakers;
   const requested = new Set(list.map((s) => (s && typeof s.id === 'string' ? s.id : null)));
@@ -126,7 +129,7 @@ export function normalizeLayout(raw, fallbackName = 'Default layout') {
     const wanted = s && typeof s.id === 'string' && s.id ? s.id : null;
     const id = wanted && !used.has(wanted) ? wanted : freeId(new Set([...used, ...requested]));
     used.add(id);
-    return cleanSpeaker(s, id, `Speaker ${i + 1}`);
+    return cleanSpeaker(s, id, `Speaker ${i + 1}`, vehicleSpace);
   });
   const label = text(src.label).slice(0, LABEL_MAX);
   return {
@@ -138,6 +141,7 @@ export function normalizeLayout(raw, fallbackName = 'Default layout') {
     ...(typeof src.copyOf === 'string' && src.copyOf.startsWith('file:') ? { copyOf: src.copyOf } : {}),
     width: clamp(isNum(src.width) ? src.width : 1, 0, 2),
     ...(['realistic', '5.1', '7.1'].includes(src.cabAudio) ? { cabAudio: src.cabAudio } : {}),
+    ...(vehicleSpace ? { vehicleSpace } : {}),
     bounds,
     speakers: fixPairs(speakers),
   };
@@ -325,7 +329,8 @@ const MIN_BOUNDS = 0.2; // metres between opposite walls
 export function setBoundsEdge(layout, axis, side, value) {
   const min = [...layout.bounds.min];
   const max = [...layout.bounds.max];
-  const v = clamp(isNum(value) ? value : 0, -COORD_LIMIT, COORD_LIMIT);
+  const limit = axisLimit(axis, layout.vehicleSpace);
+  const v = clamp(isNum(value) ? value : 0, -limit, limit);
   if (axis === 0) {
     const half = snap(Math.max(side === 'min' ? -v : v, MIN_BOUNDS / 2));
     min[0] = snap(-half);
@@ -355,7 +360,7 @@ export function centerOn(layout, centerX) {
 export function updateSpeaker(layout, id, patch) {
   const current = layout.speakers.find((s) => s.id === id);
   if (!current) return layout;
-  let next = cleanSpeaker({ ...current, ...patch, pair: current.pair }, id, current.name);
+  let next = cleanSpeaker({ ...current, ...patch, pair: current.pair }, id, current.name, layout.vehicleSpace);
   if (patch.name === undefined && next.type !== current.type) {
     next = { ...next, name: nameForType(next, new Set(layout.speakers.filter((s) => s.id !== id).map((s) => s.name))) };
   }
@@ -455,7 +460,7 @@ export function pasteSpeakers(layout, clip) {
     const name = uniqueName(c.name, names);
     names.add(name);
     const pair = c.pair ? newId.get(c.pair) ?? null : null;
-    return cleanSpeaker({ ...c, name, position: at(c, dz), pair }, newId.get(c.id), name);
+    return cleanSpeaker({ ...c, name, position: at(c, dz), pair }, newId.get(c.id), name, layout.vehicleSpace);
   });
   const byId = new Map(pasted.map((s) => [s.id, s]));
   const done = new Set();
@@ -475,7 +480,7 @@ export function addSpeaker(layout, at = null) {
   const id = freeId(new Set(layout.speakers.map((s) => s.id)));
   const name = typeName('full', null, new Set(layout.speakers.map((s) => s.name)));
   const position = at ? snapPoint(at) : [0, -0.35, -0.9];
-  const speaker = cleanSpeaker({ name, position, channel: 'M' }, id, name);
+  const speaker = cleanSpeaker({ name, position, channel: 'M' }, id, name, layout.vehicleSpace);
   return { layout: withSpeakers(layout, [...layout.speakers, speaker]), id };
 }
 
@@ -493,8 +498,8 @@ export function addPair(layout, at = null) {
   return {
     layout: withSpeakers(layout, [
       ...layout.speakers,
-      cleanSpeaker({ name: leftName, position: leftPosition, channel: 'L', pair: right }, left, leftName),
-      cleanSpeaker({ name: rightName, position: mirrorPosition(leftPosition), channel: 'R', pair: left }, right, rightName),
+      cleanSpeaker({ name: leftName, position: leftPosition, channel: 'L', pair: right }, left, leftName, layout.vehicleSpace),
+      cleanSpeaker({ name: rightName, position: mirrorPosition(leftPosition), channel: 'R', pair: left }, right, rightName, layout.vehicleSpace),
     ]),
     ids: [left, right],
   };

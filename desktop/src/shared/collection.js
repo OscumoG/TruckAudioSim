@@ -85,6 +85,7 @@ export function presetFile({ name, author, vehicle, hooks = [], vehicleName, gam
       ...(layout.label ? { label: layout.label } : {}),
       ...(layout.labelColor ? { labelColor: layout.labelColor } : {}),
       ...(layout.cabAudio ? { cabAudio: layout.cabAudio } : {}),
+      ...(layout.vehicleSpace ? { vehicleSpace: layout.vehicleSpace } : {}),
       width: layout.width, bounds: layout.bounds, speakers: layout.speakers },
   };
 }

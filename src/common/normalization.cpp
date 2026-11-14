@@ -17,6 +17,7 @@ std::vector<float> neutralVoiceGains(const std::vector<Speaker>& speakers,
  std::vector<float> gains;gains.reserve(speakers.size());
  std::vector<Route> routes;routes.reserve(speakers.size());
  std::vector<float> budgets(channels,0);
+ const bool distributed=std::any_of(speakers.begin(),speakers.end(),[](const auto& s){return s.coach;});
  bool filtered=false;
  for(const Speaker& s:speakers){
   const float gain=s.enabled?dbToAmplitude(s.gainDb):0.0f;
@@ -35,9 +36,14 @@ std::vector<float> neutralVoiceGains(const std::vector<Speaker>& speakers,
   for(size_t i=0;i<routes.size();++i){
    const auto& route=routes[i];
    const float gain=gains[i]*route.filter.magnitude(cosine);
-   for(size_t channel=0;channel<budgets.size();++channel)budgets[channel]+=gain*route.weights[channel];
+   for(size_t channel=0;channel<budgets.size();++channel){
+    const float level=gain*route.weights[channel];
+    budgets[channel]+=distributed?level*level:level;
+   }
   }
-  return budgets.empty()?0.0f:*std::max_element(budgets.begin(),budgets.end());
+  const float peak=budgets.empty()?0.0f:*std::max_element(budgets.begin(),budgets.end());
+  // Coach speakers are spread along the vehicle and attenuated at the listener.
+  return distributed?std::sqrt(peak):peak;
  };
  float largest=budgetAt(1);
  if(filtered){

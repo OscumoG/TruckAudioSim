@@ -9,20 +9,20 @@
   "layout": {
     "bounds": {
       "min": [
-        -1.1600000000000001,
-        -0.8,
-        -1.0699999999999998
+        -1.25,
+        -0.85,
+        -1.25
       ],
       "max": [
-        1.1600000000000001,
-        0.85,
-        1.32
+        1.25,
+        1.33,
+        10.85
       ]
     },
     "speakers": [
       {
-        "id": "FL",
-        "name": "Frontal izquierdo",
+        "id": "driver-L",
+        "name": "Conductor L",
         "position": [
           -1.02,
           -0.4,
@@ -31,11 +31,11 @@
         "channel": "FL",
         "type": "full",
         "gainDb": 0,
-        "pair": "FR"
+        "pair": "driver-R"
       },
       {
-        "id": "FR",
-        "name": "Frontal derecho",
+        "id": "driver-R",
+        "name": "Conductor R",
         "position": [
           1.02,
           -0.4,
@@ -44,14 +44,14 @@
         "channel": "FR",
         "type": "full",
         "gainDb": 0,
-        "pair": "FL"
+        "pair": "driver-L"
       },
       {
         "id": "FC",
-        "name": "Central del tablero",
+        "name": "Central delantero",
         "position": [
           0,
-          -0.4,
+          0.18,
           -0.72
         ],
         "channel": "FC",
@@ -61,11 +61,11 @@
       },
       {
         "id": "LFE",
-        "name": "Subwoofer",
+        "name": "Subwoofer · zona baja",
         "position": [
           0,
-          -0.7,
-          0.95
+          -0.53,
+          2.2
         ],
         "channel": "LFE",
         "type": "sub",
@@ -73,34 +73,165 @@
         "pair": null
       },
       {
-        "id": "SL",
-        "name": "Envolvente izquierdo",
+        "id": "deck1-6-L",
+        "name": "Techo · zona 6 L",
         "position": [
-          -0.95,
-          0.48,
-          1.02
+          -0.87,
+          1.08,
+          9.95
         ],
         "channel": "SL",
-        "type": "full",
+        "type": "small",
         "gainDb": 0,
-        "pair": "SR"
+        "pair": "deck1-6-R"
       },
       {
-        "id": "SR",
-        "name": "Envolvente derecho",
+        "id": "deck1-6-R",
+        "name": "Techo · zona 6 R",
         "position": [
-          0.95,
-          0.48,
-          1.02
+          0.87,
+          1.08,
+          9.95
         ],
         "channel": "SR",
-        "type": "full",
+        "type": "small",
         "gainDb": 0,
-        "pair": "SL"
+        "pair": "deck1-6-L"
+      },
+      {
+        "id": "deck1-1-L",
+        "name": "Techo · zona 1 L",
+        "position": [
+          -0.87,
+          1.08,
+          0.55
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-R"
+      },
+      {
+        "id": "deck1-1-R",
+        "name": "Techo · zona 1 R",
+        "position": [
+          0.87,
+          1.08,
+          0.55
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-1-L"
+      },
+      {
+        "id": "deck1-2-L",
+        "name": "Techo · zona 2 L",
+        "position": [
+          -0.87,
+          1.08,
+          2.05
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-R"
+      },
+      {
+        "id": "deck1-2-R",
+        "name": "Techo · zona 2 R",
+        "position": [
+          0.87,
+          1.08,
+          2.05
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-2-L"
+      },
+      {
+        "id": "deck1-3-L",
+        "name": "Techo · zona 3 L",
+        "position": [
+          -0.87,
+          1.08,
+          3.65
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-3-R"
+      },
+      {
+        "id": "deck1-3-R",
+        "name": "Techo · zona 3 R",
+        "position": [
+          0.87,
+          1.08,
+          3.65
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-3-L"
+      },
+      {
+        "id": "deck1-4-L",
+        "name": "Techo · zona 4 L",
+        "position": [
+          -0.87,
+          1.08,
+          6.85
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-4-R"
+      },
+      {
+        "id": "deck1-4-R",
+        "name": "Techo · zona 4 R",
+        "position": [
+          0.87,
+          1.08,
+          6.85
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-4-L"
+      },
+      {
+        "id": "deck1-5-L",
+        "name": "Techo · zona 5 L",
+        "position": [
+          -0.87,
+          1.08,
+          8.4
+        ],
+        "channel": "SL",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-5-R"
+      },
+      {
+        "id": "deck1-5-R",
+        "name": "Techo · zona 5 R",
+        "position": [
+          0.87,
+          1.08,
+          8.4
+        ],
+        "channel": "SR",
+        "type": "small",
+        "gainDb": 0,
+        "pair": "deck1-5-L"
       }
     ],
     "label": "5.1",
     "cabAudio": "5.1",
-    "width": 1
+    "width": 1,
+    "vehicleSpace": "coach"
   }
 }

@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
+import { coachExteriorDistance } from '../src/shared/camera.js';
 import { parsePresetFile, presetFile } from '../src/shared/collection.js';
+import { updateSpeaker } from '../src/shared/layout.js';
 import { matchedVehicleKey } from '../src/shared/vehicle-matches.js';
 import { mediaTelemetry, parsePlaybackDevices, spatialPose, spatialProfile } from '../src/shared/spatial-profile.js';
 
@@ -59,6 +61,34 @@ test('the Scania profile keeps eight discrete channels through import, export an
   assert.equal(live.layout.speakers[0].position[0], -0.5);
   assert.equal(live.layout.speakers.filter((speaker) => speaker.enabled).length, 1);
   assert.equal(spatialProfile(entry.layout, null, [first.id]).layout.speakers[0].enabled, false);
+});
+
+test('all nine coach profiles keep the back of the passenger cabin in the editor and engine', () => {
+  const root = new URL('../presets/default/Variantes%20de%20cabina/ETS2/', import.meta.url);
+  const files = fs.readdirSync(root).filter((file) => /^(Scania Touring|MAN Lion's Coach|Volvo 9700 DD) - /.test(file));
+  assert.equal(files.length, 9);
+  for (const file of files) {
+    const raw = JSON.parse(fs.readFileSync(new URL(encodeURIComponent(file), root)));
+    const { entry } = parsePresetFile(raw, file);
+    const { layout } = entry;
+    const rear = layout.speakers.reduce((a, b) => a.position[2] > b.position[2] ? a : b);
+    assert.equal(layout.vehicleSpace, 'coach', file);
+    assert.ok(rear.position[2] > 9 && layout.speakers.length <= 16, file);
+    assert.equal(presetFile(entry).layout.vehicleSpace, 'coach', file);
+    assert.deepEqual(spatialProfile(layout).layout.speakers.at(-1).position, layout.speakers.at(-1).position);
+    const moved = updateSpeaker(layout, rear.id, { position: [rear.position[0], rear.position[1], 11] });
+    assert.equal(moved.speakers.find(({ id }) => id === rear.id).position[2], 11);
+
+    const free = { source: 'free', x: 0.4, y: 0.2, z: layout.bounds.max[2] - 0.1 };
+    assert.equal(coachExteriorDistance(free, -0.4, layout.bounds), null);
+    assert.equal(coachExteriorDistance({ ...free, source: 'outside' }, -0.4, layout.bounds), 0);
+    assert.equal(coachExteriorDistance({ ...free, z: layout.bounds.max[2] + 1 }, -0.4, layout.bounds), 1);
+    if (raw.vehicle === 'vehicle.volvo.9700_dd') {
+      assert.ok(layout.speakers.some(({ position: [, y, z] }) => y < 1 && z > 7));
+      assert.ok(layout.speakers.some(({ position: [, y, z] }) => y > 2 && z > 10));
+      assert.ok(layout.speakers.some(({ type, channel }) => type === 'sub' && channel === 'LFE'));
+    }
+  }
 });
 
 test('the native pose follows SCS axes, volume and muting', () => {
