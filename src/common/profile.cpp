@@ -44,6 +44,11 @@ Profile parseProfileText(const std::string& raw,bool allowEmpty){
       throw std::runtime_error("Speaker position out of bounds: "+s.id);
     s.gainDb=float(x.at("gainDb").num());
     if(s.gainDb < -100 || s.gainDb>12)throw std::runtime_error("Unsafe speaker gain: "+s.id);
+    if(const auto* value=x.get("volumePercent")){
+      const double percent=value->num();
+      if(percent<0 || percent>100)throw std::runtime_error("Speaker volume must be between 0 and 100: "+s.id);
+      s.volume=static_cast<float>(percent/100);
+    }
     if(const auto* enabled=x.get("enabled")){
       if(enabled->kind!=Json::Kind::Boolean)throw std::runtime_error("Speaker enabled must be boolean");
       s.enabled=enabled->boolean;

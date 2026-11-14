@@ -8,7 +8,7 @@ La edición Linux x86-64 usa PipeWire o PulseAudio y audio binaural para auricul
 
 ## Instalar en Windows
 
-1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.23.7-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
+1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.24.1-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
 2. Con el juego cerrado, abre **Camera → Install ETS2 / ATS plugins…** y selecciona la carpeta del juego. Si necesitas copiar los DLL manualmente, están en la carpeta `plugin` de TruckAudioSim. Coloca `scs-telemetry.dll` y `trucker_aux_camera.dll` en `bin\win_x64\plugins\` del juego.
 3. Abre el juego y acepta el aviso de funciones avanzadas del SDK. En TruckAudioSim selecciona **Camera → Mode → Raw Camera** para seguir la vista dentro y fuera de la cabina.
 

@@ -57,7 +57,7 @@ export function isSilenced(speaker, soloId, mutedIds) {
   return mutedIds.has(speaker.id) || (soloId !== null && soloId !== speaker.id);
 }
 
-// Linear level of a speaker with the session-only solo and mute applied.
+// Linear level with the saved volume and the session-only solo and mute applied.
 export function speakerGain(speaker, soloId, mutedIds) {
-  return isSilenced(speaker, soloId, mutedIds) ? 0 : dbToGain(speaker.gainDb);
+  return isSilenced(speaker, soloId, mutedIds) ? 0 : dbToGain(speaker.gainDb) * (speaker.volumePercent ?? 100) / 100;
 }

@@ -498,7 +498,7 @@ int run(const Options& opt){
    // Nearby speakers dominate as the listener moves through the passenger decks.
    const float distance=v.speaker.coach?std::hypot(rel.x,rel.y,rel.z):0.0f;
    const float speakerVolume=objectVolume/(1.0f+0.25f*std::max(0.0f,distance-1.0f));
-   check(v.object->SetVolume(speakerVolume),"SetVolume");
+   check(v.object->SetVolume(speakerVolume*v.speaker.volume),"SetVolume");
   }
   check(stream->EndUpdatingAudioObjects(),"EndUpdatingAudioObjects");
   totalFrames+=count;

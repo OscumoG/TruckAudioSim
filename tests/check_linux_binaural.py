@@ -14,11 +14,18 @@ engine, wav = sys.argv[1:]
 rate = 48000
 
 
-def render(directory, yaw):
+def render(directory, yaw, speakers=None):
     pose = directory / "pose.json"
     pose.write_text(json.dumps({"head": [0, 0, 0], "yawDeg": yaw}), encoding="utf-8")
     output = directory / "output.wav"
-    subprocess.run([engine, "--channel-test", "--wav", wav, "--pose-file", str(pose),
+    mode = ["--channel-test"]
+    if speakers is not None:
+        preset = directory / "preset.json"
+        preset.write_text(json.dumps({
+            "truckerAuxPreset": 1, "name": "Volume test", "layout": {"speakers": speakers},
+        }), encoding="utf-8")
+        mode = ["--preset", str(preset)]
+    subprocess.run([engine, *mode, "--wav", wav, "--pose-file", str(pose),
                     "--render", str(output)], check=True)
     data = output.read_bytes()
     assert data[:4] == b"RIFF" and data[8:12] == b"WAVE"
@@ -39,7 +46,10 @@ def render(directory, yaw):
 
 
 def energy(stereo, second, ear):
-    data = stereo[2 * rate * second + ear:2 * rate * (second + 1):2]
+    # Skip the edges, where roundoff from the next FFT block can leave a tiny residual.
+    start = second * rate + rate // 10
+    end = (second + 1) * rate - rate // 10
+    data = stereo[2 * start + ear:2 * end:2]
     return sum(sample * sample for sample in data)
 
 
@@ -52,3 +62,13 @@ with TemporaryDirectory() as temporary:
     assert energy(straight, 6, 0) > 1.4 * energy(straight, 6, 1)  # side left
     assert energy(straight, 7, 1) > 1.4 * energy(straight, 7, 0)  # side right
     assert energy(turned, 2, 0) > 1.4 * energy(turned, 2, 1)  # front centre becomes left
+
+    left = {"id": "l", "name": "Left", "channel": "FL", "type": "full",
+            "gainDb": 0, "position": [-1, 0, -1]}
+    right = {**left, "id": "r", "name": "Right", "channel": "FR", "position": [1, 0, -1]}
+    baseline = render(Path(temporary), 0, [left, right])
+    adjusted = render(Path(temporary), 0, [{**left, "volumePercent": 0}, {**right, "volumePercent": 50}])
+    for ear in range(2):
+        assert energy(baseline, 0, ear) > 0.01
+        assert energy(adjusted, 0, ear) < 1e-12
+        assert math.isclose(energy(adjusted, 1, ear), energy(baseline, 1, ear) * 0.25, rel_tol=1e-5)

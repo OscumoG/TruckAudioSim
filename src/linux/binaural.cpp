@@ -184,7 +184,7 @@ void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& 
      ? Vec3{relative.x/radius, relative.y/radius, relative.z/radius} : Vec3{0,0,-1};
   s.selectDirection(voice, dir);
   const float distance = voice.speaker.coach ? 0.25f : 0.5f;
-  const float attenuation = 1.0f/(1.0f+distance*std::max(0.0f,radius-1.0f));
+  const float attenuation = voice.speaker.volume/(1.0f+distance*std::max(0.0f,radius-1.0f));
   const auto history = voice.history.size();
   std::copy(voice.history.begin(), voice.history.end(), s.time.begin());
   mixSpatialObject(voice.speaker, pcm, frames, kBinauralBlock, s.channels, s.mask,

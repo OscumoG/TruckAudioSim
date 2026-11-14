@@ -16,6 +16,12 @@ Los autobuses y el Škoda se identifican por el nombre o un alias de telemetría
 Todas las bocinas quedan a **0 dB** en el editor. El motor conserva
 los filtros según el tipo de bocina y calcula el margen de la mezcla.
 
+En **Speakers**, selecciona una bocina y ajusta **Volume** de 0 a 100%.
+El valor se guarda con el perfil. A 0% la bocina queda en silencio y al
+100% usa el nivel que tenga en **Level**. Si seleccionas varias bocinas,
+el control aplica el mismo porcentaje a todas. Los perfiles anteriores
+parten al 100%.
+
 En 5.1 y 7.1, el central Midrange reproduce de 500 a 2500 Hz y el
 subwoofer usa un paso bajo a 120 Hz. Los frontales son de rango completo
 para conservar graves incluso cuando el LFE de la fuente está vacío.

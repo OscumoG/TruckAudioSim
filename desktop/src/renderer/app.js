@@ -986,7 +986,7 @@ const actions = {
     updateSpatial();
     render();
   },
-  // Name, channel or type: the same value for every selected speaker.
+  // Apply the same value to every selected speaker.
   updateSelected(patch) {
     const { ids } = state.picked;
     if (ids.length) edit((layout) => patchSpeakers(layout, ids, patch));
@@ -1061,7 +1061,7 @@ function render() {
   const { layout } = current;
   const { ids } = state.picked;
   // Speakers you do not hear (muted, or another one soloed) are drawn grey.
-  const silentIds = layout.speakers.filter((s) => isSilenced(s, state.solo, state.muted)).map((s) => s.id);
+  const silentIds = layout.speakers.filter((s) => s.volumePercent === 0 || isSilenced(s, state.solo, state.muted)).map((s) => s.id);
   panel.update({
     warnings: [state.pluginWarning, state.controlWarning, ...state.storeWarnings, ...state.collectionWarnings,
       ...state.audioWarnings, state.audioStatus.error].filter(Boolean),

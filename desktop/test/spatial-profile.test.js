@@ -63,6 +63,28 @@ test('the Scania profile keeps eight discrete channels through import, export an
   assert.equal(spatialProfile(entry.layout, null, [first.id]).layout.speakers[0].enabled, false);
 });
 
+test('speaker volume is independent of the mirrored speaker and survives preset export', () => {
+  const filename = 'speaker-volume.json';
+  const raw = {
+    truckerAuxPreset: 1,
+    name: 'Speaker volume',
+    layout: { speakers: [
+      { id: 'l', channel: 'L', gainDb: -3, pair: 'r' },
+      { id: 'r', channel: 'R', gainDb: 2, pair: 'l' },
+    ] },
+  };
+  const { entry } = parsePresetFile(raw, filename);
+  const layout = updateSpeaker(entry.layout, 'l', { volumePercent: 0 });
+  const exported = presetFile({ ...entry, layout });
+  const imported = parsePresetFile(JSON.parse(JSON.stringify(exported)), filename).entry.layout;
+  const [left, right] = spatialProfile(imported).layout.speakers;
+  assert.equal(left.volumePercent, 0);
+  assert.equal(left.gainDb, -3);
+  assert.equal(right.volumePercent ?? 100, 100);
+  assert.equal(right.gainDb, 2);
+  assert.equal(updateSpeaker(layout, 'l', { volumePercent: 50 }).speakers[0].volumePercent, 50);
+});
+
 test('all nine coach profiles keep the back of the passenger cabin in the editor and engine', () => {
   const root = new URL('../presets/default/Variantes%20de%20cabina/ETS2/', import.meta.url);
   const files = fs.readdirSync(root).filter((file) => /^(Scania Touring|MAN Lion's Coach|Volvo 9700 DD) - /.test(file));

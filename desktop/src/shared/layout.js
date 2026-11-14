@@ -90,12 +90,14 @@ function freeId(used) {
 
 function cleanSpeaker(raw, id, fallbackName, vehicleSpace) {
   const src = raw && typeof raw === 'object' ? raw : {};
+  const volumePercent = isNum(src.volumePercent) ? Math.round(clamp(src.volumePercent, 0, 100)) : 100;
   return {
     id,
     name: text(src.name) || fallbackName,
     position: vec3(src.position, [0, 0, -0.5], vehicleSpace),
     channel: CHANNELS.includes(src.channel) ? src.channel : 'L',
     gainDb: clamp(isNum(src.gainDb) ? src.gainDb : 0, GAIN_MIN, GAIN_MAX),
+    ...(volumePercent < 100 ? { volumePercent } : {}),
     type: TYPES.includes(src.type) ? src.type : 'full',
     pair: text(src.pair) || null,
   };

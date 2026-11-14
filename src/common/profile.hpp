@@ -13,6 +13,7 @@ struct Speaker {
  bool enabled=true;
  CabAudio cabAudio=CabAudio::Legacy;
  bool coach=false;
+ float volume=1.0f;
 };
 struct Profile {std::string name,vehicle,game; std::vector<Speaker> speakers;};
 Profile loadProfile(const std::string& path);

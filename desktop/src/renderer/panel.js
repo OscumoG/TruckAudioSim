@@ -328,6 +328,10 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
   const type = el('select');
   const gain = el('input', { type: 'range', min: -60, max: 12, step: 0.5 });
   const gainValue = el('span', { className: 'value' });
+  const speakerVolume = el('input', { type: 'range', min: 0, max: 100, step: 1,
+    title: 'Volume for the selected speakers. 0% silences them and 100% uses their full level.' });
+  speakerVolume.setAttribute('aria-label', 'Speaker volume');
+  const speakerVolumeValue = el('span', { className: 'value' });
   const pair = el('select');
   const coords = [0, 1, 2].map(() => el('input', { type: 'number', step: 1 }));
   const remove = el('button', { textContent: 'Delete speaker' });
@@ -340,6 +344,7 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
     row('Name', name),
     row('Channel', channel),
     row('Type', type),
+    row('Volume', el('div', { className: 'inline' }, [speakerVolume, speakerVolumeValue])),
     row('Level', el('div', { className: 'inline' }, [gain, gainValue])),
     row('Mirror of', pair),
     row('X / Y / Z, cm', el('div', { className: 'coords' }, coords)),
@@ -474,7 +479,7 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
   presetName.onkeydown = (event) => {
     if (event.key === 'Enter') presetName.blur();
   };
-  for (const slider of [volume, gain]) wheelSlider(slider);
+  for (const slider of [volume, speakerVolume, gain]) wheelSlider(slider);
   add.onclick = () => actions.addSpeaker();
   addPair.onclick = () => actions.addPair();
   duplicate.onclick = () => actions.duplicateSelected();
@@ -496,6 +501,7 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
   // With several speakers selected, a "Mixed" entry is shown until a real value is chosen.
   channel.onchange = () => channel.value && actions.updateSelected({ channel: channel.value });
   type.onchange = () => type.value && actions.updateSelected({ type: type.value });
+  speakerVolume.oninput = () => actions.updateSelected({ volumePercent: Number(speakerVolume.value) });
   gain.oninput = () => actions.setLevel(Number(gain.value));
   pair.onchange = () => actions.setPair(pair.value || null);
   coords.forEach((coord, axis) => {
@@ -619,6 +625,11 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
       const value = common((o) => o[key]);
       fillSelect(select, value === null ? [{ value: '', label: 'Mixed' }, ...options] : options, value ?? '');
     }
+    const percent = s.volumePercent ?? 100;
+    // Changing the selected speaker also updates the slider if it still has keyboard focus.
+    speakerVolume.value = percent;
+    speakerVolume.setAttribute('aria-valuetext', `${percent}%`);
+    speakerVolumeValue.textContent = common((o) => o.volumePercent ?? 100) === null ? `${percent}%, mixed` : `${percent}%`;
     setValue(gain, s.gainDb);
     const level = common((o) => o.gainDb);
     gainValue.textContent = level === null ? `${s.gainDb.toFixed(1)} dB, mixed` : `${s.gainDb.toFixed(1)} dB`;

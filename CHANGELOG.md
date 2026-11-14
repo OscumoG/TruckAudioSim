@@ -1,3 +1,7 @@
+# v0.24.1 — volumen por bocina
+
+- Control de 0 a 100% por bocina, guardado en el perfil y aplicado en vivo en Windows y Linux.
+
 # v0.24.0 — beta Linux
 
 - Editor en Linux x86-64 con captura PCM multicanal por PipeWire/PulseAudio, salida binaural mediante HRTF y pausa de reproductores MPRIS.
