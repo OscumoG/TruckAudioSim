@@ -151,3 +151,19 @@ test('playback device names and stable endpoint IDs are parsed from Windows outp
     { label: 'Steam Streaming Speakers', deviceId: '{0.0.0.00000000}.{456}' },
   ]);
 });
+
+test('acoustics survive export and keep the independent window openings', () => {
+  const raw = {
+    truckerAuxPreset: 1, name: 'Cab acoustics',
+    layout: { acoustics: { enabled: true, leftWindow: 37, rightWindow: 0, bodyCutoff: 80000 } },
+  };
+  const { entry } = parsePresetFile(raw, 'acoustics.json');
+  const exported = presetFile(entry);
+  const imported = parsePresetFile(exported, 'acoustics.json').entry;
+  assert.deepEqual(spatialProfile(imported.layout).layout.acoustics, entry.layout.acoustics);
+  assert.equal(imported.layout.acoustics.leftWindow, 37);
+  assert.equal(imported.layout.acoustics.rightWindow, 0);
+  assert.equal(imported.layout.acoustics.bodyCutoff, 4000);
+  assert.equal(spatialPose(null, 0, false, 1, 0).exterior, true);
+  assert.equal(spatialPose(null, 0, false, 1).exterior, undefined);
+});

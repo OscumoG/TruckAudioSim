@@ -1,3 +1,12 @@
+# v0.25.0 — acústica y prueba de bocinas
+
+- Editor Acoustics por perfil con reflexiones tempranas, absorción, aislamiento
+  de carrocería y separación entre pisos.
+- Apertura manual e independiente de ventanas, con mayor salida de música y
+  agudos hacia el lado abierto desde cámaras exteriores.
+- Botón de prueba por bocina en Windows y Linux, con o sin captura en vivo.
+- Empaquetado x64 en instalador EXE, EXE portátil, AppImage y DEB.
+
 # v0.24.1 — volumen por bocina
 
 - Control de 0 a 100% por bocina, guardado en el perfil y aplicado en vivo en Windows y Linux.

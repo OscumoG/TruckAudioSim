@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "binaural.hpp"
+#include "acoustics.hpp"
 #include "normalization.hpp"
 #include "spatial_mix.hpp"
 #include <mysofa.h>
@@ -55,6 +56,7 @@ class Transform {
 struct Voice {
  Speaker speaker;
  SpeakerFilter filter;
+ CabinAcoustics acoustics;
  float gain = 0;
  std::vector<float> history;
  Ears hrtf;
@@ -85,6 +87,8 @@ struct BinauralState {
  std::unique_ptr<Transform> transform;
  std::vector<Complex> work;
  std::vector<Voice> voices;
+ Acoustics acoustics;
+ SpeakerTest speakerTest;
 
  BinauralState(const char* path, uint32_t rate, uint16_t channels, uint32_t mask, bool discrete)
      : rate(rate), channels(channels), mask(mask), discrete(discrete), fftSize(kBinauralBlock),
@@ -170,14 +174,18 @@ void Binaural::setProfile(const Profile& profile) {
   voice.gain = gains[i];
  }
  s.voices.swap(next);
+ s.acoustics=profile.acoustics;
 }
 
 void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& pose, float* stereo) {
  auto& s = *state_;
  for (auto& ear : s.sum) std::fill(ear.begin(), ear.end(), Complex{});
- const float master = pose.electronicsOn ? pose.volume*pose.exteriorGain : 0;
+ const bool testing=pose.testSequence!=0;
+ s.speakerTest.prepare(pose.testSequence,s.rate);
+ const float master = testing?0.5f*pose.exteriorGain:(pose.electronicsOn ? pose.volume*pose.exteriorGain : 0);
  const float reference = s.discrete ? 0.7f : kDesktopReferenceGain;
  for (auto& voice : s.voices) {
+  if(testing && pose.testSpeaker!=voice.speaker.id) continue;
   const auto relative = relativePosition(voice.speaker.pos, pose);
   const float radius = std::hypot(relative.x, relative.y, relative.z);
   const Vec3 dir = radius > 0.001f
@@ -187,8 +195,11 @@ void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& 
   const float attenuation = voice.speaker.volume/(1.0f+distance*std::max(0.0f,radius-1.0f));
   const auto history = voice.history.size();
   std::copy(voice.history.begin(), voice.history.end(), s.time.begin());
-  mixSpatialObject(voice.speaker, pcm, frames, kBinauralBlock, s.channels, s.mask,
-                   voice.gain, true, s.time.data()+history, &voice.filter);
+  auto block=std::span(s.time.data()+history,kBinauralBlock);
+  if(testing) s.speakerTest.render(block,voice.speaker.type=="sub");
+  else mixSpatialObject(voice.speaker, pcm, frames, kBinauralBlock, s.channels, s.mask,
+                        voice.gain, true, block.data(), &voice.filter);
+  voice.acoustics.process(block,s.acoustics,voice.speaker,pose,s.rate);
   std::copy_n(s.time.begin()+kBinauralBlock, history, voice.history.begin());
   s.forward();
   for (size_t ear = 0; ear < 2; ++ear) {
@@ -199,6 +210,7 @@ void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& 
    }
   }
  }
+ s.speakerTest.advance(kBinauralBlock);
  const float outputGain = master*reference/static_cast<float>(s.fftSize);
  for (size_t ear = 0; ear < 2; ++ear) {
   s.inverse(ear);

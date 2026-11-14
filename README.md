@@ -2,13 +2,29 @@
 
 Escucha Spotify, VLC u otra fuente de audio como si las bocinas estuvieran en la cabina de tu camión en **Euro Truck Simulator 2** o **American Truck Simulator**. Incluye el editor 3D adaptado de Trucker AUX y 150 perfiles Realista, 5.1 y 7.1. También puedes usarlo para escuchar música con el juego cerrado.
 
+## Acústica y prueba de bocinas
+
+En **Acoustics**, activa **Enable acoustics** para el perfil que estés usando.
+El motor calcula reflexiones tempranas con las dimensiones de **Bounds**.
+Puedes ajustar la absorción, el aislamiento exterior y la altura que separa
+los pisos de un autobús. Los valores son estimaciones para la simulación.
+Las reflexiones se mezclan en cada bocina antes del audio espacial.
+
+**Left/Right window open** define la apertura de cada ventana al usar cámara
+exterior. El SDK 1.16 no informa el porcentaje real de apertura. Ajusta esos
+valores en el editor para simular la posición de las ventanas del juego.
+
+Pulsa **▶** junto a una bocina para escuchar una señal corta en su posición
+actual. El botón utiliza una ganancia de prueba fija y, durante la captura
+en vivo, interrumpe brevemente la música. Requiere seleccionar una salida.
+
 ## Linux
 
 La edición Linux x86-64 usa PipeWire o PulseAudio y audio binaural para auriculares. Para ETS2/ATS bajo Proton o Wine reutiliza ambos DLL de Windows con un puente de telemetría. El juego nativo usa un plugin del SDK para la cabina y la electrónica. [Instalación y compilación en Linux](docs/LINUX.md)
 
 ## Instalar en Windows
 
-1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.24.1-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
+1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.25.0-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
 2. Con el juego cerrado, abre **Camera → Install ETS2 / ATS plugins…** y selecciona la carpeta del juego. Si necesitas copiar los DLL manualmente, están en la carpeta `plugin` de TruckAudioSim. Coloca `scs-telemetry.dll` y `trucker_aux_camera.dll` en `bin\win_x64\plugins\` del juego.
 3. Abre el juego y acepta el aviso de funciones avanzadas del SDK. En TruckAudioSim selecciona **Camera → Mode → Raw Camera** para seguir la vista dentro y fuera de la cabina.
 
@@ -52,7 +68,7 @@ Los WAV de diagnóstico se generan con los dos scripts de Python del ejemplo.
 
 Para recompilar el plugin de cámara, inicializa el submódulo con `git submodule update --init` y ejecuta `native/camera-plugin/build.cmd`.
 
-Para compilar el instalador con NSIS, usa `python desktop/installer/build.py <carpeta-win-unpacked> <ruta-del-instalador.exe>` desde la raíz. Más información en la [guía de perfiles](docs/PERFILES_CABINA.md) y el [historial de cambios](CHANGELOG.md).
+Para compilar el instalador con NSIS, usa `python desktop/installer/build.py <carpeta-win-unpacked> <ruta-del-instalador.exe>` desde la raíz. Más información en la [guía de perfiles](docs/PERFILES_CABINA.md) y el [historial de cambios](CHANGELOG.md). Para el EXE portátil, ejecuta el mismo comando con `--portable`.
 
 ## Licencia
 

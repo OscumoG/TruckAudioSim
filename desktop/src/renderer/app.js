@@ -1,4 +1,5 @@
 import { createPanel } from './panel.js';
+import { normalizeAcoustics } from '../shared/acoustics.js';
 import { createViews } from './views.js';
 import { mediaTelemetry, spatialPose, spatialProfile } from '../shared/spatial-profile.js';
 import {
@@ -128,7 +129,22 @@ function updateSpatial() {
   }, 30);
 }
 
-const currentProfile = () => spatialProfile(playing().layout, state.solo, [...state.muted]);
+let testSequence = 0;
+let speakerTest = null;
+let testTimer;
+const acousticsFor = (layout) => normalizeAcoustics(layout.acoustics,
+  layout.vehicleSpace === 'coach' && layout.bounds.max[1] - layout.bounds.min[1] > 3.2);
+const currentProfile = () => {
+  const { layout } = playing();
+  return speakerTest
+    ? spatialProfile({ ...layout, speakers: [{ ...speakerTest.speaker, volumePercent: 100, gainDb: 0 }] })
+    : spatialProfile(layout, state.solo, [...state.muted]);
+};
+
+function stopSpeakerTest() {
+  clearTimeout(testTimer);
+  speakerTest = null;
+}
 function exteriorDistance() {
   if (state.selection.pause) return null;
   const { bounds, vehicleSpace } = playing().layout;
@@ -138,14 +154,18 @@ function exteriorDistance() {
 }
 const currentAudioState = () => ({
   profile: currentProfile(),
-  pose: spatialPose(state.selection.pause ? null : state.heard, headRestX(state.truck),
-    state.silenced || Boolean(pauseSwitch), state.settings.volume, exteriorDistance()),
+  pose: {
+    ...spatialPose(state.selection.pause ? null : state.heard, headRestX(state.truck),
+      state.silenced || Boolean(pauseSwitch), state.settings.volume, exteriorDistance()),
+    ...(speakerTest ? { testSequence: speakerTest.sequence, testSpeaker: speakerTest.speaker.id } : {}),
+  },
   media: mediaTelemetry(state.pose, state.inWorld, state.settings.electricPlayer),
 });
 
 // Another truck or another chosen preset is another set of speakers: drop solo, mute and
 // the selection. Not called when the first edit in a truck creates its preset.
 function resetSession() {
+  if (state.audioMode !== 'speaker-preview') stopSpeakerTest();
   state.solo = null;
   state.muted = new Set();
   state.picked = EMPTY;
@@ -284,22 +304,23 @@ async function refreshAudioDevices() {
   render();
 }
 
-async function startAudio(diagnostic = false) {
+async function startAudio(diagnostic = false, speakerPreview = false) {
   if (state.pendingStart || state.audioMode) return;
   state.pendingStart = true;
-  state.audioMode = diagnostic ? 'diagnostic' : 'live';
+  state.audioMode = speakerPreview ? 'speaker-preview' : diagnostic ? 'diagnostic' : 'live';
   state.audioStatus = {};
   lastSpatial = '';
   render();
   try {
     await window.aux.startSpatial({
-      input: state.inputId, output: state.outputId, diagnostic,
+      input: state.inputId, output: state.outputId, diagnostic, speakerPreview,
       ...currentAudioState(),
     });
     lastSpatial = '';
     updateSpatial();
   } catch (error) {
     state.audioMode = null;
+    stopSpeakerTest();
     state.audioStatus = { error: error.message };
   } finally {
     state.pendingStart = false;
@@ -309,7 +330,10 @@ async function startAudio(diagnostic = false) {
 
 window.aux.onSpatialStatus((status) => {
   state.audioStatus = { ...state.audioStatus, ...status };
-  if (status.running === false) state.audioMode = null;
+  if (status.running === false) {
+    state.audioMode = null;
+    stopSpeakerTest();
+  }
   render();
 });
 
@@ -992,6 +1016,25 @@ const actions = {
     if (ids.length) edit((layout) => patchSpeakers(layout, ids, patch));
   },
   // The form's level slider shows the primary speaker; the others move by the same step.
+  setAcoustics(patch) {
+    edit((layout) => ({ ...layout, acoustics: normalizeAcoustics({ ...acousticsFor(layout), ...patch }) }));
+  },
+  testSpeaker(id) {
+    const speaker = playing().layout.speakers.find((item) => item.id === id);
+    if (!speaker || !state.outputId || state.pendingStart || speakerTest ||
+        (state.audioMode && state.audioMode !== 'live')) return;
+    testSequence = testSequence % 2147483646 + 1;
+    speakerTest = { speaker, sequence: testSequence };
+    if (state.audioMode === 'live') {
+      updateSpatial();
+      testTimer = setTimeout(() => {
+        stopSpeakerTest();
+        updateSpatial();
+        render();
+      }, 925);
+      render();
+    } else startAudio(false, true);
+  },
   setLevel(gainDb) {
     const { ids, primary } = state.picked;
     const current = playing().layout.speakers.find((s) => s.id === primary);
@@ -1071,6 +1114,8 @@ function render() {
     audioMode: state.audioMode,
     audioStatus: state.audioStatus,
     pendingStart: state.pendingStart,
+    testingSpeaker: speakerTest?.speaker.id ?? null,
+    acoustics: acousticsFor(layout),
     muteWhen: state.settings.muteWhen,
     electricPlayer: state.settings.electricPlayer,
     turnLook: state.settings.turnLook,

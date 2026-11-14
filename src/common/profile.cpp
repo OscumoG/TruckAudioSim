@@ -2,6 +2,7 @@
 #include "profile.hpp"
 #include "json.hpp"
 #include <cmath>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
@@ -23,6 +24,38 @@ Profile parseProfileText(const std::string& raw,bool allowEmpty){
   auto& layout=root.at("layout");const auto& speakers=layout.at("speakers");
   const auto* space=layout.get("vehicleSpace");
   const bool coach=space&&space->kind==Json::Kind::String&&space->str()=="coach";
+  if(const auto* cfg=layout.get("acoustics"); cfg && cfg->kind==Json::Kind::Object){
+    auto& a=p.acoustics;
+    const auto flag=[&](const char* key){
+      const auto* v=cfg->get(key);
+      return v && v->kind==Json::Kind::Boolean && v->boolean;
+    };
+    const auto read=[&](const char* key,float fallback,double lo,double hi,float scale=1){
+      const auto* v=cfg->get(key);
+      return v && v->kind==Json::Kind::Number ? static_cast<float>(std::clamp(v->num(),lo,hi))*scale : fallback;
+    };
+    a.enabled=flag("enabled");
+    a.reflections=read("reflections",a.reflections,0,100,0.01f);
+    a.absorption=read("absorption",a.absorption,0,100,0.01f);
+    a.bodyLoss=read("bodyLoss",a.bodyLoss,0,18);
+    a.bodyCutoff=read("bodyCutoff",a.bodyCutoff,300,4000);
+    a.leftWindow=read("leftWindow",0,0,100,0.01f);
+    a.rightWindow=read("rightWindow",0,0,100,0.01f);
+    a.deckHeight=read("deckHeight",a.deckHeight,-50,280,0.01f);
+    if(const auto* bounds=layout.get("bounds")){
+      const auto vector=[&](const char* key,Vec3 fallback){
+        const auto* v=bounds->get(key);
+        if(!v || v->kind!=Json::Kind::Array || v->array.size()!=3) return fallback;
+        const auto component=[&](size_t i,double limit){
+          return static_cast<float>(std::clamp(v->array[i].num(),-limit,limit));
+        };
+        return Vec3{component(0,5),component(1,5),component(2,coach?16:5)};
+      };
+      const auto lo=vector("min",a.min), hi=vector("max",a.max);
+      if(lo.x<hi.x && lo.y<hi.y && lo.z<hi.z){a.min=lo;a.max=hi;}
+    }
+    a.splitDeck=flag("splitDeck") && a.deckHeight>a.min.y && a.deckHeight<a.max.y;
+  }
   CabAudio cabAudio=CabAudio::Legacy;
   if(const auto* mode=layout.get("cabAudio")){
     const auto name=mode->str();

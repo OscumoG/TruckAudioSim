@@ -36,6 +36,7 @@
 #include "pose.hpp"
 #include "live_pipe.hpp"
 #include "normalization.hpp"
+#include "acoustics.hpp"
 #include "spatial_mix.hpp"
 #include "channel_layout.hpp"
 #include "route_guard.hpp"
@@ -66,6 +67,7 @@ struct ConsoleInterrupt {
 struct Voice{
  tas::Speaker speaker;
  tas::SpeakerFilter filter;
+ tas::CabinAcoustics acoustics;
  float gain=0.0f;
  ComPtr<ISpatialAudioObject> object;
  uint64_t nonzeroSamples=0;
@@ -390,6 +392,7 @@ int run(const Options& opt){
  size_t drainFrames=4800;
  auto lastPoll=std::chrono::steady_clock::time_point{};
  std::string lastProfile;
+ tas::SpeakerTest speakerTest;
  std::vector<float> samples;
  float minX=1.0f,maxX=-1.0f;
  while(!stopRequested.load(std::memory_order_relaxed)){
@@ -425,13 +428,16 @@ int run(const Options& opt){
      if(!raw.empty() && raw!=lastProfile){
       auto revised=tas::parseProfileText(raw,true);
       candidates=speakersForOutput(revised,objectCount);
+      profile.acoustics=revised.acoustics;
       voiceGains=tas::neutralVoiceGains(candidates,channels,channelMask,peakCeiling,sampleRate);
       for(size_t i=0;i<voices.size();++i){
        auto next=i<candidates.size()?candidates[i]:tas::Speaker{};
        auto& voice=voices[i];
        if(voice.speaker.id!=next.id || voice.speaker.type!=next.type ||
-          voice.speaker.channel!=next.channel || voice.speaker.cabAudio!=next.cabAudio)
+          voice.speaker.channel!=next.channel || voice.speaker.cabAudio!=next.cabAudio){
         voice.filter.configure(next,sampleRate);
+        voice.acoustics.reset();
+       }
        voice.speaker=std::move(next);
        voices[i].gain=i<voiceGains.size()?voiceGains[i]:0.0f;
       }
@@ -446,6 +452,8 @@ int run(const Options& opt){
   auto audible=target;
   if(!audible.electronicsOn)audible.volume=0;
   current=tas::smoothPose(current,audible,0.12f);
+  speakerTest.prepare(current.testSequence,sampleRate);
+  const bool testing=current.testSequence!=0;
   // Windows Spatial Sound's object volume is limited to unity. Apply boost
   // to the PCM before the mixer clamps samples to the valid output range.
   const float masterGain=current.volume*(opt.editLive?tas::kDesktopReferenceGain:1.0f);
@@ -468,10 +476,15 @@ int run(const Options& opt){
    if(bytes<frameCount*sizeof(float))throw std::runtime_error("Spatial output buffer too small");
    // The loopback and pipe may return fewer frames than Windows requests.
    // Explicitly zero the tail: do not read stale or uninitialized PCM.
-   const auto stats=tas::mixSpatialObject(v.speaker,samples,count,frameCount,
-                                        channels,channelMask,v.gain*pcmBoost,
-                                        current.volume>0 && v.gain>0,reinterpret_cast<float*>(buffer),
-                                        &v.filter);
+   auto pcm=std::span(reinterpret_cast<float*>(buffer),frameCount);
+   const bool selected=testing && current.testSpeaker==v.speaker.id;
+   auto stats=tas::mixSpatialObject(v.speaker,samples,count,frameCount,
+                                   channels,channelMask,v.gain*(profile.acoustics.enabled?1.0f:pcmBoost),
+                                   !testing && current.volume>0 && v.gain>0,pcm.data(),&v.filter);
+   if(selected) speakerTest.render(pcm,v.speaker.type=="sub");
+   if(!testing || selected) v.acoustics.process(pcm,profile.acoustics,v.speaker,current,sampleRate);
+   if(profile.acoustics.enabled && !testing)
+    for(float& sample:pcm) sample=std::clamp(sample*pcmBoost,-1.0f,1.0f);
    if(opt.channelTest){
     const auto* pcm=reinterpret_cast<const float*>(buffer);
     for(size_t i=0;i<count;++i){
@@ -497,9 +510,10 @@ int run(const Options& opt){
    check(v.object->SetPosition(rel.x,rel.y,rel.z),"SetPosition");
    // Nearby speakers dominate as the listener moves through the passenger decks.
    const float distance=v.speaker.coach?std::hypot(rel.x,rel.y,rel.z):0.0f;
-   const float speakerVolume=objectVolume/(1.0f+0.25f*std::max(0.0f,distance-1.0f));
+   const float speakerVolume=(testing?(selected?0.65f*current.exteriorGain:0.0f):objectVolume)/(1.0f+0.25f*std::max(0.0f,distance-1.0f));
    check(v.object->SetVolume(speakerVolume*v.speaker.volume),"SetVolume");
   }
+  speakerTest.advance(frameCount);
   check(stream->EndUpdatingAudioObjects(),"EndUpdatingAudioObjects");
   totalFrames+=count;
   outputFrames+=frameCount;

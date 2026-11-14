@@ -4,6 +4,8 @@
 // driver's default head (eye level, seat line). The head sits left of X = 0 by what the
 // game reports (pose.js headRestX). Mirrored pairs are mirror images about X = 0.
 
+import { normalizeAcoustics } from './acoustics.js';
+
 export const MAX_SPEAKERS = 16;
 export const LABEL_MAX = 32; // characters of a preset's label (over 16 it runs like a ticker: badge.js)
 // A label's colour; blue when none is stored.
@@ -144,6 +146,7 @@ export function normalizeLayout(raw, fallbackName = 'Default layout') {
     width: clamp(isNum(src.width) ? src.width : 1, 0, 2),
     ...(['realistic', '5.1', '7.1'].includes(src.cabAudio) ? { cabAudio: src.cabAudio } : {}),
     ...(vehicleSpace ? { vehicleSpace } : {}),
+    ...(src.acoustics ? { acoustics: normalizeAcoustics(src.acoustics) } : {}),
     bounds,
     speakers: fixPairs(speakers),
   };

@@ -1,3 +1,4 @@
+import { ACOUSTIC_FIELDS } from '../shared/acoustics.js';
 // The control panel on the left. Built once; update(view) refreshes values in place
 // so a field the user is typing into keeps its focus.
 import { LABEL_COLORS, LABEL_MAX, TYPES, TYPE_NAMES } from '../shared/layout.js';
@@ -316,6 +317,27 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
   // Shared presets: one file each in presets/, listed under Collection (collection.js).
   const exportButton = el('button', { textContent: 'Export…', title: 'Save presets as files to share, this one ticked' });
   const speakerHint = el('p', { className: 'hint', textContent: 'Realista, 5.1 and 7.1 presets filter by speaker type. Surround speakers require multichannel input.' });
+  const acousticsEnabled = el('input', { type: 'checkbox' });
+  acousticsEnabled.onchange = () => actions.setAcoustics({ enabled: acousticsEnabled.checked });
+  const splitDeck = el('input', { type: 'checkbox' });
+  splitDeck.onchange = () => actions.setAcoustics({ splitDeck: splitDeck.checked });
+  const acousticControls = ACOUSTIC_FIELDS.map(({ key, label, min, max, step, unit }) => {
+    const input = el('input', { type: 'range', min, max, step });
+    input.setAttribute('aria-label', label);
+    const value = el('span', { className: 'value' });
+    input.oninput = () => actions.setAcoustics({ [key]: Number(input.value) });
+    wheelSlider(input);
+    return { key, unit, input, value, row: row(label, el('div', { className: 'inline' }, [input, value])) };
+  });
+  const deckRow = row('Separate decks', splitDeck);
+  const acousticsForm = el('fieldset', {}, [
+    el('legend', { textContent: 'Acoustics' }),
+    row('Enable acoustics', acousticsEnabled),
+    ...acousticControls.slice(0, -1).map(({ row }) => row),
+    deckRow,
+    acousticControls.at(-1).row,
+    el('p', { className: 'hint', textContent: 'Reflections use the layout bounds. Set window openings here to change how much music escapes in exterior cameras.' }),
+  ]);
   const list = el('ul', { className: 'speakers' });
   const add = el('button', { textContent: '+ Speaker' });
   const addPair = el('button', { textContent: '+ Pair' });
@@ -404,7 +426,7 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
   const boundsForm = el('fieldset', {}, [
     el('legend', { textContent: 'Bounds, cm' }),
     el('div', { className: 'walls' }, walls.map((w) => w.label)),
-    el('p', { className: 'hint', textContent: 'The bounds do not change the sound: they only frame the views for placing speakers.' }),
+    el('p', { className: 'hint', textContent: 'Bounds frame the speaker views and define the walls when Acoustics is enabled.' }),
     headNote,
   ]);
 
@@ -446,6 +468,7 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
       el('p', { className: 'hint', textContent: 'Ctrl+click or drag a box in a view to select several; Shift+click a range; Ctrl+A all.' }),
     ]),
     speakerForm,
+    acousticsForm,
   );
   boundsRoot.replaceChildren(boundsForm);
   const fieldsets = [...root.querySelectorAll(':scope > fieldset'), boundsForm];
@@ -493,7 +516,8 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
     if (!item) return;
     const { id } = item.dataset;
     const what = event.target.dataset.action;
-    if (what === 'solo') actions.toggleSolo(id);
+    if (what === 'test') actions.testSpeaker(id);
+    else if (what === 'solo') actions.toggleSolo(id);
     else if (what === 'mute') actions.toggleMute(id);
     else actions.selectSpeaker(id, { toggle: event.ctrlKey || event.metaKey, range: event.shiftKey });
   };
@@ -510,10 +534,18 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
   remove.onclick = () => actions.deleteSelected();
 
   function speakerItem(s, view) {
+    const testSpeaker = el('button', {
+      type: 'button', textContent: '▶', title: 'Test this speaker',
+      disabled: !view.outputId || view.pendingStart || Boolean(view.testingSpeaker)
+        || Boolean(view.audioMode && view.audioMode !== 'live'),
+    });
+    testSpeaker.dataset.action = 'test';
+    testSpeaker.setAttribute('aria-label', `Test ${s.name}`);
     const item = el('li', { className: view.picked.includes(s.id) ? 'selected' : '' }, [
       speakerIcon(s, view.silentIds.includes(s.id)),
       el('span', { textContent: s.name }),
       el('span', { className: 'badge', textContent: TYPE_BADGE[s.type] }),
+      testSpeaker,
       toggleButton('S', 'solo', view.solo === s.id, 'Solo'),
       toggleButton('M', 'mute', view.muted.has(s.id), 'Mute'),
     ]);
@@ -599,6 +631,18 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
     headNote.textContent = view.headFromGame
       ? `Driver's head: X ${headCm} cm, from the game.`
       : `Driver's head: X ${headCm} cm, typical (no vehicle in the game).`;
+
+    acousticsEnabled.checked = view.acoustics.enabled;
+    splitDeck.checked = view.acoustics.splitDeck;
+    splitDeck.disabled = !view.acoustics.enabled;
+    for (const { key, unit, input, value, row } of acousticControls) {
+      const current = view.acoustics[key];
+      input.value = current;
+      input.disabled = !view.acoustics.enabled || (key === 'deckHeight' && !splitDeck.checked);
+      input.setAttribute('aria-valuetext', `${current} ${unit}`);
+      value.textContent = `${current} ${unit}`;
+      if (key === 'deckHeight') row.hidden = !splitDeck.checked;
+    }
 
     list.replaceChildren(...view.speakers.map((s) => speakerItem(s, view)));
     add.disabled = view.speakers.length >= view.maxSpeakers;

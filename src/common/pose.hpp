@@ -12,6 +12,9 @@ struct Pose {
  float rollDegrees=0;
  float volume=1;
  float exteriorGain=1;
+ bool exterior=false;
+ unsigned testSequence=0;
+ std::string testSpeaker;
 };
 Pose parsePoseText(const std::string& json);
 Pose loadPoseFile(const std::string& path);

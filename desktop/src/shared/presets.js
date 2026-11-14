@@ -311,7 +311,7 @@ function learnPlace(store, entry) {
   return { ...store, vehicles: { ...store.vehicles, [model]: info } };
 }
 
-const sameLayout = (a, b) => JSON.stringify([a.width, a.bounds, a.speakers, a.cabAudio, a.vehicleSpace]) === JSON.stringify([b.width, b.bounds, b.speakers, b.cabAudio, b.vehicleSpace]);
+const sameLayout = (a, b) => JSON.stringify([a.width, a.bounds, a.speakers, a.cabAudio, a.vehicleSpace, a.acoustics]) === JSON.stringify([b.width, b.bounds, b.speakers, b.cabAudio, b.vehicleSpace, b.acoustics]);
 
 export function clearLegacyDefault(store) {
   const key = allPresetKey(store);

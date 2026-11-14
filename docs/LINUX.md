@@ -21,7 +21,7 @@ Los atajos globales existentes usan APIs de Windows. En Linux el volumen y el si
 3. En **Opciones de lanzamiento** de Steam, pon la ruta absoluta al script del paquete seguida por `%command%`. Las comillas permiten espacios en la ruta.
 
    ```text
-   "/ruta/a/TruckAudioSim-v0.24.1-Linux-x64/proton.sh" %command%
+   "/ruta/a/TruckAudioSim-v0.25.0-Linux-x64/proton.sh" %command%
    ```
 
 4. Inicia el juego y acepta el aviso del SDK. En el editor usa **Camera → Mode → Raw Camera** para leer la cámara del plugin antiguo cuando sea compatible con la versión del juego. También se conserva **Adjusted Telemetry** para seguimiento dentro de la cabina.
@@ -63,3 +63,16 @@ Para empaquetar, genera también `tas_proton_bridge.exe` y `tas_proton_launch.ex
 - [Servidor compatible con PulseAudio de PipeWire](https://docs.pipewire.org/page_module_protocol_pulse.html)
 - [libmysofa](https://github.com/hoene/libmysofa)
 - [SCS Telemetry SDK](https://modding.scssoft.com/wiki/Documentation/Engine/SDK/Telemetry)
+
+## Generar los paquetes de una versión
+
+A partir del directorio Linux ensamblado por `desktop/linux/package.sh` (o extraído
+de su tar.gz), ejecuta `desktop/linux/distribute.sh DIRECTORIO_APP SALIDA`. Genera
+el DEB y la AppImage. Usa un entorno de compilación Debian 12 o equivalente
+para mantener la compatibilidad con glibc 2.34 y libstdc++ de GCC 11. El comando
+requiere dpkg-deb, ImageMagick, appimagetool y los archivos de libmysofa.
+
+Para la AppImage en Steam usa `"/ruta/a/TruckAudioSim.AppImage" --proton %command%`.
+El paquete DEB instala el lanzador de Proton en `/opt/truckaudiosim/proton.sh`.
+La AppImage necesita un escritorio Linux x86-64, bibliotecas cliente de
+PulseAudio y `pactl`. Con PipeWire se requiere su compatibilidad PulseAudio.

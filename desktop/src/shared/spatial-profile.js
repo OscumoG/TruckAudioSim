@@ -38,6 +38,7 @@ export function spatialPose(pose, headX, silent, volume, exteriorDistance = null
     electronicsOn: !silent,
     volume: clamp(finite(volume, 1), 0, MAX_VOLUME),
     exteriorGain: Number.isFinite(exteriorDistance) ? exteriorGain(exteriorDistance) : 1,
+    ...(Number.isFinite(exteriorDistance) ? { exterior: true } : {}),
   };
 }
 

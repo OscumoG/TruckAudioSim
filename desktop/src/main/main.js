@@ -425,7 +425,8 @@ function createWindow() {
 
 // Help › Install game plugins (game-plugins.js): the app's plugin/ folder (beside data/, from
 // source app/plugin/) into the game folder picked, after a look at what is there and a yes.
-const pluginDir = linux ? path.join(app.isPackaged ? execDir : app.getAppPath(), 'plugin')
+const pluginDir = linux || process.env.PORTABLE_EXECUTABLE_DIR
+  ? path.join(app.isPackaged ? execDir : app.getAppPath(), 'plugin')
   : path.join(installed ? execDir : path.dirname(dataDir), 'plugin');
 const nativePluginDir = app.isPackaged ? path.join(process.resourcesPath, 'plugins') : path.join(linuxBuild, 'plugins');
 const STEAM_LINUX = ['.local/share/Steam/steamapps/common', '.steam/steam/steamapps/common']

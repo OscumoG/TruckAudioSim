@@ -93,15 +93,16 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
     await session.mediaClosed.finally(() => clearTimeout(kill));
   }
 
-  function start({ input, output, profile, pose, media, diagnostic = false }) {
+  function start({ input, output, profile, pose, media, diagnostic = false, speakerPreview = false }) {
+    const preview = diagnostic || speakerPreview;
     return run(async () => {
       const present = (id) => endpoints.some((entry) => entry.deviceId === id);
       if (!present(output)) throw Error(linux ? 'Choose an output for binaural audio.' : 'Choose a Windows output and enable Spatial Sound on it.');
-      if (!diagnostic && (!present(input) || input === output)) throw Error('Choose a capture device different from the output.');
+      if (!preview && (!present(input) || input === output)) throw Error('Choose a capture device different from the output.');
       await close();
       const capture = endpoints.find((entry) => entry.deviceId === input);
-      if (linux && !diagnostic && !capture?.monitor) throw Error('Choose a playback device with a monitor source.');
-      const session = { dir: fs.mkdtempSync(path.join(os.tmpdir(), 'TruckAudioSim-')), written: new Map(), demo: diagnostic };
+      if (linux && !preview && !capture?.monitor) throw Error('Choose a playback device with a monitor source.');
+      const session = { dir: fs.mkdtempSync(path.join(os.tmpdir(), 'TruckAudioSim-')), written: new Map(), demo: preview };
       try {
         const args = [linux ? '--output' : '--output-id', output];
         if (linux && process.env.TAS_HRTF_SOFA) args.push('--sofa', process.env.TAS_HRTF_SOFA);
@@ -111,7 +112,23 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
           write(session, 'pose.json', pose);
           write(session, 'media.json', media ?? { player: 'off', vehicle: '', electricOn: null });
           args.push('--preset', 'preset.json', '--pose-file', 'pose.json');
-          if (linux) args.push('--input', capture.monitor, '--mask', String(capture.mask));
+          if (speakerPreview) {
+            const wav = Buffer.alloc(44 + 48000 * 4);
+            wav.write('RIFF', 0);
+            wav.writeUInt32LE(wav.length - 8, 4);
+            wav.write('WAVEfmt ', 8);
+            wav.writeUInt32LE(16, 16);
+            wav.writeUInt16LE(1, 20);
+            wav.writeUInt16LE(2, 22);
+            wav.writeUInt32LE(48000, 24);
+            wav.writeUInt32LE(192000, 28);
+            wav.writeUInt16LE(4, 32);
+            wav.writeUInt16LE(16, 34);
+            wav.write('data', 36);
+            wav.writeUInt32LE(wav.length - 44, 40);
+            fs.writeFileSync(path.join(session.dir, 'preview.wav'), wav);
+            args.push('--wav', 'preview.wav');
+          } else if (linux) args.push('--input', capture.monitor, '--mask', String(capture.mask));
           else args.push('--input-id', input, '--edit-live');
         }
         const child = spawn(engine, args, { cwd: session.dir, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });

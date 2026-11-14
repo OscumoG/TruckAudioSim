@@ -12,10 +12,11 @@ def main():
     parser.add_argument("payload", type=Path)
     parser.add_argument("setup", type=Path)
     parser.add_argument("--makensis", default="makensis")
+    parser.add_argument("--portable", action="store_true")
     args = parser.parse_args()
     payload = args.payload.resolve()
     setup = args.setup.resolve()
-    script = Path(__file__).with_name("TruckAudioSim.nsi").resolve()
+    script = Path(__file__).with_name("TruckAudioSimPortable.nsi" if args.portable else "TruckAudioSim.nsi").resolve()
     version = json.loads((script.parent.parent / "package.json").read_text())["version"]
     if not (payload / "TruckAudioSim.exe").is_file():
         parser.error("payload is missing TruckAudioSim.exe")

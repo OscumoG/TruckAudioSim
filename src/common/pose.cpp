@@ -18,6 +18,9 @@ Pose parsePoseText(const std::string& raw){
  if(auto x=root.get("rollDeg"))p.rollDegrees=float(x->num());
  if(auto x=root.get("volume"))p.volume=float(x->num());
  if(auto x=root.get("exteriorGain"))p.exteriorGain=float(x->num());
+ if(auto x=root.get("exterior"))p.exterior=x->kind==Json::Kind::Boolean && x->boolean;
+ if(auto x=root.get("testSequence"))p.testSequence=static_cast<unsigned>(std::clamp(x->num(),0.0,2147483647.0));
+ if(auto x=root.get("testSpeaker"))p.testSpeaker=x->str();
  if(auto x=root.get("head")){
   if(x->kind!=Json::Kind::Array||x->array.size()!=3)throw std::runtime_error("Pose head must contain three numbers");
   p.head={float(x->array[0].num()),float(x->array[1].num()),float(x->array[2].num())};
@@ -54,6 +57,9 @@ Pose smoothPose(const Pose& prev,const Pose& target,float alpha){
            prev.head.y+alpha*(target.head.y-prev.head.y),
            prev.head.z+alpha*(target.head.z-prev.head.z)};
  out.electronicsOn=target.electronicsOn;
+ out.exterior=target.exterior;
+ out.testSequence=target.testSequence;
+ out.testSpeaker=target.testSpeaker;
  return out;
 }
 Vec3 relativePosition(const Vec3& speaker,const Pose& pose){
