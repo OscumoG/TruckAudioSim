@@ -1,7 +1,9 @@
+import { execFile } from 'node:child_process';
 import { app, BrowserWindow, crashReporter, dialog, ipcMain, Menu, screen, session, shell, Tray } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import os from 'node:os';
 import { resolveDataDir } from './paths.js';
 import { loadData, saveLayouts, saveSettings, writeJsonAtomic } from './store.js';
 import { openCamera, openTelemetry } from './telemetry.js';
@@ -9,7 +11,8 @@ import { createControls } from './controls.js';
 import { createSpatialAudio } from './spatial-audio.js';
 import { RELEASES_URL } from './updates.js';
 import { IMPORT_KINDS, exportData, findData, importData, importable, timeStamp } from './data-transfer.js';
-import { findGame, installPlugins, pluginPlan } from './game-plugins.js';
+import { findGame, installPlugins, LINUX_PLUGINS, pluginPlan, PLUGINS } from './game-plugins.js';
+import { prepareLinuxTelemetry } from './linux-telemetry.js';
 import { presetsDirFor, readCollection, watchCollection, writePresetSet } from './collection.js';
 import { parsePresetFile, presetFileName } from '../shared/collection.js';
 import { MAX_VOLUME } from '../shared/settings.js';
@@ -26,6 +29,8 @@ const WM_DEVICECHANGE = 0x0219;
 const debug = !app.isPackaged || process.argv.includes('--dev-tools');
 
 const execDir = path.dirname(process.execPath);
+const linux = process.platform === 'linux';
+const linuxBuild = path.resolve(process.env.TAS_LINUX_BUILD ?? path.resolve(here, '../../../build-linux'));
 const installed = app.isPackaged && process.platform === 'win32'
   && fs.existsSync(path.join(execDir, 'Uninstall TruckAudioSim.exe'));
 const dataDir = resolveDataDir({
@@ -33,7 +38,7 @@ const dataDir = resolveDataDir({
   appPath: app.getAppPath(),
   execPath: process.execPath,
   portableDir: process.env.PORTABLE_EXECUTABLE_DIR,
-  installedRoot: installed ? path.join(app.getPath('appData'), 'TruckAudioSim') : undefined,
+  installedRoot: installed || linux ? path.join(app.getPath('appData'), 'TruckAudioSim') : undefined,
 });
 app.setPath('userData', path.join(dataDir, 'profile'));
 const hasInstanceLock = app.requestSingleInstanceLock();
@@ -89,7 +94,7 @@ ipcMain.handle('store:load', () => {
   data.store = clearLegacyDefault(data.store);
   if (importNotice) data.warnings.push(importNotice);
   importNotice = null;
-  return { ...data, collection: shared, debug };
+  return { ...data, collection: shared, debug, platform: process.platform };
 });
 
 // File › Import › data of another folder (data-transfer.js): asked which folder, then whether to
@@ -255,7 +260,7 @@ function startPoseFeed(win) {
       lastRenderTime = pose?.renderTime;
       lastTelemetryFrame = now;
     }
-    if (telemetry && (!pose?.sdkActive || now - lastTelemetryFrame > 5000)) {
+    if (telemetry && (!pose?.sdkActive || (!linux && now - lastTelemetryFrame > 5000))) {
       telemetry.close?.();
       telemetry = null;
       lastTry = now;
@@ -334,14 +339,21 @@ function displayVolumeOverlay() {
   clearTimeout(overlayTimer);
   overlayTimer = setTimeout(() => volumeOverlay?.hide(), 1500);
 }
-const engineDir = app.isPackaged ? path.join(process.resourcesPath, 'engine') : path.resolve(here, '../../../bin-x64');
+const engineDir = app.isPackaged ? path.join(process.resourcesPath, 'engine') : linux ? linuxBuild : path.resolve(here, '../../../bin-x64');
 const demoDir = app.isPackaged ? engineDir : path.resolve(here, '../../../validacion-x64');
 const audio = createSpatialAudio(engineDir, demoDir, (status) => toWindow('spatial:status', status));
 ipcMain.handle('spatial:devices', () => audio.devices());
 ipcMain.handle('spatial:start', (_event, options) => audio.start(options));
 ipcMain.handle('spatial:stop', () => audio.stop());
 ipcMain.on('spatial:update', (_event, update) => audio.update(update));
-ipcMain.handle('spatial:mixer', () => shell.openExternal('ms-settings:apps-volume'));
+ipcMain.handle('spatial:mixer', () => {
+  if (!linux) return shell.openExternal('ms-settings:apps-volume');
+  execFile('pavucontrol', (error) => {
+    if (error?.code === 'ENOENT') dialog.showMessageBox(mainWindow, {
+      type: 'info', message: 'Install pavucontrol or use your desktop’s sound settings to route the player.',
+    });
+  });
+});
 ipcMain.handle('game-plugins:install', () => installGamePlugins());
 // The main actions and the open extra layers' volume ones (app.js applyControls).
 ipcMain.handle('controls:set', (_event, bindings) => controls.setBindings(normalizeBindings(bindings)));
@@ -366,7 +378,7 @@ app.on('will-quit', () => {
 });
 
 function createTray() {
-  if (process.platform !== 'win32') return;
+  if (process.platform !== 'win32' && (!linux || process.env.TAS_LINUX_TRAY !== '1')) return;
   try {
     tray = new Tray(path.join(here, 'truckaudiosim.ico'));
     tray.setToolTip('TruckAudioSim');
@@ -413,7 +425,11 @@ function createWindow() {
 
 // Help › Install game plugins (game-plugins.js): the app's plugin/ folder (beside data/, from
 // source app/plugin/) into the game folder picked, after a look at what is there and a yes.
-const pluginDir = path.join(installed ? execDir : path.dirname(dataDir), 'plugin');
+const pluginDir = linux ? path.join(app.isPackaged ? execDir : app.getAppPath(), 'plugin')
+  : path.join(installed ? execDir : path.dirname(dataDir), 'plugin');
+const nativePluginDir = app.isPackaged ? path.join(process.resourcesPath, 'plugins') : path.join(linuxBuild, 'plugins');
+const STEAM_LINUX = ['.local/share/Steam/steamapps/common', '.steam/steam/steamapps/common']
+  .map((dir) => path.join(os.homedir(), dir)).find((dir) => fs.existsSync(dir));
 const STEAM_GAMES = 'C:\\Program Files (x86)\\Steam\\steamapps\\common';
 const PLAN_TEXT = { new: 'added', same: 'already there', other: 'replaces another build (kept beside it as .backup-<time>)' };
 let gamesDir = null;
@@ -421,21 +437,35 @@ async function installGamePlugins() {
   const tell = (type, message, detail = '') => dialog.showMessageBox(mainWindow, { type, title: 'Install game plugins', message, detail });
   const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
     title: 'The folder of American Truck Simulator or Euro Truck Simulator 2',
-    defaultPath: gamesDir ?? (fs.existsSync(STEAM_GAMES) ? STEAM_GAMES : undefined),
+    defaultPath: gamesDir ?? (linux ? STEAM_LINUX : fs.existsSync(STEAM_GAMES) ? STEAM_GAMES : undefined),
     buttonLabel: 'Install here',
     properties: ['openDirectory'],
   });
   if (canceled || !filePaths.length) return;
-  const game = findGame(filePaths[0]);
+  const windowsGame = findGame(filePaths[0]);
+  const nativeGame = linux ? findGame(filePaths[0], 'linux_x64') : null;
+  let game = windowsGame ?? nativeGame;
+  if (windowsGame && nativeGame) {
+    const { response } = await dialog.showMessageBox(mainWindow, {
+      type: 'question', message: 'Which game build do you start?',
+      buttons: ['Proton / Wine', 'Native Linux', 'Cancel'], cancelId: 2,
+    });
+    if (response === 2) return;
+    game = response === 1 ? nativeGame : windowsGame;
+  }
   if (!game) {
-    tell('warning', 'No ATS or ETS2 there.', `Pick the game's folder, the one with bin\\win_x64\\amtrucks.exe or eurotrucks2.exe (${filePaths[0]}).`);
+    tell('warning', 'No ATS or ETS2 there.', linux
+      ? 'Select the game folder containing bin/win_x64 or bin/linux_x64.'
+      : `Pick the game's folder, the one with bin\\win_x64\\amtrucks.exe or eurotrucks2.exe (${filePaths[0]}).`);
     return;
   }
   gamesDir = path.dirname(game.root);
-  const plan = pluginPlan(pluginDir, game.pluginsDir);
+  const source = game === nativeGame ? nativePluginDir : pluginDir;
+  const files = game === nativeGame ? LINUX_PLUGINS : PLUGINS;
+  const plan = pluginPlan(source, game.pluginsDir, files);
   const missing = plan.filter((p) => p.state === 'missing').map((p) => p.file);
   if (missing.length) {
-    tell('warning', 'The app has no plugins to install.', `${missing.join(', ')} not in ${pluginDir}: unpack the release again.`);
+    tell('warning', 'The app has no plugins to install.', `${missing.join(', ')} not in ${source}: unpack the release again.`);
     return;
   }
   if (plan.every((p) => p.state === 'same')) {
@@ -453,7 +483,7 @@ async function installGamePlugins() {
   });
   if (response !== 0) return;
   try {
-    installPlugins(pluginDir, game.pluginsDir);
+    installPlugins(source, game.pluginsDir, new Date(), files);
     tell('info', `Installed into ${game.name}.`, 'The game loads them when it starts (restart it if it runs) and asks about "advanced SDK features": accept.');
   } catch (err) {
     tell('error', 'The plugins were not installed.', err.message);
@@ -593,6 +623,7 @@ function appMenu() {
 
 app.whenReady().then(() => {
   if (!hasInstanceLock) return;
+  try { prepareLinuxTelemetry(); } catch (error) { dialog.showErrorBox('TruckAudioSim telemetry', error.message); }
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
   Menu.setApplicationMenu(appMenu());

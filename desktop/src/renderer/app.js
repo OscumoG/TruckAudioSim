@@ -34,6 +34,7 @@ const SAVE_DELAY_MS = 500;
 const STATUS_PERIOD_MS = 100;
 
 const loaded = await window.aux.load();
+const linux = loaded.platform === 'linux';
 const state = {
   // The shared presets ride along in store.collection (presets.js); they are never saved.
   store: { ...loaded.store, collection: loaded.collection.collection },
@@ -269,14 +270,16 @@ function chooseEndpoint(saved, eligible) {
 async function refreshAudioDevices() {
   try {
     state.devices = await window.aux.spatialDevices();
-    const virtual = (device) => isCable(device.label) || /Steam Streaming Speakers|TruckAudioSim Virtual Audio|VoiceMeeter/i.test(device.label);
+    const virtual = (device) => linux ? device.virtual : isCable(device.label) || /Steam Streaming Speakers|TruckAudioSim Virtual Audio|VoiceMeeter/i.test(device.label);
     state.inputId = chooseEndpoint(state.settings.input, virtual)?.deviceId ?? null;
-    state.outputId = chooseEndpoint(state.settings.output, (device) => !virtual(device))?.deviceId ?? null;
+    state.outputId = chooseEndpoint(state.settings.output, (device) => !virtual(device) && (!linux || device.defaultOutput))?.deviceId
+      ?? (linux && !state.settings.output ? state.devices.find((device) => !virtual(device))?.deviceId : null) ?? null;
     state.audioWarnings = [];
-    if (!state.inputId) state.audioWarnings.push('Choose a Windows playback device to capture (for example Steam Streaming Speakers).');
-    if (!state.outputId) state.audioWarnings.push('Choose the physical output for Windows Spatial Sound.');
+    if (!state.inputId) state.audioWarnings.push(linux ? 'Choose TruckAudioSim_Input or another playback device with a monitor.'
+      : 'Choose a Windows playback device to capture (for example Steam Streaming Speakers).');
+    if (!state.outputId) state.audioWarnings.push(linux ? 'Choose your headphones or stereo output.' : 'Choose the physical output for Windows Spatial Sound.');
   } catch (error) {
-    state.audioWarnings = [`Cannot list Windows playback devices: ${error.message}`];
+    state.audioWarnings = [`Cannot list playback devices: ${error.message}`];
   }
   render();
 }
@@ -1027,7 +1030,7 @@ const actions = {
   },
 };
 
-const panel = createPanel(document.getElementById('panel'), actions, document.getElementById('bounds'));
+const panel = createPanel(document.getElementById('panel'), actions, document.getElementById('bounds'), linux);
 const keyTree = createKeyTree(document.getElementById('tree'), actions);
 const views = createViews(document.getElementById('views'), actions);
 

@@ -9,14 +9,15 @@ import path from 'node:path';
 import { timeStamp } from './data-transfer.js';
 
 export const PLUGINS = ['scs-telemetry.dll', 'trucker_aux_camera.dll'];
-const GAMES = [['amtrucks.exe', 'American Truck Simulator'], ['eurotrucks2.exe', 'Euro Truck Simulator 2']];
+export const LINUX_PLUGINS = ['trucker_aux_telemetry.so'];
+const GAMES = [['amtrucks', 'American Truck Simulator'], ['eurotrucks2', 'Euro Truck Simulator 2']];
 
-// The game in a folder picked: the game's folder or one inside it (bin, win_x64, plugins).
-// { root, name, pluginsDir } or null.
-export function findGame(dir) {
+// The caller chooses the game binary when both installations share a folder.
+export function findGame(dir, platform = 'win_x64') {
+  const suffix = platform === 'linux_x64' ? '' : '.exe';
   for (let root = path.resolve(dir), up = 0; up < 4; up++, root = path.dirname(root)) {
-    const found = GAMES.find(([exe]) => fs.existsSync(path.join(root, 'bin', 'win_x64', exe)));
-    if (found) return { root, name: found[1], pluginsDir: path.join(root, 'bin', 'win_x64', 'plugins') };
+    const found = GAMES.find(([exe]) => fs.existsSync(path.join(root, 'bin', platform, exe + suffix)));
+    if (found) return { root, name: found[1], pluginsDir: path.join(root, 'bin', platform, 'plugins') };
     if (path.dirname(root) === root) break;
   }
   return null;
@@ -24,8 +25,8 @@ export function findGame(dir) {
 
 // What an install would do with each plugin: [{ file, state }], state 'new', 'same' (that very
 // file there), 'other' (another build there) or 'missing' (not in the app's plugin/).
-export function pluginPlan(fromDir, pluginsDir) {
-  return PLUGINS.map((file) => {
+export function pluginPlan(fromDir, pluginsDir, files = PLUGINS) {
+  return files.map((file) => {
     const from = path.join(fromDir, file);
     const to = path.join(pluginsDir, file);
     if (!fs.existsSync(from)) return { file, state: 'missing' };
@@ -36,10 +37,10 @@ export function pluginPlan(fromDir, pluginsDir) {
 
 // Copies the plugins that are new or of another build (that one renamed as a backup first, put
 // back if the copy fails). Gives [backup paths]; throws as fs does (no write access, …).
-export function installPlugins(fromDir, pluginsDir, now = new Date()) {
+export function installPlugins(fromDir, pluginsDir, now = new Date(), files = PLUGINS) {
   fs.mkdirSync(pluginsDir, { recursive: true });
   const backups = [];
-  for (const { file, state } of pluginPlan(fromDir, pluginsDir)) {
+  for (const { file, state } of pluginPlan(fromDir, pluginsDir, files)) {
     if (state !== 'new' && state !== 'other') continue;
     const to = path.join(pluginsDir, file);
     const backup = state === 'other' ? `${to}.backup-${timeStamp(now)}` : null;

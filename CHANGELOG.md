@@ -1,3 +1,9 @@
+# v0.24.0 — beta Linux
+
+- Editor en Linux x86-64 con captura PCM multicanal por PipeWire/PulseAudio, salida binaural mediante HRTF y pausa de reproductores MPRIS.
+- Puente para reutilizar los DLL de cámara y telemetría en Proton/Wine.
+- Plugin .so de telemetría de cabina y electrónica para ETS2/ATS nativos.
+
 # v0.23.7 — sonido en todo el autobús
 
 - Nueve perfiles Realista, 5.1 y 7.1 para Scania Touring, MAN Lion’s Coach y Volvo 9700 DD, con bocinas distribuidas hasta el fondo del salón y en ambos pisos del Volvo.

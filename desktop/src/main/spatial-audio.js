@@ -6,11 +6,14 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { parsePlaybackDevices } from '../shared/spatial-profile.js';
 import { writeJsonAtomic } from './store.js';
+import { listLinuxDevices } from './linux-audio.js';
+import { startLinuxMedia } from './linux-media.js';
 
 const execute = promisify(execFile);
 
 export function createSpatialAudio(engineDir, demoDir, notify) {
-  const engine = path.join(engineDir, 'tas_spatial.exe');
+  const linux = process.platform === 'linux';
+  const engine = path.join(engineDir, linux ? 'tas_binaural' : 'tas_spatial.exe');
   const mediaEngine = path.join(engineDir, 'tas_media_control.exe');
   const demo = path.join(demoDir, 'prueba_7_1_canales_48k.wav');
   let endpoints = [];
@@ -23,6 +26,10 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
   };
 
   async function devices() {
+    if (linux) {
+      endpoints = await listLinuxDevices();
+      return endpoints;
+    }
     const { stdout } = await execute(engine, ['--list-devices'], { windowsHide: true, timeout: 5000 });
     endpoints = parsePlaybackDevices(stdout);
     return endpoints;
@@ -89,18 +96,23 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
   function start({ input, output, profile, pose, media, diagnostic = false }) {
     return run(async () => {
       const present = (id) => endpoints.some((entry) => entry.deviceId === id);
-      if (!present(output)) throw Error('Choose a Windows output and enable Spatial Sound on it.');
+      if (!present(output)) throw Error(linux ? 'Choose an output for binaural audio.' : 'Choose a Windows output and enable Spatial Sound on it.');
       if (!diagnostic && (!present(input) || input === output)) throw Error('Choose a capture device different from the output.');
       await close();
+      const capture = endpoints.find((entry) => entry.deviceId === input);
+      if (linux && !diagnostic && !capture?.monitor) throw Error('Choose a playback device with a monitor source.');
       const session = { dir: fs.mkdtempSync(path.join(os.tmpdir(), 'TruckAudioSim-')), written: new Map(), demo: diagnostic };
       try {
-        const args = ['--output-id', output];
+        const args = [linux ? '--output' : '--output-id', output];
+        if (linux && process.env.TAS_HRTF_SOFA) args.push('--sofa', process.env.TAS_HRTF_SOFA);
         if (diagnostic) args.push('--channel-test', '--wav', demo);
         else {
           write(session, 'preset.json', profile);
           write(session, 'pose.json', pose);
           write(session, 'media.json', media ?? { player: 'off', vehicle: '', electricOn: null });
-          args.push('--input-id', input, '--preset', 'preset.json', '--pose-file', 'pose.json', '--edit-live');
+          args.push('--preset', 'preset.json', '--pose-file', 'pose.json');
+          if (linux) args.push('--input', capture.monitor, '--mask', String(capture.mask));
+          else args.push('--input-id', input, '--edit-live');
         }
         const child = spawn(engine, args, { cwd: session.dir, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
         session.child = child;
@@ -116,7 +128,10 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
             const line = pending.slice(0, end).trim();
             pending = pending.slice(end + 1);
             if (line.startsWith('Desktop PCM:')) {
-              if (active === session && !session.stopping && !session.mediaClosed) startMedia(session);
+              if (active === session && !session.stopping && !session.demo && !session.mediaClosed) {
+                if (linux) session.stopLinuxMedia ??= startLinuxMedia(session.dir, (status) => report({ mediaStatus: status }));
+                else startMedia(session);
+              }
               report({ pcm: line.slice('Desktop PCM:'.length).trim(), running: true });
             }
             if (line.startsWith('Desktop capacity:')) report({ capacity: line.slice('Desktop capacity:'.length).trim() });
@@ -130,6 +145,7 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
           const error = session.stopping || code === 0 ? '' : firstError || `Audio engine stopped (code ${code}).`;
           session.stopping = true;
           clearTimeout(session.retry);
+          await session.stopLinuxMedia?.();
           await stopMedia(session);
           if (active === session) {
             active = null;

@@ -181,7 +181,7 @@ function foldable(fieldset) {
   };
 }
 
-export function createPanel(root, actions, boundsRoot) {
+export function createPanel(root, actions, boundsRoot, linux = false) {
   // Two lines that never wrap (app.js statusText): the vehicle, then the angles.
   const statusName = el('div', { className: 'status-name', textContent: 'Starting…' });
   const statusDetail = el('div', { className: 'status-detail', textContent: '\u00a0' });
@@ -195,7 +195,7 @@ export function createPanel(root, actions, boundsRoot) {
   const start = el('button', { textContent: 'Start' });
   const stop = el('button', { textContent: 'Stop' });
   const test = el('button', { textContent: 'Test 7.1' });
-  const mixer = el('button', { textContent: 'Windows mixer' });
+  const mixer = el('button', { textContent: linux ? 'Open pavucontrol' : 'Windows mixer' });
   const refresh = el('button', { textContent: 'Refresh devices' });
   start.onclick = () => actions.startAudio();
   stop.onclick = () => actions.stopAudio();
@@ -203,7 +203,7 @@ export function createPanel(root, actions, boundsRoot) {
   mixer.onclick = () => actions.openVolumeMixer();
   refresh.onclick = () => actions.refreshAudioDevices();
   const muteWhen = el('select', { title: 'Mute the music like a car radio while the vehicle is switched off in the game' });
-  const electricPlayer = el('select', { title: 'Pause this Windows media player when the truck electrics switch off' });
+  const electricPlayer = el('select', { title: 'Pause this media player when the truck electrics switch off' });
   const mediaStatus = el('p', { className: 'hint' });
   const install = el('button', { textContent: 'Install ETS2 / ATS plugins…' });
   install.onclick = () => actions.installGamePlugins();
@@ -518,19 +518,20 @@ export function createPanel(root, actions, boundsRoot) {
   function update(view) {
     warnings.replaceChildren(...view.warnings.map((text) => el('li', { textContent: text })));
     const choices = [{ value: '', label: 'Select…' }, ...view.devices.map((device) => ({ value: device.deviceId, label: device.label }))];
-    fillSelect(input, choices, view.inputId ?? '');
+    const captureChoices = linux ? choices.filter(({ value }) => !value || view.devices.some((device) => device.deviceId === value && device.monitor)) : choices;
+    fillSelect(input, captureChoices, view.inputId ?? '');
     fillSelect(output, choices, view.outputId ?? '');
     const sourceDevice = view.devices.find((device) => device.deviceId === view.inputId);
-    cableHint.textContent = sourceDevice ? `Route the source app to “${sourceDevice.label}” in Windows Volume mixer.` : '';
+    cableHint.textContent = sourceDevice ? `Route the source app to “${sourceDevice.label}” in ${linux ? 'pavucontrol (Playback)' : 'Windows Volume mixer'}.` : '';
     cableHint.hidden = !sourceDevice;
     input.disabled = output.disabled = refresh.disabled = Boolean(view.audioMode);
     start.disabled = Boolean(view.audioMode) || !view.inputId || !view.outputId || view.inputId === view.outputId;
     test.disabled = Boolean(view.audioMode) || !view.outputId;
     stop.disabled = !view.audioMode || view.pendingStart;
-    audioStatus.textContent = [view.audioStatus.pcm || (view.audioMode ? 'Opening Windows Spatial Sound…' : 'Audio stopped'),
+    audioStatus.textContent = [view.audioStatus.pcm || (view.audioMode ? (linux ? 'Opening binaural audio…' : 'Opening Windows Spatial Sound…') : 'Audio stopped'),
       view.audioStatus.capacity && view.audioStatus.capacity !== 'OK' ? view.audioStatus.capacity : ''].filter(Boolean).join(' · ');
     fillSelect(muteWhen, MUTE_OPTIONS, view.muteWhen);
-    fillSelect(electricPlayer, ELECTRIC_PLAYER_OPTIONS, view.electricPlayer);
+    fillSelect(electricPlayer, linux ? ELECTRIC_PLAYER_OPTIONS.map((option) => option.value === 'vlc' ? { ...option, label: 'VLC (MPRIS)' } : option) : ELECTRIC_PLAYER_OPTIONS, view.electricPlayer);
     mediaStatus.textContent = view.audioStatus.mediaStatus ?? '';
     mediaStatus.hidden = view.electricPlayer === 'off' || !mediaStatus.textContent;
     fillSelect(pauseBehavior, PAUSE_OPTIONS, view.pauseBehavior);

@@ -2,6 +2,10 @@
 
 Escucha Spotify, VLC u otra fuente de audio como si las bocinas estuvieran en la cabina de tu camión en **Euro Truck Simulator 2** o **American Truck Simulator**. Incluye el editor 3D adaptado de Trucker AUX y 150 perfiles Realista, 5.1 y 7.1. También puedes usarlo para escuchar música con el juego cerrado.
 
+## Linux
+
+La edición Linux x86-64 usa PipeWire o PulseAudio y audio binaural para auriculares. Para ETS2/ATS bajo Proton o Wine reutiliza ambos DLL de Windows con un puente de telemetría. El juego nativo usa un plugin del SDK para la cabina y la electrónica. [Instalación y compilación en Linux](docs/LINUX.md)
+
 ## Instalar en Windows
 
 1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.23.7-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.

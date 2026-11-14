@@ -1,7 +1,8 @@
 import { matchedVehicleKey } from '../shared/vehicle-matches.js';
 
-// The game's shared memory exists only on Windows; elsewhere the app runs without a game
-// and does not load the native module at all.
+import { linuxSnapshot } from './linux-telemetry.js';
+
+// Only Windows maps the plugins' Windows memory directly.
 const koffi = process.platform === 'win32' ? (await import('koffi')).default : null;
 
 export const MMF_NAME = 'Local\\SCSTelemetry';
@@ -155,7 +156,8 @@ function openSnapshot(name, size) {
 }
 
 export function openTelemetry() {
-  const source = openSnapshot(MMF_NAME, MMF_SIZE);
+  const linux = process.platform === 'linux';
+  const source = linux ? linuxSnapshot(['proton.bin', 'native.bin'], SNAPSHOT_SIZE) : openSnapshot(MMF_NAME, MMF_SIZE);
   if (!source) return null;
   // Copied into a plain Buffer: koffi.view would create an external ArrayBuffer,
   // which Electron's V8 memory cage forbids.
@@ -164,7 +166,7 @@ export function openTelemetry() {
   return {
     close: source.close,
     read() {
-      source.copy(snapshot);
+      if (source.copy(snapshot) === false) return null;
       return parsePose(view);
     },
   };
@@ -191,7 +193,8 @@ export function cameraRecord(first, second) {
 // Like openTelemetry: only opens the plugin's memory, never creates it; null without it.
 // read() gives the last whole record (cameraRecord), or the one before while it is written.
 export function openCamera() {
-  const source = openSnapshot(CAMERA_NAME, CAMERA_SIZE);
+  const linux = process.platform === 'linux';
+  const source = linux ? linuxSnapshot(['camera.bin'], CAMERA_SIZE) : openSnapshot(CAMERA_NAME, CAMERA_SIZE);
   if (!source) return null;
   const first = Buffer.alloc(CAMERA_SIZE);
   const second = Buffer.alloc(CAMERA_SIZE);
@@ -199,8 +202,9 @@ export function openCamera() {
   return {
     close: source.close,
     read() {
-      source.copy(first);
-      source.copy(second);
+      if (source.copy(first) === false) return null;
+      if (linux) first.copy(second); // the bridge publishes complete files with an atomic rename
+      else source.copy(second);
       last = cameraRecord(first, second) ?? last;
       return last;
     },
