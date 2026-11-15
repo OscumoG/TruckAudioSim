@@ -75,6 +75,7 @@
     ],
     "label": "Realista",
     "cabAudio": "realistic",
-    "width": 1
+    "width": 1,
+    "vehicleSpace": "car"
   }
 }

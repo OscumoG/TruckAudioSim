@@ -1,5 +1,6 @@
 import { createPanel } from './panel.js';
-import { normalizeAcoustics } from '../shared/acoustics.js';
+import { acousticsFor } from '../shared/acoustics.js';
+import { normalizeEqualizer } from '../shared/equalizer.js';
 import { createViews } from './views.js';
 import { mediaTelemetry, spatialPose, spatialProfile } from '../shared/spatial-profile.js';
 import {
@@ -132,8 +133,6 @@ function updateSpatial() {
 let testSequence = 0;
 let speakerTest = null;
 let testTimer;
-const acousticsFor = (layout) => normalizeAcoustics(layout.acoustics,
-  layout.vehicleSpace === 'coach' && layout.bounds.max[1] - layout.bounds.min[1] > 3.2);
 const currentProfile = () => {
   const { layout } = playing();
   return speakerTest
@@ -1017,7 +1016,20 @@ const actions = {
   },
   // The form's level slider shows the primary speaker; the others move by the same step.
   setAcoustics(patch) {
-    edit((layout) => ({ ...layout, acoustics: normalizeAcoustics({ ...acousticsFor(layout), ...patch }) }));
+    edit((layout) => ({ ...layout, acoustics: { ...acousticsFor(layout), ...patch } }));
+  },
+  resetAcoustics() {
+    edit((layout) => ({
+      ...layout, acoustics: { ...acousticsFor({ ...layout, acoustics: null }), enabled: acousticsFor(layout).enabled },
+    }));
+  },
+  setEqualizer(patch) {
+    edit((layout) => ({ ...layout, equalizer: normalizeEqualizer({ ...normalizeEqualizer(layout.equalizer), ...patch }) }));
+  },
+  setEqBand(index, gain) {
+    const { gains } = normalizeEqualizer(playing().layout.equalizer);
+    gains[index] = gain;
+    actions.setEqualizer({ gains });
   },
   testSpeaker(id) {
     const speaker = playing().layout.speakers.find((item) => item.id === id);
@@ -1116,6 +1128,7 @@ function render() {
     pendingStart: state.pendingStart,
     testingSpeaker: speakerTest?.speaker.id ?? null,
     acoustics: acousticsFor(layout),
+    equalizer: normalizeEqualizer(layout.equalizer),
     muteWhen: state.settings.muteWhen,
     electricPlayer: state.settings.electricPlayer,
     turnLook: state.settings.turnLook,

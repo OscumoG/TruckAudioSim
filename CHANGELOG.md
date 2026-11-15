@@ -1,3 +1,13 @@
+# v0.26.0 — acústica por vehículo y ecualizador
+
+- Rebotes de primer y segundo orden con absorción distinta para cristales, piso y tapicería.
+- Reverberación corta según dimensiones y tipo de vehículo, con separación entre pisos
+  en el Volvo 9700 DD y ajustes para autos, pickups, camiones y autobuses.
+- Ecualizador opcional de cinco bandas por perfil, con ganancia de compensación
+  para preservar margen cuando se realzan varias bandas.
+- Los perfiles guardados mantienen sus ajustes. **Use vehicle defaults** carga
+  los valores nuevos del habitáculo.
+
 # v0.25.0 — acústica y prueba de bocinas
 
 - Editor Acoustics por perfil con reflexiones tempranas, absorción, aislamiento

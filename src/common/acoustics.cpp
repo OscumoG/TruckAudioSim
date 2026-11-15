@@ -21,8 +21,13 @@ float smoothstep(float t) {
 void CabinAcoustics::reset() {
  history_.clear();
  taps_={};
+ for (auto& line:diffuse_) {
+  line.buffer.clear();
+  line.cursor=0;
+  line.low=0;
+ }
  cursor_=0;
- damped_=filtered_=occlusion_=0;
+ damped_=bright_=filtered_=occlusion_=wet_=0;
  loss_=1;
 }
 
@@ -32,39 +37,60 @@ void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, co
   if (!history_.empty()) reset();
   return;
  }
- const size_t size=static_cast<size_t>(rate*0.1f)+4;
+ const size_t size=static_cast<size_t>(rate*0.13f)+4;
  const bool initialize=history_.size()!=size;
  if (initialize) {
   reset();
   history_.resize(size);
  }
- const auto lo=axes(room.min), hi=axes(room.max), p=axes(speaker.pos);
+ auto lo=axes(room.min), hi=axes(room.max);
+ const auto p=axes(speaker.pos);
  const float direct=distance(speaker.pos,pose.head);
  const float upper=smoothstep((pose.head.y-room.deckHeight+0.18f)/0.36f);
- const float deck=room.splitDeck && !pose.exterior ? (speaker.pos.y<room.deckHeight?upper:1.0f-upper) : 0.0f;
- std::array<Tap,6> target{};
- for (size_t i=0; i<target.size(); ++i) {
-  const size_t axis=i/2;
-  // The deck surface bounds the current acoustic compartment.
-  float wall=i%2?hi[axis]:lo[axis];
-  if (room.splitDeck && axis==1 && ((i%2 && speaker.pos.y<room.deckHeight) ||
-      (!(i%2) && speaker.pos.y>=room.deckHeight))) wall=room.deckHeight;
-  auto image=p;
-  image[axis]=2.0f*wall-image[axis];
-  const float path=distance({image[0],image[1],image[2]},pose.head);
-  auto& tap=target[i];
-  tap.delay=std::clamp((path-direct)*rate/343.0f,1.0f,static_cast<float>(size-2));
-  constexpr std::array<float,6> surfaces{0.85f,0.85f,0.46f,0.66f,0.9f,0.53f};
-  const float opening=axis==0 ? (i%2?room.rightWindow:room.leftWindow) : 0.0f;
-  tap.gain=pose.exterior?0.0f:room.reflections*(1.0f-0.65f*room.absorption)*
-     surfaces[i]*(1.0f-0.55f*opening)*(1.0f-0.65f*deck)/(1.0f+path);
-  if (path<direct) tap.gain=0;
+ const bool lowerSpeaker=speaker.pos.y<room.deckHeight;
+ const float deck=room.splitDeck && !pose.exterior ? (lowerSpeaker?upper:1.0f-upper) : 0.0f;
+ const float windowY=std::clamp(0.16f,lo[1],hi[1]);
+ const float windowZ=std::clamp(-0.20f,lo[2],hi[2]);
+ if (room.splitDeck) (lowerSpeaker?hi:lo)[1]=room.deckHeight;
+
+ std::array<Tap,24> target{};
+ if (!pose.exterior && room.reflections>0) {
+  // Side glass, floor, ceiling, windshield and the usually upholstered rear.
+  const std::array<float,6> surfaces{
+   0.84f-0.50f*room.leftWindow,0.84f-0.50f*room.rightWindow,0.48f,0.68f,0.92f,0.51f};
+  constexpr std::array<float,6> brightness{0.78f,0.78f,0.22f,0.46f,0.92f,0.28f};
+  const float reflection=room.reflections*(1.0f-0.68f*room.absorption)*(1.0f-0.75f*deck);
+  size_t count=0;
+  const auto reflect=[&](std::array<float,3>& image,size_t wall) {
+   const size_t axis=wall/2;
+   image[axis]=2.0f*(wall%2?hi[axis]:lo[axis])-image[axis];
+  };
+  const auto add=[&](std::array<float,3> image,float strength,float highs) {
+   auto& tap=target[count++];
+   const float path=distance({image[0],image[1],image[2]},pose.head);
+   if (path<direct) return;
+   tap.delay=std::clamp((path-direct)*rate/343.0f,1.0f,static_cast<float>(size-2));
+   tap.gain=reflection*strength*(0.65f+direct)/(0.85f+path);
+   tap.brightness=highs;
+  };
+  for (size_t first=0;first<surfaces.size();++first) {
+   auto image=p;
+   reflect(image,first);
+   add(image,surfaces[first],brightness[first]);
+   for (size_t second=0;second<surfaces.size();++second) {
+    // Same-axis paths need distinct parallel surfaces. A pair of perpendicular planes
+    // gives the same image either way, so include it once.
+    if (first==second || (first/2!=second/2 && second<first)) continue;
+    auto secondImage=image;
+    reflect(secondImage,second);
+    add(secondImage,0.48f*surfaces[first]*surfaces[second],brightness[first]*brightness[second]);
+   }
+  }
  }
+
  float opening=0;
  if (pose.exterior) {
-  const float windowY=std::clamp(0.16f,lo[1],hi[1]);
-  const float windowZ=std::clamp(-0.20f,lo[2],hi[2]);
-  for (size_t side=0; side<2; ++side) {
+  for (size_t side=0;side<2;++side) {
    const float wall=side?hi[0]:lo[0];
    const auto aperture=Vec3{wall,windowY,windowZ};
    const float outward=std::max(0.0f,(pose.head.x-wall)*(side?1.0f:-1.0f));
@@ -78,26 +104,81 @@ void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, co
  }
  const float closed=pose.exterior?1.0f-opening:0.0f;
  const float low=std::clamp(closed+deck*(1.0f-closed),0.0f,1.0f);
- const float targetLoss=dbToAmplitude(-(room.bodyLoss*closed+7.0f*deck));
- const float body=coefficient(pose.exterior?room.bodyCutoff:950.0f,rate);
- const float damping=coefficient(5200.0f-3700.0f*room.absorption,rate);
- const float smoothing=coefficient(11.0f,rate);
- if (initialize) for (size_t i=0;i<taps_.size();++i) taps_[i].delay=target[i].delay;
+ const float targetLoss=dbToAmplitude(-(room.bodyLoss*closed+9.0f*deck));
+ const float body=coefficient(pose.exterior?room.bodyCutoff:830.0f,rate);
+ const float damping=coefficient(3300.0f-2500.0f*room.absorption,rate);
+ const float brightness=coefficient(8700.0f-4200.0f*room.absorption,rate);
+ const float smoothing=coefficient(14.0f,rate);
+ const float openWindows=0.5f*(room.leftWindow+room.rightWindow);
+ const float targetWet=pose.exterior?0.0f:0.38f*room.reverb*(1.0f-0.55f*openWindows)*(1.0f-0.32f*deck);
+ const float x=std::max(0.2f,hi[0]-lo[0]), y=std::max(0.2f,hi[1]-lo[1]), z=std::max(0.2f,hi[2]-lo[2]);
+ // 4V/S estimates the mean distance between wall strikes. Unequal lines keep
+ // the late decay diffuse, and the longest line follows the depth of the cabin.
+ const float flight=2.0f*x*y*z/((x*y+x*z+y*z)*343.0f);
+ const std::array<float,4> delays{
+  0.008f+flight*1.19f,0.013f+flight*1.63f,0.019f+flight*2.11f,
+  0.024f+flight*2.57f+z/1372.0f};
+ const float decay=std::max(0.035f,room.decayMs*0.001f*(1.0f-0.65f*openWindows));
+ std::array<float,4> feedback{};
+ if (targetWet>0 || wet_>1e-6f) for (size_t i=0;i<diffuse_.size();++i) {
+  auto& line=diffuse_[i];
+  const size_t length=static_cast<size_t>(delays[i]*rate)|1;
+  if (line.buffer.size()!=length) {
+   line.buffer.assign(length,0);
+   line.cursor=0;
+   line.low=0;
+  }
+  feedback[i]=std::pow(0.001f,delays[i]/decay);
+ }
+ if (initialize) {
+  taps_=target;
+  loss_=targetLoss;
+  occlusion_=low;
+  wet_=targetWet;
+ }
  for (float& sample:samples) {
   damped_+=damping*(sample-damped_);
-  history_[cursor_]=damped_;
+  bright_+=brightness*(sample-bright_);
+  history_[cursor_]={damped_,bright_};
   float early=0;
-  for (size_t i=0; i<taps_.size(); ++i) {
+  for (size_t i=0;i<taps_.size();++i) {
    auto& tap=taps_[i];
    tap.gain+=smoothing*(target[i].gain-tap.gain);
    if (tap.gain<1e-6f) continue;
-   tap.delay+=std::clamp(smoothing*(target[i].delay-tap.delay),-0.12f,0.12f);
+   if (target[i].gain>0) {
+    tap.delay+=std::clamp(smoothing*(target[i].delay-tap.delay),-0.10f,0.10f);
+    tap.brightness=target[i].brightness;
+   }
    const size_t whole=static_cast<size_t>(tap.delay);
-   const size_t index=(cursor_+size-whole)%size;
-   early+=tap.gain*std::lerp(history_[index],history_[(index+size-1)%size],tap.delay-whole);
+   const size_t index=cursor_>=whole?cursor_-whole:cursor_+size-whole;
+   const auto& next=history_[index];
+   const auto& prev=history_[index?index-1:size-1];
+   const float frac=tap.delay-whole;
+   early+=tap.gain*std::lerp(std::lerp(next[0],prev[0],frac),
+                            std::lerp(next[1],prev[1],frac),tap.brightness);
   }
   if (++cursor_==size) cursor_=0;
-  const float dry=sample+early;
+  float late=0;
+  wet_+=smoothing*(targetWet-wet_);
+  if (wet_>1e-6f) {
+   std::array<float,4> delayed{};
+   float sum=0;
+   for (size_t i=0;i<diffuse_.size();++i) {
+    auto& line=diffuse_[i];
+    const float value=line.buffer[line.cursor];
+    line.low+=damping*(value-line.low);
+    delayed[i]=line.low*feedback[i];
+    sum+=delayed[i];
+    late+=(i==1 || i==2)?-0.84f*value:value;
+   }
+   for (size_t i=0;i<diffuse_.size();++i) {
+    auto& line=diffuse_[i];
+    // Orthogonal Householder feedback and frequency-dependent damping.
+    line.buffer[line.cursor]=0.5f*damped_+delayed[i]-0.5f*sum;
+    if (++line.cursor==line.buffer.size()) line.cursor=0;
+   }
+  }
+  const float dry=sample+early+wet_*late;
   filtered_+=body*(dry-filtered_);
   loss_+=smoothing*(targetLoss-loss_);
   occlusion_+=smoothing*(low-occlusion_);

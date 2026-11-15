@@ -1,4 +1,5 @@
 import { ACOUSTIC_FIELDS } from '../shared/acoustics.js';
+import { EQ_BANDS, EQ_LIMIT } from '../shared/equalizer.js';
 // The control panel on the left. Built once; update(view) refreshes values in place
 // so a field the user is typing into keeps its focus.
 import { LABEL_COLORS, LABEL_MAX, TYPES, TYPE_NAMES } from '../shared/layout.js';
@@ -330,13 +331,35 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
     return { key, unit, input, value, row: row(label, el('div', { className: 'inline' }, [input, value])) };
   });
   const deckRow = row('Separate decks', splitDeck);
+  const resetAcoustics = el('button', { type: 'button', textContent: 'Use vehicle defaults' });
+  resetAcoustics.onclick = actions.resetAcoustics;
   const acousticsForm = el('fieldset', {}, [
     el('legend', { textContent: 'Acoustics' }),
     row('Enable acoustics', acousticsEnabled),
     ...acousticControls.slice(0, -1).map(({ row }) => row),
     deckRow,
     acousticControls.at(-1).row,
-    el('p', { className: 'hint', textContent: 'Reflections use the layout bounds. Set window openings here to change how much music escapes in exterior cameras.' }),
+    resetAcoustics,
+    el('p', { className: 'hint', textContent: 'Reflections and decay use the cabin dimensions. Window openings control how much sound escapes in exterior cameras.' }),
+  ]);
+  const eqEnabled = el('input', { type: 'checkbox' });
+  eqEnabled.onchange = () => actions.setEqualizer({ enabled: eqEnabled.checked });
+  const eqBands = EQ_BANDS.map((hz, index) => {
+    const label = hz >= 1000 ? `${hz / 1000} kHz` : `${hz} Hz`;
+    const input = el('input', { type: 'range', min: -EQ_LIMIT, max: EQ_LIMIT, step: 0.5 });
+    input.setAttribute('aria-label', label);
+    input.oninput = () => actions.setEqBand(index, Number(input.value));
+    wheelSlider(input);
+    const value = el('span', { className: 'value' });
+    return { input, value, row: row(label, el('div', { className: 'inline' }, [input, value])) };
+  });
+  const resetEq = el('button', { type: 'button', textContent: 'Reset to flat' });
+  resetEq.onclick = () => actions.setEqualizer({ gains: [] });
+  const equalizerForm = el('fieldset', {}, [
+    el('legend', { textContent: 'Equalizer' }),
+    row('Enable equalizer', eqEnabled),
+    ...eqBands.map(({ row }) => row),
+    resetEq,
   ]);
   const list = el('ul', { className: 'speakers' });
   const add = el('button', { textContent: '+ Speaker' });
@@ -469,6 +492,7 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
     ]),
     speakerForm,
     acousticsForm,
+    equalizerForm,
   );
   boundsRoot.replaceChildren(boundsForm);
   const fieldsets = [...root.querySelectorAll(':scope > fieldset'), boundsForm];
@@ -643,6 +667,15 @@ export function createPanel(root, actions, boundsRoot, linux = false) {
       value.textContent = `${current} ${unit}`;
       if (key === 'deckHeight') row.hidden = !splitDeck.checked;
     }
+
+    eqEnabled.checked = view.equalizer.enabled;
+    eqBands.forEach(({ input, value }, i) => {
+      const gain = view.equalizer.gains[i];
+      input.value = gain;
+      input.disabled = !view.equalizer.enabled;
+      value.textContent = `${gain > 0 ? '+' : ''}${gain} dB`;
+      input.setAttribute('aria-valuetext', value.textContent);
+    });
 
     list.replaceChildren(...view.speakers.map((s) => speakerItem(s, view)));
     add.disabled = view.speakers.length >= view.maxSpeakers;

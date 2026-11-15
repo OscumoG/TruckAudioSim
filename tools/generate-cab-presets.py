@@ -215,6 +215,10 @@ def main():
             variant["layout"]["label"] = label
             variant["layout"]["cabAudio"] = mode
             variant["layout"]["width"] = 1
+            if model.startswith("vehicle.skoda.") or source.stem.startswith(("Ford Mustang", "Ford Crown Victoria")):
+                variant["layout"]["vehicleSpace"] = "car"
+            elif source.stem.startswith(("Ford F150", "Ford Bronco")):
+                variant["layout"]["vehicleSpace"] = "pickup"
             if model in COACHES:
                 driver = profile["layout"]["speakers"][0]["position"]
                 variant["layout"].update(coach_layout(model, driver, mode))

@@ -1,6 +1,6 @@
 {
   "name": "truckaudiosim",
-  "version": "0.25.0",
+  "version": "0.26.0",
   "private": true,
   "type": "module",
   "main": "src/main/main.js",

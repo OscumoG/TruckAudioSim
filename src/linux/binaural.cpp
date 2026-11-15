@@ -57,6 +57,7 @@ struct Voice {
  Speaker speaker;
  SpeakerFilter filter;
  CabinAcoustics acoustics;
+ EqualizerFilter equalizer;
  float gain = 0;
  std::vector<float> history;
  Ears hrtf;
@@ -88,6 +89,7 @@ struct BinauralState {
  std::vector<Complex> work;
  std::vector<Voice> voices;
  Acoustics acoustics;
+ Equalizer equalizer;
  SpeakerTest speakerTest;
 
  BinauralState(const char* path, uint32_t rate, uint16_t channels, uint32_t mask, bool discrete)
@@ -175,6 +177,7 @@ void Binaural::setProfile(const Profile& profile) {
  }
  s.voices.swap(next);
  s.acoustics=profile.acoustics;
+ s.equalizer=profile.equalizer;
 }
 
 void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& pose, float* stereo) {
@@ -199,6 +202,7 @@ void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& 
   if(testing) s.speakerTest.render(block,voice.speaker.type=="sub");
   else mixSpatialObject(voice.speaker, pcm, frames, kBinauralBlock, s.channels, s.mask,
                         voice.gain, true, block.data(), &voice.filter);
+  voice.equalizer.process(block,s.equalizer,s.rate);
   voice.acoustics.process(block,s.acoustics,voice.speaker,pose,s.rate);
   std::copy_n(s.time.begin()+kBinauralBlock, history, voice.history.begin());
   s.forward();

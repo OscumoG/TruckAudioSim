@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
+import { acousticsFor } from '../src/shared/acoustics.js';
 import { coachExteriorDistance } from '../src/shared/camera.js';
 import { parsePresetFile, presetFile } from '../src/shared/collection.js';
 import { updateSpeaker } from '../src/shared/layout.js';
@@ -166,4 +167,29 @@ test('acoustics survive export and keep the independent window openings', () => 
   assert.equal(imported.layout.acoustics.bodyCutoff, 4000);
   assert.equal(spatialPose(null, 0, false, 1, 0).exterior, true);
   assert.equal(spatialPose(null, 0, false, 1).exterior, undefined);
+});
+
+test('equalizer settings survive export and are independent of acoustics', () => {
+  const { entry } = parsePresetFile({
+    truckerAuxPreset: 1, name: 'Car', layout: {
+      vehicleSpace: 'car',
+      acoustics: { enabled: false },
+      equalizer: { enabled: true, gains: [15, -15, 0.5, '3'] },
+    },
+  }, 'car.json');
+  const copy = parsePresetFile(presetFile(entry), 'car.json').entry;
+  const { acoustics, equalizer, vehicleSpace } = spatialProfile(copy.layout).layout;
+  assert.equal(vehicleSpace, 'car');
+  assert.equal(acoustics.enabled, false);
+  assert.deepEqual(equalizer, { enabled: true, gains: [9, -9, 0.5, 0, 0] });
+});
+
+test('geometry-derived defaults make coaches decay longer and preserve user overrides', () => {
+  const car = acousticsFor({ vehicleSpace: 'car', bounds: { min: [-0.8,-0.9,-0.8], max: [0.8,0.6,0.9] } });
+  const coach = acousticsFor({ vehicleSpace: 'coach', bounds: { min: [-1.2,-0.9,-1], max: [1.2,2.8,11] } });
+  assert.ok(coach.decayMs > car.decayMs * 2);
+  assert.equal(coach.splitDeck, true);
+  assert.equal(car.splitDeck, false);
+  assert.equal(car.enabled, false);
+  assert.equal(acousticsFor({ acoustics: { enabled: true, reflections: 18 }, bounds: { min: [-1,-1,-1], max: [1,1,1] } }).reflections, 18);
 });

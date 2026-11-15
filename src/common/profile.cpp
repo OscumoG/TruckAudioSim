@@ -37,6 +37,8 @@ Profile parseProfileText(const std::string& raw,bool allowEmpty){
     a.enabled=flag("enabled");
     a.reflections=read("reflections",a.reflections,0,100,0.01f);
     a.absorption=read("absorption",a.absorption,0,100,0.01f);
+    a.reverb=read("reverb",a.reverb,0,100,0.01f);
+    a.decayMs=read("decayMs",a.decayMs,40,550);
     a.bodyLoss=read("bodyLoss",a.bodyLoss,0,18);
     a.bodyCutoff=read("bodyCutoff",a.bodyCutoff,300,4000);
     a.leftWindow=read("leftWindow",0,0,100,0.01f);
@@ -55,6 +57,16 @@ Profile parseProfileText(const std::string& raw,bool allowEmpty){
       if(lo.x<hi.x && lo.y<hi.y && lo.z<hi.z){a.min=lo;a.max=hi;}
     }
     a.splitDeck=flag("splitDeck") && a.deckHeight>a.min.y && a.deckHeight<a.max.y;
+  }
+  if(const auto* eq=layout.get("equalizer"); eq && eq->kind==Json::Kind::Object){
+    const auto* enabled=eq->get("enabled");
+    p.equalizer.enabled=enabled && enabled->kind==Json::Kind::Boolean && enabled->boolean;
+    if(const auto* gains=eq->get("gains"); gains && gains->kind==Json::Kind::Array){
+      for(size_t i=0;i<std::min(gains->array.size(),p.equalizer.gains.size());++i){
+        if(gains->array[i].kind==Json::Kind::Number)
+          p.equalizer.gains[i]=static_cast<float>(std::clamp(gains->array[i].num(),-9.0,9.0));
+      }
+    }
   }
   CabAudio cabAudio=CabAudio::Legacy;
   if(const auto* mode=layout.get("cabAudio")){

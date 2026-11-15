@@ -37,6 +37,27 @@ int main() {
  room.enabled=true;
  acoustics.process(impulse,room,speaker,pose,rate);
  require(energy(std::span(impulse).subspan(50))>0,"Early reflections missing");
+ // Render only the late field and compare a short cabin with a long coach.
+ auto lateRoom=room;
+ lateRoom.reflections=0;
+ lateRoom.reverb=0.6f;
+ lateRoom.decayMs=90;
+ auto compact=dry;
+ tas::CabinAcoustics{}.process(compact,lateRoom,speaker,pose,rate);
+ require(energy(std::span(compact).subspan(450,1300))>1e-6f,"Late field missing");
+ lateRoom.max.z=11.5f;
+ lateRoom.decayMs=320;
+ auto coach=dry;
+ tas::CabinAcoustics{}.process(coach,lateRoom,speaker,pose,rate);
+ require(coach!=compact && energy(std::span(coach).subspan(4000))>
+     5*energy(std::span(compact).subspan(4000)),"Coach should have a distinct, longer decay");
+ require(energy(std::span(coach).subspan(6000))<energy(std::span(coach).subspan(1250,2000)),
+     "Late field does not decay");
+ lateRoom.reverb=0;
+ auto noReverb=dry;
+ tas::CabinAcoustics{}.process(noReverb,lateRoom,speaker,pose,rate);
+ require(noReverb==dry,"Zero wet levels altered the direct sound");
+ room.reverb=0;
  room.reflections=0;
  pose.exterior=true;
  pose.head={-2.7f,0,-0.2f};
@@ -60,6 +81,26 @@ int main() {
  pose.head.y=1.95f;
  require(compare(room,speaker,pose,2000)<lower*0.3f,"Deck should obstruct the opposite floor");
 
+ // A cut changes the target band while the EQ bypass preserves exact PCM.
+ std::vector<float> bass(rate), mid(rate);
+ for (size_t i=0;i<rate;++i) {
+  bass[i]=0.2f*std::sin(6.2831853f*80*i/rate);
+  mid[i]=0.2f*std::sin(6.2831853f*1000*i/rate);
+ }
+ tas::Equalizer eq{false,{-9,0,0,0,0}};
+ auto unfiltered=bass;
+ tas::EqualizerFilter{}.process(unfiltered,eq,rate);
+ require(unfiltered==bass,"Bypassed equalizer changed PCM");
+ eq.enabled=true;
+ auto bassCut=bass, midCut=mid;
+ tas::EqualizerFilter{}.process(bassCut,eq,rate);
+ tas::EqualizerFilter{}.process(midCut,eq,rate);
+ require(energy(bassCut)<0.16f*energy(bass) && energy(midCut)>0.95f*energy(mid),
+    "Bass cut was not selective");
+ eq.gains={9,9,9,9,9};
+ tas::EqualizerFilter{}.process(mid,eq,96000);
+ require(std::ranges::all_of(mid,[](float v){return std::isfinite(v) && std::abs(v)<0.3f;}),
+    "Combined EQ boost exceeded the expected headroom");
  tas::SpeakerTest test;
  test.prepare(1,rate);
  std::vector<float> preview(rate);

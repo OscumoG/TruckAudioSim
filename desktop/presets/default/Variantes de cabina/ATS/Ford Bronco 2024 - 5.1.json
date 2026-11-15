@@ -101,6 +101,7 @@
       }
     ],
     "label": "5.1",
-    "cabAudio": "5.1"
+    "cabAudio": "5.1",
+    "vehicleSpace": "pickup"
   }
 }

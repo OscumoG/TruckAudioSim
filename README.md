@@ -5,14 +5,23 @@ Escucha Spotify, VLC u otra fuente de audio como si las bocinas estuvieran en la
 ## Acústica y prueba de bocinas
 
 En **Acoustics**, activa **Enable acoustics** para el perfil que estés usando.
-El motor calcula reflexiones tempranas con las dimensiones de **Bounds**.
-Puedes ajustar la absorción, el aislamiento exterior y la altura que separa
-los pisos de un autobús. Los valores son estimaciones para la simulación.
-Las reflexiones se mezclan en cada bocina antes del audio espacial.
+El motor calcula reflejos de primer y segundo orden con las dimensiones de
+**Bounds** y aproxima la absorción de cristales, techo, piso y tapicería.
+Las reflexiones y la reverberación corta se mezclan antes del audio espacial.
+**Use vehicle defaults** carga valores estimados para ese habitáculo. Los
+valores cambian con el tamaño de la cabina y su tipo. Los de los autobuses
+tienen más tiempo de caída y el Volvo 9700 DD puede separar acústicamente sus
+dos pisos. Los parámetros son estimaciones basadas en la geometría de los
+perfiles y no provienen de mediciones individuales de los vehículos.
 
-**Left/Right window open** define la apertura de cada ventana al usar cámara
-exterior. El SDK 1.16 no informa el porcentaje real de apertura. Ajusta esos
-valores en el editor para simular la posición de las ventanas del juego.
+**Left/Right window open** define manualmente cuánto sonido escapa por cada
+lado desde la cámara exterior. Abrir una ventana también acorta el decaimiento
+interior. El SDK 1.16 no reporta la apertura de las ventanas del juego.
+
+En **Equalizer**, activa **Enable equalizer** para ajustar de −9 a +9 dB
+las bandas de 80, 250, 1000, 3000 y 8000 Hz. El ecualizador se guarda por
+perfil y funciona de forma independiente de **Acoustics**. **Reset to flat**
+pone las cinco bandas a 0 dB.
 
 Pulsa **▶** junto a una bocina para escuchar una señal corta en su posición
 actual. El botón utiliza una ganancia de prueba fija y, durante la captura
@@ -24,7 +33,7 @@ La edición Linux x86-64 usa PipeWire o PulseAudio y audio binaural para auricul
 
 ## Instalar en Windows
 
-1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.25.0-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
+1. Descarga el instalador cuando esté disponible en [Releases](https://github.com/OscumoG/TruckAudioSim/releases). Ejecuta `TruckAudioSim-v0.26.0-Setup-Windows-x64.exe` en Windows 10 u 11 de 64 bits y abre **TruckAudioSim** desde Inicio. El instalador beta está sin firma digital.
 2. Con el juego cerrado, abre **Camera → Install ETS2 / ATS plugins…** y selecciona la carpeta del juego. Si necesitas copiar los DLL manualmente, están en la carpeta `plugin` de TruckAudioSim. Coloca `scs-telemetry.dll` y `trucker_aux_camera.dll` en `bin\win_x64\plugins\` del juego.
 3. Abre el juego y acepta el aviso de funciones avanzadas del SDK. En TruckAudioSim selecciona **Camera → Mode → Raw Camera** para seguir la vista dentro y fuera de la cabina.
 

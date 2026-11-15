@@ -21,7 +21,7 @@ Los atajos globales existentes usan APIs de Windows. En Linux el volumen y el si
 3. En **Opciones de lanzamiento** de Steam, pon la ruta absoluta al script del paquete seguida por `%command%`. Las comillas permiten espacios en la ruta.
 
    ```text
-   "/ruta/a/TruckAudioSim-v0.25.0-Linux-x64/proton.sh" %command%
+   "/ruta/a/TruckAudioSim-v0.26.0-Linux-x64/proton.sh" %command%
    ```
 
 4. Inicia el juego y acepta el aviso del SDK. En el editor usa **Camera → Mode → Raw Camera** para leer la cámara del plugin antiguo cuando sea compatible con la versión del juego. También se conserva **Adjusted Telemetry** para seguimiento dentro de la cabina.

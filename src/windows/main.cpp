@@ -68,6 +68,7 @@ struct Voice{
  tas::Speaker speaker;
  tas::SpeakerFilter filter;
  tas::CabinAcoustics acoustics;
+ tas::EqualizerFilter equalizer;
  float gain=0.0f;
  ComPtr<ISpatialAudioObject> object;
  uint64_t nonzeroSamples=0;
@@ -429,6 +430,7 @@ int run(const Options& opt){
       auto revised=tas::parseProfileText(raw,true);
       candidates=speakersForOutput(revised,objectCount);
       profile.acoustics=revised.acoustics;
+      profile.equalizer=revised.equalizer;
       voiceGains=tas::neutralVoiceGains(candidates,channels,channelMask,peakCeiling,sampleRate);
       for(size_t i=0;i<voices.size();++i){
        auto next=i<candidates.size()?candidates[i]:tas::Speaker{};
@@ -437,6 +439,7 @@ int run(const Options& opt){
           voice.speaker.channel!=next.channel || voice.speaker.cabAudio!=next.cabAudio){
         voice.filter.configure(next,sampleRate);
         voice.acoustics.reset();
+        voice.equalizer={};
        }
        voice.speaker=std::move(next);
        voices[i].gain=i<voiceGains.size()?voiceGains[i]:0.0f;
@@ -454,6 +457,7 @@ int run(const Options& opt){
   current=tas::smoothPose(current,audible,0.12f);
   speakerTest.prepare(current.testSequence,sampleRate);
   const bool testing=current.testSequence!=0;
+  const bool processed=profile.acoustics.enabled || profile.equalizer.enabled;
   // Windows Spatial Sound's object volume is limited to unity. Apply boost
   // to the PCM before the mixer clamps samples to the valid output range.
   const float masterGain=current.volume*(opt.editLive?tas::kDesktopReferenceGain:1.0f);
@@ -479,11 +483,14 @@ int run(const Options& opt){
    auto pcm=std::span(reinterpret_cast<float*>(buffer),frameCount);
    const bool selected=testing && current.testSpeaker==v.speaker.id;
    auto stats=tas::mixSpatialObject(v.speaker,samples,count,frameCount,
-                                   channels,channelMask,v.gain*(profile.acoustics.enabled?1.0f:pcmBoost),
+                                   channels,channelMask,v.gain*(processed?1.0f:pcmBoost),
                                    !testing && current.volume>0 && v.gain>0,pcm.data(),&v.filter);
    if(selected) speakerTest.render(pcm,v.speaker.type=="sub");
-   if(!testing || selected) v.acoustics.process(pcm,profile.acoustics,v.speaker,current,sampleRate);
-   if(profile.acoustics.enabled && !testing)
+   if(!testing || selected) {
+    v.equalizer.process(pcm,profile.equalizer,sampleRate);
+    v.acoustics.process(pcm,profile.acoustics,v.speaker,current,sampleRate);
+   }
+   if(processed && !testing)
     for(float& sample:pcm) sample=std::clamp(sample*pcmBoost,-1.0f,1.0f);
    if(opt.channelTest){
     const auto* pcm=reinterpret_cast<const float*>(buffer);

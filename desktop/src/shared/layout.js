@@ -4,7 +4,8 @@
 // driver's default head (eye level, seat line). The head sits left of X = 0 by what the
 // game reports (pose.js headRestX). Mirrored pairs are mirror images about X = 0.
 
-import { normalizeAcoustics } from './acoustics.js';
+import { acousticsFor } from './acoustics.js';
+import { normalizeEqualizer } from './equalizer.js';
 
 export const MAX_SPEAKERS = 16;
 export const LABEL_MAX = 32; // characters of a preset's label (over 16 it runs like a ticker: badge.js)
@@ -121,7 +122,7 @@ export function normalizeLayout(raw, fallbackName = 'Default layout') {
   const src = raw && typeof raw === 'object' ? raw : {};
   const base = defaultLayout();
   // Older files call the box "field" or "cabin".
-  const vehicleSpace = src.vehicleSpace === 'coach' ? 'coach' : undefined;
+  const vehicleSpace = ['coach', 'car', 'pickup'].includes(src.vehicleSpace) ? src.vehicleSpace : undefined;
   const boundsSrc = [src.bounds, src.field, src.cabin].find((box) => box && typeof box === 'object') ?? {};
   const a = vec3(boundsSrc.min, base.bounds.min, vehicleSpace);
   const b = vec3(boundsSrc.max, base.bounds.max, vehicleSpace);
@@ -146,7 +147,8 @@ export function normalizeLayout(raw, fallbackName = 'Default layout') {
     width: clamp(isNum(src.width) ? src.width : 1, 0, 2),
     ...(['realistic', '5.1', '7.1'].includes(src.cabAudio) ? { cabAudio: src.cabAudio } : {}),
     ...(vehicleSpace ? { vehicleSpace } : {}),
-    ...(src.acoustics ? { acoustics: normalizeAcoustics(src.acoustics) } : {}),
+    ...(src.acoustics ? { acoustics: acousticsFor({ acoustics: src.acoustics, bounds, vehicleSpace }) } : {}),
+    ...(src.equalizer ? { equalizer: normalizeEqualizer(src.equalizer) } : {}),
     bounds,
     speakers: fixPairs(speakers),
   };

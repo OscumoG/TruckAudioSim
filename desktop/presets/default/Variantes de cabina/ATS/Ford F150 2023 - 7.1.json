@@ -127,6 +127,7 @@
       }
     ],
     "label": "7.1",
-    "cabAudio": "7.1"
+    "cabAudio": "7.1",
+    "vehicleSpace": "pickup"
   }
 }
