@@ -185,7 +185,10 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
     try {
       write(session, 'pose.json', pose);
       if (media) write(session, 'media.json', media);
-      write(session, 'preset.json', profile);
+      if (profile) {
+        write(session, 'preset.json', profile);
+        delete session.update.profile;
+      }
       if (session.updateWarning) {
         session.updateWarning = false;
         notify({ poseWarning: '' });
@@ -203,7 +206,8 @@ export function createSpatialAudio(engineDir, demoDir, notify) {
 
   function update(values) {
     if (!active || active.stopping || active.demo) return;
-    active.update = values;
+    // Keep a pending preset if a pose-only update arrives during a retry.
+    active.update = { profile: active.update?.profile, ...values };
     if (active.retry) return;
     active.pendingSince = Date.now();
     flush(active);
