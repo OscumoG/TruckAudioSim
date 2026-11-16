@@ -136,24 +136,47 @@ void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, co
   occlusion_=low;
   wet_=targetWet;
  }
+ // Prepare the audible paths once per block. Outside the cab this list empties
+ // after the reflections fade. Stationary paths reuse the delay decomposition.
+ struct BlockTap { size_t index, whole; float fraction; bool steady; };
+ std::array<BlockTap,24> active;
+ size_t activeCount=0;
+ for (size_t i=0;i<taps_.size();++i) {
+  auto& tap=taps_[i];
+  const auto& goal=target[i];
+  if (goal.gain==0 && tap.gain<1e-6f) {
+   tap.gain=0;
+   continue;
+  }
+  const bool steady=tap.gain==goal.gain && tap.delay==goal.delay;
+  if (steady) tap.brightness=goal.brightness;
+  const size_t whole=static_cast<size_t>(tap.delay);
+  active[activeCount++]={i,whole,tap.delay-whole,steady};
+ }
  for (float& sample:samples) {
   damped_+=damping*(sample-damped_);
   bright_+=brightness*(sample-bright_);
   history_[cursor_]={damped_,bright_};
   float early=0;
-  for (size_t i=0;i<taps_.size();++i) {
-   auto& tap=taps_[i];
-   tap.gain+=smoothing*(target[i].gain-tap.gain);
-   if (tap.gain<1e-6f) continue;
-   if (target[i].gain>0) {
-    tap.delay+=std::clamp(smoothing*(target[i].delay-tap.delay),-0.10f,0.10f);
-    tap.brightness=target[i].brightness;
+  for (size_t j=0;j<activeCount;++j) {
+   const auto& path=active[j];
+   auto& tap=taps_[path.index];
+   size_t whole=path.whole;
+   float frac=path.fraction;
+   if (!path.steady) {
+    const auto& goal=target[path.index];
+    tap.gain+=smoothing*(goal.gain-tap.gain);
+    if (tap.gain<1e-6f) continue;
+    if (goal.gain>0) {
+     tap.delay+=std::clamp(smoothing*(goal.delay-tap.delay),-0.10f,0.10f);
+     tap.brightness=goal.brightness;
+    }
+    whole=static_cast<size_t>(tap.delay);
+    frac=tap.delay-whole;
    }
-   const size_t whole=static_cast<size_t>(tap.delay);
    const size_t index=cursor_>=whole?cursor_-whole:cursor_+size-whole;
    const auto& next=history_[index];
    const auto& prev=history_[index?index-1:size-1];
-   const float frac=tap.delay-whole;
    early+=tap.gain*std::lerp(std::lerp(next[0],prev[0],frac),
                             std::lerp(next[1],prev[1],frac),tap.brightness);
   }
