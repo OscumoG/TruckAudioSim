@@ -37,6 +37,54 @@ int main() {
  room.enabled=true;
  acoustics.process(impulse,room,speaker,pose,rate);
  require(energy(std::span(impulse).subspan(50))>0,"Early reflections missing");
+ // Turning in place changes spatial placement, never the acoustic impulse response.
+ auto split=dry;
+ tas::CabinAcoustics blocked;
+ auto view=pose;
+ for(size_t begin=0;begin<split.size();begin+=256) {
+  view.yawDegrees+=7;
+  view.pitchDegrees-=3;
+  blocked.process(std::span(split).subspan(begin,256),room,speaker,view,rate);
+ }
+ require(impulse==split,"Stationary room responses must agree across block boundaries and rotation");
+
+ // Warm the cache, then change room, source and listener without constructing a new processor.
+ tas::CabinAcoustics reused;
+ auto changedRoom=room;
+ changedRoom.leftWindow=0.85f;
+ changedRoom.reflections=0.1f;
+ changedRoom.decayMs=240;
+ auto changedSpeaker=speaker;
+ changedSpeaker.pos={0.6f,0.25f,-0.6f};
+ auto changedPose=pose;
+ changedPose.head={0.35f,0.25f,0.2f};
+ std::vector<float> silence(rate);
+ reused.process(silence,room,speaker,pose,rate);
+ reused.process(silence,changedRoom,changedSpeaker,changedPose,rate);
+ auto adjusted=dry, expected=dry;
+ reused.process(adjusted,changedRoom,changedSpeaker,changedPose,rate);
+ tas::CabinAcoustics{}.process(expected,changedRoom,changedSpeaker,changedPose,rate);
+ require(energy(std::span(expected).subspan(50))>0,"Updated settings must produce reflections");
+ auto residual=dry;
+ for(size_t i=0;i<residual.size();++i) residual[i]=adjusted[i]-expected[i];
+ // Fractional delay smoothing settles to within a fraction of a sample.
+ // Compare the residual to the reflected energy, excluding the direct impulse.
+ const float reflectedEnergy=energy(std::span(expected).subspan(50));
+ require(energy(residual)<0.01f*reflectedEnergy,
+     "A live profile edit must refresh the acoustic paths and decay");
+ auto outside=changedPose;
+ outside.exterior=true;
+ outside.head={-3,0,0};
+ std::fill(silence.begin(),silence.end(),0);
+ reused.process(silence,changedRoom,changedSpeaker,outside,rate);
+ adjusted=dry;
+ expected=dry;
+ reused.process(adjusted,changedRoom,changedSpeaker,outside,rate);
+ tas::CabinAcoustics{}.process(expected,changedRoom,changedSpeaker,outside,rate);
+ for(size_t i=0;i<residual.size();++i) residual[i]=adjusted[i]-expected[i];
+ require(energy(residual)<1e-4f*energy(expected) &&
+         std::abs(adjusted[0]-dry[0])>0.05f,"Exterior switch must refresh body attenuation");
+
  // Render only the late field and compare a short cabin with a long coach.
  auto lateRoom=room;
  lateRoom.reflections=0;

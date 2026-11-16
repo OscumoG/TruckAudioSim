@@ -117,28 +117,39 @@ new ResizeObserver(() => {
 
 let spatialTimer;
 let lastSpatial = '';
+let lastSpatialProfile;
 function updateSpatial() {
   if (state.audioMode !== 'live' || spatialTimer) return;
   spatialTimer = setTimeout(() => {
     spatialTimer = null;
     if (state.audioMode !== 'live') return;
-    const update = currentAudioState();
-    const key = JSON.stringify(update);
-    if (key === lastSpatial) return;
+    const { profile, ...live } = currentAudioState();
+    const key = JSON.stringify(live);
+    const profileChanged = profile !== lastSpatialProfile;
+    if (!profileChanged && key === lastSpatial) return;
     lastSpatial = key;
-    window.aux.updateSpatial(update);
+    lastSpatialProfile = profile;
+    window.aux.updateSpatial(profileChanged ? { ...live, profile } : live);
   }, 30);
 }
 
 let testSequence = 0;
 let speakerTest = null;
 let testTimer;
-const currentProfile = () => {
+let profileCache;
+function currentProfile() {
   const { layout } = playing();
-  return speakerTest
+  const muted = [...state.muted];
+  if (profileCache && profileCache.layout === layout && profileCache.solo === state.solo
+      && profileCache.preview === speakerTest && profileCache.muted.length === muted.length
+      && muted.every((id, i) => id === profileCache.muted[i])) return profileCache.profile;
+
+  const profile = speakerTest
     ? spatialProfile({ ...layout, speakers: [{ ...speakerTest.speaker, volumePercent: 100, gainDb: 0 }] })
-    : spatialProfile(layout, state.solo, [...state.muted]);
-};
+    : spatialProfile(layout, state.solo, muted);
+  profileCache = { layout, solo: state.solo, muted, preview: speakerTest, profile };
+  return profile;
+}
 
 function stopSpeakerTest() {
   clearTimeout(testTimer);
@@ -1095,7 +1106,7 @@ import('./overview3d.js')
   .then(({ createOverview }) => {
     overview = createOverview(document.getElementById('overview'));
     render();
-    overview.setPose(state.pose, headRestX(state.truck));
+    refreshEditorPose();
   })
   .catch((err) => {
     document.getElementById('overview').textContent = `3D view unavailable: ${err.message}`;
@@ -1166,8 +1177,12 @@ function render() {
     muted: state.muted,
     silentIds,
   });
-  views.update({ layout, layoutKey: current.key, selectedIds: ids, silentIds });
-  overview?.update({ layout, layoutKey: current.key, selectedIds: ids, silentIds });
+  if (editorIsVisible()) {
+    const model = { layout, layoutKey: current.key, selectedIds: ids, silentIds };
+    views.update(model);
+    overview?.update(model);
+    refreshEditorPose();
+  }
 }
 
 // The status line: [the vehicle or the game's state, the angles and notes]. Two lines that
@@ -1196,6 +1211,24 @@ function statusText() {
   const audioNote = state.audioStatus.poseWarning ? ' · audio pose update pending' : '';
   return [name, `${angles}${cameraNote}${audioNote}${muted}`];
 }
+
+// The renderer must still process live audio while minimized or behind the game.
+function editorIsVisible() {
+  return state.editorOpen && document.visibilityState === 'visible' && document.hasFocus();
+}
+
+function refreshEditorPose() {
+  if (!editorIsVisible()) return;
+  const pose = state.selection.pause ? null : state.heard;
+  const headX = headRestX(state.truck);
+  views.setPose(pose, headX);
+  overview?.setPose(pose, headX);
+}
+
+window.addEventListener('focus', render);
+document.addEventListener('visibilitychange', () => {
+  if (editorIsVisible()) render();
+});
 
 let lastStatus = 0;
 const frameWatch = createFrameWatch();
@@ -1299,14 +1332,11 @@ window.aux.onPose((pose) => {
   // camera's turns are its own.
   if (view.source !== 'free' && view.source !== 'outside') heard = lockAxes(heard, state.settings.axisLocks[way]);
   state.heard = heard;
-  // The pause menu's preset is heard from the head at rest (null: the driver's seat, ahead).
-  const atRest = state.selection.pause ? null : heard;
   updateSpatial();
   applySilence();
-  views.setPose(atRest, headX);
-  overview?.setPose(atRest, headX);
+  refreshEditorPose();
   const now = performance.now();
-  if (now - lastStatus >= STATUS_PERIOD_MS) {
+  if (document.visibilityState === 'visible' && now - lastStatus >= STATUS_PERIOD_MS) {
     lastStatus = now;
     panel.setStatus(statusText());
   }

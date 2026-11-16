@@ -5,7 +5,10 @@
 #include <string>
 #include <vector>
 namespace tas {
-struct Vec3 {float x=0,y=0,z=0;};
+struct Vec3 {
+ float x=0,y=0,z=0;
+ bool operator==(const Vec3&) const = default;
+};
 enum class CabAudio { Legacy, Realistic, Surround51, Surround71 };
 struct Speaker {
  std::string id,name,channel,type;
@@ -22,6 +25,7 @@ struct Acoustics {
  float reflections=0.43f, absorption=0.43f, bodyLoss=9, bodyCutoff=1050;
  float reverb=0.20f, decayMs=110;
  float leftWindow=0, rightWindow=0, deckHeight=1.25f;
+ bool operator==(const Acoustics&) const = default;
 };
 struct Profile {
  std::string name,vehicle,game;
