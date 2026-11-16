@@ -81,7 +81,8 @@ int main() {
  expected=dry;
  reused.process(adjusted,changedRoom,changedSpeaker,outside,rate);
  tas::CabinAcoustics{}.process(expected,changedRoom,changedSpeaker,outside,rate);
- require(std::abs(adjusted[0]-expected[0])<1e-5f &&
+ for(size_t i=0;i<residual.size();++i) residual[i]=adjusted[i]-expected[i];
+ require(energy(residual)<1e-4f*energy(expected) &&
          std::abs(adjusted[0]-dry[0])>0.05f,"Exterior switch must refresh body attenuation");
 
  // Render only the late field and compare a short cabin with a long coach.
