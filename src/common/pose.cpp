@@ -62,13 +62,30 @@ Pose smoothPose(const Pose& prev,const Pose& target,float alpha){
  out.testSpeaker=target.testSpeaker;
  return out;
 }
-Vec3 relativePosition(const Vec3& speaker,const Pose& pose){
- const auto yaw=relativePosition(speaker,pose.head,pose.yawDegrees);
- if(pose.pitchDegrees==0 && pose.rollDegrees==0)return yaw;
+ListenerTransform::ListenerTransform(const Pose& pose)
+    : head_(pose.head), tilted_(pose.pitchDegrees!=0 || pose.rollDegrees!=0) {
+ const float yaw=pose.yawDegrees*std::numbers::pi_v<float>/180;
+ yawSin_=std::sin(yaw);
+ yawCos_=std::cos(yaw);
+ if (!tilted_) return;
  const float pitch=pose.pitchDegrees*std::numbers::pi_v<float>/180;
  const float roll=pose.rollDegrees*std::numbers::pi_v<float>/180;
- const float y=std::cos(pitch)*yaw.y+std::sin(pitch)*yaw.z;
- const float z=-std::sin(pitch)*yaw.y+std::cos(pitch)*yaw.z;
- return {std::cos(roll)*yaw.x+std::sin(roll)*y,-std::sin(roll)*yaw.x+std::cos(roll)*y,z};
+ pitchSin_=std::sin(pitch);
+ pitchCos_=std::cos(pitch);
+ rollSin_=std::sin(roll);
+ rollCos_=std::cos(roll);
+}
+
+Vec3 ListenerTransform::relativePosition(const Vec3& speaker) const {
+ const Vec3 d{speaker.x-head_.x,speaker.y-head_.y,speaker.z-head_.z};
+ const Vec3 yaw{yawCos_*d.x+yawSin_*d.z,d.y,-yawSin_*d.x+yawCos_*d.z};
+ if (!tilted_) return yaw;
+ const float y=pitchCos_*yaw.y+pitchSin_*yaw.z;
+ const float z=-pitchSin_*yaw.y+pitchCos_*yaw.z;
+ return {rollCos_*yaw.x+rollSin_*y,-rollSin_*yaw.x+rollCos_*y,z};
+}
+
+Vec3 relativePosition(const Vec3& speaker,const Pose& pose) {
+ return ListenerTransform(pose).relativePosition(speaker);
 }
 }

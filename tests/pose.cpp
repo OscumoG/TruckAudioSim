@@ -17,6 +17,16 @@ int main(){
   desktop.pitchDegrees=0;desktop.rollDegrees=90;
   const auto up=relativePosition({0,1,0},desktop);
   if(std::fabs(up.x-1)>0.0001f)throw std::runtime_error("left head tilt");
+  Pose tilted;
+  tilted.head={1.5f,-0.25f,0.75f};
+  tilted.yawDegrees=26;tilted.pitchDegrees=-18;tilted.rollDegrees=12;
+  const ListenerTransform listener(tilted);
+  const auto point=listener.relativePosition({0.1f,0.8f,-1.4f});
+  if(std::fabs(point.x-(-1.86037074f))>0.0001f ||
+     std::fabs(point.y-1.83295348f)>0.0001f ||
+     std::fabs(point.z-(-0.92967859f))>0.0001f)
+   throw std::runtime_error("combined listener rotation");
+  if(listener.relativePosition(tilted.head)!=Vec3{})throw std::runtime_error("listener translation");
   Pose a,b;a.yawDegrees=179;b.yawDegrees=-179;
   auto s=smoothPose(a,b,0.5f);
   if(std::fabs(s.yawDegrees-180)>0.0001f)throw std::runtime_error("incorrect shortest yaw arc");

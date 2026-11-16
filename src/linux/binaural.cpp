@@ -187,9 +187,10 @@ void Binaural::render(const std::vector<float>& pcm, size_t frames, const Pose& 
  s.speakerTest.prepare(pose.testSequence,s.rate);
  const float master = testing?0.5f*pose.exteriorGain:(pose.electronicsOn ? pose.volume*pose.exteriorGain : 0);
  const float reference = s.discrete ? 0.7f : kDesktopReferenceGain;
+ const ListenerTransform listener(pose);
  for (auto& voice : s.voices) {
   if(testing && pose.testSpeaker!=voice.speaker.id) continue;
-  const auto relative = relativePosition(voice.speaker.pos, pose);
+  const auto relative = listener.relativePosition(voice.speaker.pos);
   const float radius = std::hypot(relative.x, relative.y, relative.z);
   const Vec3 dir = radius > 0.001f
      ? Vec3{relative.x/radius, relative.y/radius, relative.z/radius} : Vec3{0,0,-1};

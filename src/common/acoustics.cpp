@@ -20,6 +20,7 @@ float smoothstep(float t) {
 
 void CabinAcoustics::reset() {
  history_.clear();
+ cachedRate_=0;
  taps_={};
  for (auto& line:diffuse_) {
   line.buffer.clear();
@@ -31,30 +32,20 @@ void CabinAcoustics::reset() {
  loss_=1;
 }
 
-void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, const Speaker& speaker,
-                             const Pose& pose, float rate) {
- if (!room.enabled) {
-  if (!history_.empty()) reset();
-  return;
- }
- const size_t size=static_cast<size_t>(rate*0.13f)+4;
- const bool initialize=history_.size()!=size;
- if (initialize) {
-  reset();
-  history_.resize(size);
- }
+void CabinAcoustics::updateParameters(const Acoustics& room, Vec3 source, Vec3 head, bool exterior, float rate) {
  auto lo=axes(room.min), hi=axes(room.max);
- const auto p=axes(speaker.pos);
- const float direct=distance(speaker.pos,pose.head);
- const float upper=smoothstep((pose.head.y-room.deckHeight+0.18f)/0.36f);
- const bool lowerSpeaker=speaker.pos.y<room.deckHeight;
- const float deck=room.splitDeck && !pose.exterior ? (lowerSpeaker?upper:1.0f-upper) : 0.0f;
+ const auto p=axes(source);
+ const float direct=distance(source,head);
+ const float upper=smoothstep((head.y-room.deckHeight+0.18f)/0.36f);
+ const bool lowerSpeaker=source.y<room.deckHeight;
+ const float deck=room.splitDeck && !exterior ? (lowerSpeaker?upper:1.0f-upper) : 0.0f;
  const float windowY=std::clamp(0.16f,lo[1],hi[1]);
  const float windowZ=std::clamp(-0.20f,lo[2],hi[2]);
  if (room.splitDeck) (lowerSpeaker?hi:lo)[1]=room.deckHeight;
 
- std::array<Tap,24> target{};
- if (!pose.exterior && room.reflections>0) {
+ auto& target=parameters_.paths;
+ target={};
+ if (!exterior && room.reflections>0) {
   // Side glass, floor, ceiling, windshield and the usually upholstered rear.
   const std::array<float,6> surfaces{
    0.84f-0.50f*room.leftWindow,0.84f-0.50f*room.rightWindow,0.48f,0.68f,0.92f,0.51f};
@@ -67,9 +58,9 @@ void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, co
   };
   const auto add=[&](std::array<float,3> image,float strength,float highs) {
    auto& tap=target[count++];
-   const float path=distance({image[0],image[1],image[2]},pose.head);
+   const float path=distance({image[0],image[1],image[2]},head);
    if (path<direct) return;
-   tap.delay=std::clamp((path-direct)*rate/343.0f,1.0f,static_cast<float>(size-2));
+   tap.delay=std::clamp((path-direct)*rate/343.0f,1.0f,static_cast<float>(history_.size()-2));
    tap.gain=reflection*strength*(0.65f+direct)/(0.85f+path);
    tap.brightness=highs;
   };
@@ -89,46 +80,84 @@ void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, co
  }
 
  float opening=0;
- if (pose.exterior) {
+ if (exterior) {
   for (size_t side=0;side<2;++side) {
    const float wall=side?hi[0]:lo[0];
    const auto aperture=Vec3{wall,windowY,windowZ};
-   const float outward=std::max(0.0f,(pose.head.x-wall)*(side?1.0f:-1.0f));
-   const float range=distance(aperture,pose.head);
+   const float outward=std::max(0.0f,(head.x-wall)*(side?1.0f:-1.0f));
+   const float range=distance(aperture,head);
    const float facing=std::clamp((outward+0.35f)/(range+0.35f),0.0f,1.0f);
-   const float sourceDistance=distance(aperture,speaker.pos);
+   const float sourceDistance=distance(aperture,source);
    const float fraction=side?room.rightWindow:room.leftWindow;
    opening+=fraction*facing/(1.0f+0.20f*sourceDistance);
   }
   opening=std::clamp(opening,0.0f,1.0f);
  }
- const float closed=pose.exterior?1.0f-opening:0.0f;
+ const float closed=exterior?1.0f-opening:0.0f;
  const float low=std::clamp(closed+deck*(1.0f-closed),0.0f,1.0f);
  const float targetLoss=dbToAmplitude(-(room.bodyLoss*closed+9.0f*deck));
- const float body=coefficient(pose.exterior?room.bodyCutoff:830.0f,rate);
- const float damping=coefficient(3300.0f-2500.0f*room.absorption,rate);
- const float brightness=coefficient(8700.0f-4200.0f*room.absorption,rate);
- const float smoothing=coefficient(14.0f,rate);
  const float openWindows=0.5f*(room.leftWindow+room.rightWindow);
- const float targetWet=pose.exterior?0.0f:0.38f*room.reverb*(1.0f-0.55f*openWindows)*(1.0f-0.32f*deck);
- const float x=std::max(0.2f,hi[0]-lo[0]), y=std::max(0.2f,hi[1]-lo[1]), z=std::max(0.2f,hi[2]-lo[2]);
- // 4V/S estimates the mean distance between wall strikes. Unequal lines keep
- // the late decay diffuse, and the longest line follows the depth of the cabin.
- const float flight=2.0f*x*y*z/((x*y+x*z+y*z)*343.0f);
- const std::array<float,4> delays{
-  0.008f+flight*1.19f,0.013f+flight*1.63f,0.019f+flight*2.11f,
-  0.024f+flight*2.57f+z/1372.0f};
- const float decay=std::max(0.035f,room.decayMs*0.001f*(1.0f-0.65f*openWindows));
- std::array<float,4> feedback{};
+ const float targetWet=exterior?0.0f:0.38f*room.reverb*(1.0f-0.55f*openWindows)*(1.0f-0.32f*deck);
+ parameters_.loss=targetLoss;
+ parameters_.occlusion=low;
+ parameters_.wet=targetWet;
+ // Moving the listener only changes the paths, not the material or the
+ // dimensions of the speaker's compartment.
+ if (rate!=cachedRate_ || room!=cachedRoom_ || exterior!=cachedExterior_ ||
+     (room.splitDeck && lowerSpeaker!=(cachedSource_.y<room.deckHeight))) {
+  const float body=coefficient(exterior?room.bodyCutoff:830.0f,rate);
+  const float damping=coefficient(3300.0f-2500.0f*room.absorption,rate);
+  const float brightness=coefficient(8700.0f-4200.0f*room.absorption,rate);
+  const float smoothing=coefficient(14.0f,rate);
+  const float x=std::max(0.2f,hi[0]-lo[0]), y=std::max(0.2f,hi[1]-lo[1]), z=std::max(0.2f,hi[2]-lo[2]);
+  // 4V/S estimates the mean distance between wall strikes. Unequal lines keep
+  // the late decay diffuse, and the longest line follows the depth of the cabin.
+  const float flight=2.0f*x*y*z/((x*y+x*z+y*z)*343.0f);
+  const std::array<float,4> delays{
+   0.008f+flight*1.19f,0.013f+flight*1.63f,0.019f+flight*2.11f,
+   0.024f+flight*2.57f+z/1372.0f};
+  const float decay=std::max(0.035f,room.decayMs*0.001f*(1.0f-0.65f*openWindows));
+  parameters_.body=body;
+  parameters_.damping=damping;
+  parameters_.brightness=brightness;
+  parameters_.smoothing=smoothing;
+  for (size_t i=0;i<delays.size();++i) {
+   parameters_.lineLengths[i]=static_cast<size_t>(delays[i]*rate)|1;
+   parameters_.feedback[i]=std::pow(0.001f,delays[i]/decay);
+  }
+ }
+ cachedRoom_=room;
+ cachedSource_=source;
+ cachedHead_=head;
+ cachedExterior_=exterior;
+ cachedRate_=rate;
+}
+
+void CabinAcoustics::process(std::span<float> samples, const Acoustics& room, const Speaker& speaker,
+                             const Pose& pose, float rate) {
+ if (!room.enabled) {
+  if (!history_.empty()) reset();
+  return;
+ }
+ const size_t size=static_cast<size_t>(rate*0.13f)+4;
+ const bool initialize=history_.size()!=size;
+ if (initialize) {
+  reset();
+  history_.resize(size);
+ }
+ // Camera orientation is handled by the spatial renderer. A turn in place
+ // keeps the same acoustic paths and room filter coefficients.
+ if (rate!=cachedRate_ || room!=cachedRoom_ || speaker.pos!=cachedSource_ ||
+     pose.head!=cachedHead_ || pose.exterior!=cachedExterior_)
+  updateParameters(room,speaker.pos,pose.head,pose.exterior,rate);
+ const auto& [target, lineLengths, feedback, targetLoss, low, targetWet, body, damping, brightness, smoothing]=parameters_;
  if (targetWet>0 || wet_>1e-6f) for (size_t i=0;i<diffuse_.size();++i) {
   auto& line=diffuse_[i];
-  const size_t length=static_cast<size_t>(delays[i]*rate)|1;
-  if (line.buffer.size()!=length) {
-   line.buffer.assign(length,0);
+  if (line.buffer.size()!=lineLengths[i]) {
+   line.buffer.assign(lineLengths[i],0);
    line.cursor=0;
    line.low=0;
   }
-  feedback[i]=std::pow(0.001f,delays[i]/decay);
  }
  if (initialize) {
   taps_=target;

@@ -470,7 +470,9 @@ int run(const Options& opt){
   if(count>frameCount)
    throw std::runtime_error("Audio source returned more frames than the spatial renderer requested");
   if(loopback || (pipe && !pipe->finished()))silentSourceFrames+=frameCount-count;
-  for(auto& v:voices){
+  const tas::ListenerTransform listener(current);
+  for(size_t i=0;i<voices.size();++i){
+   auto& v=voices[i];
    BOOL active=FALSE;
    check(v.object->IsActive(&active),"ISpatialAudioObject::IsActive");
    if(!active)
@@ -481,6 +483,12 @@ int run(const Options& opt){
    // The loopback and pipe may return fewer frames than Windows requests.
    // Explicitly zero the tail: do not read stale or uninitialized PCM.
    auto pcm=std::span(reinterpret_cast<float*>(buffer),frameCount);
+   // Keep spare objects reserved for live preset edits without running their DSP.
+   if(i>=candidates.size()){
+    std::ranges::fill(pcm,0.0f);
+    check(v.object->SetVolume(0.0f),"SetVolume");
+    continue;
+   }
    const bool selected=testing && current.testSpeaker==v.speaker.id;
    auto stats=tas::mixSpatialObject(v.speaker,samples,count,frameCount,
                                    channels,channelMask,v.gain*(processed?1.0f:pcmBoost),
@@ -504,7 +512,7 @@ int run(const Options& opt){
    clippedObjectSamples+=stats.clippedSamples;
    preLimitPeak=std::max(preLimitPeak,stats.inputPeak);
    postLimitPeak=std::max(postLimitPeak,stats.outputPeak);
-   auto rel=tas::relativePosition(v.speaker.pos,current);
+   auto rel=listener.relativePosition(v.speaker.pos);
    if(opt.smokeTest){
     // One full left/right sweep every four seconds, measured on the WAV clock.
     const double phase=double(totalFrames%(4*sampleRate))/(4*sampleRate);
